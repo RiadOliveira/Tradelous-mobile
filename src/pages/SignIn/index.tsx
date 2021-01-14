@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
     Container,
     LogoView,
@@ -11,26 +11,75 @@ import {
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
+import {TextInput} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 
-const SignIn: React.FC = () => (
-    <Container>
-        <LogoView>
-            <LogoImage source={TestLogo} />
-        </LogoView>
+const SignIn: React.FC = () => {
+    const formRef = useRef<FormHandles>(null);
+    const passwordInput = useRef<TextInput>(null);
 
-        <Input name="E-mail" icon="mail-outline" />
-        <Input name="Senha" icon="lock-outline" />
+    const handleSubmit = useCallback((data) => {
+        console.log(data);
+    }, []);
 
-        <ForgotPassword>
-            <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
-        </ForgotPassword>
+    return (
+        <ScrollView
+            contentContainerStyle={{flex: 1}}
+            keyboardShouldPersistTaps="handled">
+            <Container>
+                <LogoView>
+                    <LogoImage source={TestLogo} />
+                </LogoView>
 
-        <Button>Entrar</Button>
+                <Form ref={formRef} onSubmit={handleSubmit}>
+                    <Input
+                        autoCorrect={false}
+                        textContentType="emailAddress"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        name="E-mail"
+                        icon="mail-outline"
+                        onSubmitEditing={() => {
+                            passwordInput.current?.focus();
+                        }}
+                        returnKeyType="next"
+                    />
 
-        <SignUp>
-            <SignUpText>Ainda não possui uma conta? Crie-a agora</SignUpText>
-        </SignUp>
-    </Container>
-);
+                    <Input
+                        returnKeyType="send"
+                        autoCapitalize="none"
+                        textContentType="password"
+                        secureTextEntry
+                        name="Senha"
+                        icon="lock-outline"
+                        ref={passwordInput}
+                        onSubmitEditing={() => {
+                            formRef.current?.submitForm();
+                        }}
+                    />
+                </Form>
+
+                <ForgotPassword>
+                    <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
+                </ForgotPassword>
+
+                <Button
+                    onPress={() => {
+                        formRef.current?.submitForm();
+                    }}>
+                    Entrar
+                </Button>
+
+                <SignUp>
+                    <SignUpText>
+                        Ainda não possui uma conta? Crie-a agora
+                    </SignUpText>
+                </SignUp>
+            </Container>
+        </ScrollView>
+    );
+};
 
 export default SignIn;

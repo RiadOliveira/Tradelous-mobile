@@ -1,6 +1,13 @@
-import React, {useCallback, useState} from 'react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {TextInputProps, TextInputChangeEventData} from 'react-native';
+import {useField} from '@unform/core';
+import React, {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useImperativeHandle,
+    forwardRef,
+} from 'react';
+import {TextInputProps} from 'react-native';
 import {Container, Content, Icon} from './styles';
 
 interface InputProps extends TextInputProps {
@@ -8,9 +15,21 @@ interface InputProps extends TextInputProps {
     icon: string;
 }
 
-const Input: React.FC<InputProps> = ({...props}) => {
+interface InputRef {
+    focus(): void;
+}
+
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
+    {...props},
+    ref,
+) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
+
+    const {fieldName, defaultValue, registerField} = useField(props.name);
+
+    const inputRef = useRef<any>(null);
+    const inputValueRef = useRef({value: defaultValue});
 
     const handleFocus = useCallback(() => {
         setIsSelected(true);
@@ -28,6 +47,28 @@ const Input: React.FC<InputProps> = ({...props}) => {
         }
     }, []);
 
+    useImperativeHandle(ref, () => ({
+        focus() {
+            inputRef.current.focus();
+        },
+    }));
+
+    useEffect(() => {
+        registerField({
+            name: fieldName,
+            ref: inputValueRef.current,
+            path: 'value',
+            clearValue() {
+                inputValueRef.current.value = '';
+                inputRef.current.clear();
+            },
+            setValue(value) {
+                inputValueRef.current.value = value;
+                inputRef.current.setNativeProps({text: value});
+            },
+        });
+    }, [fieldName, registerField]);
+
     return (
         <Container isSelected={isSelected} isFilled={isFilled}>
             <Icon
@@ -39,14 +80,16 @@ const Input: React.FC<InputProps> = ({...props}) => {
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 placeholder={props.name}
-                onChangeText={(event) => {
-                    handleTextChanging(event);
+                onChangeText={(value) => {
+                    inputValueRef.current.value = value;
+                    handleTextChanging(value);
                 }}
                 selectionColor="#000000"
+                ref={inputRef}
                 {...props}
             />
         </Container>
     );
 };
 
-export default Input;
+export default forwardRef(Input);
