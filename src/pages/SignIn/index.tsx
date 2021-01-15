@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
     Container,
     LogoView,
@@ -11,23 +11,27 @@ import {
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
-import {Form} from '@unform/mobile';
-import {FormHandles} from '@unform/core';
-import {TextInput} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
+import { TextInput } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 const SignIn: React.FC = () => {
+    const navigation = useNavigation();
+
     const formRef = useRef<FormHandles>(null);
     const passwordInput = useRef<TextInput>(null);
 
-    const handleSubmit = useCallback((data) => {
+    const handleSubmit = useCallback(data => {
         console.log(data);
     }, []);
 
     return (
         <ScrollView
-            contentContainerStyle={{flex: 1}}
-            keyboardShouldPersistTaps="handled">
+            contentContainerStyle={{ flex: 1 }}
+            keyboardShouldPersistTaps="handled"
+        >
             <Container>
                 <LogoView>
                     <LogoImage source={TestLogo} />
@@ -39,7 +43,8 @@ const SignIn: React.FC = () => {
                         textContentType="emailAddress"
                         keyboardType="email-address"
                         autoCapitalize="none"
-                        name="E-mail"
+                        name="email"
+                        placeholder="E-mail"
                         icon="mail-outline"
                         onSubmitEditing={() => {
                             passwordInput.current?.focus();
@@ -52,7 +57,8 @@ const SignIn: React.FC = () => {
                         autoCapitalize="none"
                         textContentType="password"
                         secureTextEntry
-                        name="Senha"
+                        name="password"
+                        placeholder="Senha"
                         icon="lock-outline"
                         ref={passwordInput}
                         onSubmitEditing={() => {
@@ -61,18 +67,27 @@ const SignIn: React.FC = () => {
                     />
                 </Form>
 
-                <ForgotPassword>
+                <ForgotPassword
+                    onPress={() => {
+                        navigation.navigate('PasswordRecovery');
+                    }}
+                >
                     <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
                 </ForgotPassword>
 
                 <Button
                     onPress={() => {
                         formRef.current?.submitForm();
-                    }}>
+                    }}
+                >
                     Entrar
                 </Button>
 
-                <SignUp>
+                <SignUp
+                    onPress={() => {
+                        navigation.navigate('SignUp');
+                    }}
+                >
                     <SignUpText>
                         Ainda não possui uma conta? Crie-a agora
                     </SignUpText>

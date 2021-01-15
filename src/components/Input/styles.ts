@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import icon from 'react-native-vector-icons/MaterialIcons';
 
 interface InputProps {
@@ -14,16 +14,16 @@ export const Container = styled.View<InputProps>`
     border-radius: 5px;
     margin-bottom: 25px;
     flex-direction: row;
-    padding: 2px;
+    padding: 1.8px;
 
-    ${(props) =>
+    ${props =>
         props.isSelected &&
         css`
             border: 1.8px solid #1c274e;
             padding: 0;
         `}
 
-    ${(props) =>
+    ${props =>
         props.isFilled &&
         css`
             border: 1.8px solid #1c274e;

@@ -2,7 +2,11 @@ import React from 'react';
 import {RectButtonProperties} from 'react-native-gesture-handler';
 import {Container, Content} from './styles';
 
-const Button: React.FC<RectButtonProperties> = ({children, ...props}) => {
+interface ButtonProps extends RectButtonProperties {
+    biggerText?: boolean;
+}
+
+const Button: React.FC<ButtonProps> = ({children, ...props}) => {
     return (
         <Container {...props}>
             <Content>{children}</Content>

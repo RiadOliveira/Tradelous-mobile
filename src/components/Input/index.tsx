@@ -1,4 +1,4 @@
-import {useField} from '@unform/core';
+import { useField } from '@unform/core';
 import React, {
     useCallback,
     useEffect,
@@ -7,8 +7,8 @@ import React, {
     useImperativeHandle,
     forwardRef,
 } from 'react';
-import {TextInputProps} from 'react-native';
-import {Container, Content, Icon} from './styles';
+import { TextInputProps } from 'react-native';
+import { Container, Content, Icon } from './styles';
 
 interface InputProps extends TextInputProps {
     name: string;
@@ -20,16 +20,17 @@ interface InputRef {
 }
 
 const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
-    {...props},
+    { name, icon, ...props },
     ref,
 ) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
 
-    const {fieldName, defaultValue, registerField} = useField(props.name);
+    const { fieldName, defaultValue, registerField } = useField(name);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inputRef = useRef<any>(null);
-    const inputValueRef = useRef({value: defaultValue});
+    const inputValueRef = useRef({ value: defaultValue });
 
     const handleFocus = useCallback(() => {
         setIsSelected(true);
@@ -64,7 +65,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             },
             setValue(value) {
                 inputValueRef.current.value = value;
-                inputRef.current.setNativeProps({text: value});
+                inputRef.current.setNativeProps({ text: value });
             },
         });
     }, [fieldName, registerField]);
@@ -74,13 +75,13 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             <Icon
                 color={isFilled ? '#374b92' : '#000000'}
                 size={24}
-                name={props.icon}
+                name={icon}
             />
             <Content
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                placeholder={props.name}
-                onChangeText={(value) => {
+                placeholder={props.placeholder}
+                onChangeText={value => {
                     inputValueRef.current.value = value;
                     handleTextChanging(value);
                 }}
