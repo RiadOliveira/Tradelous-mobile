@@ -16,6 +16,13 @@ import { FormHandles } from '@unform/core';
 import { TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import * as yup from 'yup';
+import getValidationErrors from '../../utils/getValidationErrors';
+
+interface SignInFormData {
+    email: string;
+    password: string;
+}
 
 const SignIn: React.FC = () => {
     const navigation = useNavigation();
@@ -23,8 +30,24 @@ const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const passwordInput = useRef<TextInput>(null);
 
-    const handleSubmit = useCallback(data => {
-        console.log(data);
+    const handleSubmit = useCallback(async (data: SignInFormData) => {
+        try {
+            const schema = yup.object().shape({
+                email: yup
+                    .string()
+                    .required('E-mail obrigatório')
+                    .email('Formato de e-mail incorreto'),
+                password: yup.string().required('Senha obrigatória'),
+            });
+
+            await schema.validate(data, {
+                abortEarly: false,
+            });
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                getValidationErrors(err);
+            }
+        }
     }, []);
 
     return (

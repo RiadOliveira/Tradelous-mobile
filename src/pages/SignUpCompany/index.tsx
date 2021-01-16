@@ -141,7 +141,7 @@ const SignUpCompany: React.FC = () => {
                     />
 
                     <PickerView>
-                        <PickerText>Selecione o estado:</PickerText>
+                        <PickerText>Selecione o Estado:</PickerText>
                         <Picker
                             selectedValue={selectedState}
                             style={{
