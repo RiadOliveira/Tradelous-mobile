@@ -9,10 +9,7 @@ export const Container = styled.View`
     align-items: center;
 `;
 
-export const LogoView = styled.View`
-    margin-top: 90px;
-    margin-bottom: 80px;
-`;
+export const LogoView = styled.View``;
 
 export const LogoImage = styled.Image`
     width: 200px;
@@ -31,7 +28,7 @@ export const ForgotPasswordText = styled.Text`
 
 export const SignUp = styled.TouchableOpacity`
     position: absolute;
-    bottom: 50px;
+    bottom: 35px;
 `;
 
 export const SignUpText = styled.Text`

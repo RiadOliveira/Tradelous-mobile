@@ -12,7 +12,6 @@ export const Container = styled.View`
 
 export const LogoView = styled.View`
     position: absolute;
-    top: 100px;
 `;
 
 export const LogoImage = styled.Image`

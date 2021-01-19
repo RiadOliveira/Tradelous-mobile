@@ -11,9 +11,11 @@ import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Switch } from 'react-native';
+import { TextInput, Switch, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('screen');
 
 const SignUp: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
@@ -43,11 +45,17 @@ const SignUp: React.FC = () => {
     );
 
     return (
-        <ScrollView
-            contentContainerStyle={{ flex: 1 }}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Container>
+        <Container>
+            <ScrollView
+                contentContainerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width,
+                    paddingBottom: 20,
+                }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
                 <LogoView>
                     <LogoImage source={TestLogo} />
                 </LogoView>
@@ -129,8 +137,8 @@ const SignUp: React.FC = () => {
                 >
                     Criar conta
                 </Button>
-            </Container>
-        </ScrollView>
+            </ScrollView>
+        </Container>
     );
 };
 

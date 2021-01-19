@@ -13,11 +13,12 @@ import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput } from 'react-native';
+import { TextInput, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
+const { height } = Dimensions.get('screen');
 
 interface SignInFormData {
     email: string;
@@ -43,20 +44,35 @@ const SignIn: React.FC = () => {
             await schema.validate(data, {
                 abortEarly: false,
             });
+
+            //Add api
         } catch (err) {
             if (err instanceof yup.ValidationError) {
-                getValidationErrors(err);
+                const validationErrors = getValidationErrors(err);
+
+                formRef.current?.setErrors(validationErrors);
             }
+
+            Alert.alert(
+                'Problema inesperado',
+                'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente',
+            );
         }
     }, []);
 
     return (
         <ScrollView
             contentContainerStyle={{ flex: 1 }}
+            style={{ flex: 1 }}
             keyboardShouldPersistTaps="handled"
         >
             <Container>
-                <LogoView>
+                <LogoView
+                    style={{
+                        marginBottom: height / 10,
+                        marginTop: height / 10,
+                    }}
+                >
                     <LogoImage source={TestLogo} />
                 </LogoView>
 
@@ -94,6 +110,7 @@ const SignIn: React.FC = () => {
                     onPress={() => {
                         navigation.navigate('PasswordRecovery');
                     }}
+                    activeOpacity={0.5}
                 >
                     <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
                 </ForgotPassword>
@@ -110,6 +127,7 @@ const SignIn: React.FC = () => {
                     onPress={() => {
                         navigation.navigate('SignUp');
                     }}
+                    activeOpacity={0.5}
                 >
                     <SignUpText>
                         Ainda não possui uma conta? Crie-a agora

@@ -6,7 +6,9 @@ import TestLogo from '../../../assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Text } from 'react-native';
+import { Text, Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('screen');
 
 const PasswordRecovery: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
@@ -21,7 +23,7 @@ const PasswordRecovery: React.FC = () => {
             keyboardShouldPersistTaps="handled"
         >
             <Container>
-                <LogoView>
+                <LogoView style={{ top: height / 10 }}>
                     <LogoImage source={TestLogo} />
                 </LogoView>
 

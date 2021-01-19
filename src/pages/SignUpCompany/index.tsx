@@ -8,7 +8,7 @@ import React, {
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
-import api from '../api';
+import api from '../../services/api';
 
 import {
     Container,
@@ -21,11 +21,12 @@ import {
 } from './styles';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text } from 'react-native';
+import { TextInput, Text, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+const { width } = Dimensions.get('screen');
 
 interface BrazilianState {
     nome: string;
@@ -84,11 +85,17 @@ const SignUpCompany: React.FC = () => {
     }, []);
 
     return (
-        <ScrollView
-            contentContainerStyle={{ flex: 1 }}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Container>
+        <Container>
+            <ScrollView
+                contentContainerStyle={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width,
+                    paddingBottom: 20,
+                }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
                 <LogoView>
                     <LogoImage source={TestLogo} />
                 </LogoView>
@@ -193,8 +200,8 @@ const SignUpCompany: React.FC = () => {
                         Registrar{'\n'}empresa
                     </Text>
                 </Button>
-            </Container>
-        </ScrollView>
+            </ScrollView>
+        </Container>
     );
 };
 
