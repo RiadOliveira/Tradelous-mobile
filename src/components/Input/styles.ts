@@ -4,6 +4,7 @@ import icon from 'react-native-vector-icons/MaterialIcons';
 interface InputProps {
     isSelected: boolean;
     isFilled: boolean;
+    isErrored: boolean;
 }
 
 export const Container = styled.View<InputProps>`
@@ -17,17 +18,17 @@ export const Container = styled.View<InputProps>`
     padding: 1.8px;
 
     ${props =>
-        props.isSelected &&
-        css`
-            border: 1.8px solid #1c274e;
-            padding: 0;
-        `}
+        props.isSelected || props.isFilled
+            ? css`
+                  border: 1.8px solid #1c274e;
+                  padding: 0;
+              `
+            : null}
 
     ${props =>
-        props.isFilled &&
+        props.isErrored &&
         css`
-            border: 1.8px solid #1c274e;
-            padding: 0;
+            border: 1.8px solid #c02a2a;
         `}
 `;
 

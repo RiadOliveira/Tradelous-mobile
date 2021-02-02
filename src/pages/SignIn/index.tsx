@@ -18,6 +18,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
+import { useAuth } from '../../hooks/auth';
 const { height } = Dimensions.get('screen');
 
 interface SignInFormData {
@@ -27,6 +28,7 @@ interface SignInFormData {
 
 const SignIn: React.FC = () => {
     const navigation = useNavigation();
+    const { signIn } = useAuth();
 
     const formRef = useRef<FormHandles>(null);
     const passwordInput = useRef<TextInput>(null);
@@ -38,24 +40,38 @@ const SignIn: React.FC = () => {
                     .string()
                     .required('E-mail obrigatório')
                     .email('Formato de e-mail incorreto'),
-                password: yup.string().required('Senha obrigatória'),
+                password: yup
+                    .string()
+                    .required('Senha obrigatória')
+                    .min(8, 'Senha de no mínimo 8 caracteres'),
             });
 
             await schema.validate(data, {
                 abortEarly: false,
             });
 
-            //Add api
+            const { token } = await signIn(data);
+
+            //navigation.navigate('Dashboard', { token });
         } catch (err) {
             if (err instanceof yup.ValidationError) {
                 const validationErrors = getValidationErrors(err);
 
+                const validationKeys = Object.keys(validationErrors);
+
                 formRef.current?.setErrors(validationErrors);
+
+                Alert.alert(
+                    'Problema na validação',
+                    `${validationErrors[validationKeys[0]]}.`,
+                );
+
+                return;
             }
 
             Alert.alert(
                 'Problema inesperado',
-                'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente',
+                'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
             );
         }
     }, []);

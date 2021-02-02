@@ -25,8 +25,13 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
 ) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
+    const [isErrored, setIsErrored] = useState(false);
 
-    const { fieldName, defaultValue, registerField } = useField(name);
+    const { fieldName, defaultValue, registerField, error } = useField(name);
+
+    useEffect(() => {
+        setIsErrored(!!error);
+    }, [error]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inputRef = useRef<any>(null);
@@ -71,7 +76,11 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     }, [fieldName, registerField]);
 
     return (
-        <Container isSelected={isSelected} isFilled={isFilled}>
+        <Container
+            isSelected={isSelected}
+            isFilled={isFilled}
+            isErrored={isErrored}
+        >
             <Icon
                 color={isFilled ? '#374b92' : '#000000'}
                 size={24}
