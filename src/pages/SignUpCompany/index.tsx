@@ -5,11 +5,6 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import TestLogo from '../../../assets/Logo/Test-logo.png';
-import api from '../../services/api';
-
 import {
     Container,
     LogoView,
@@ -19,18 +14,39 @@ import {
     ImagePicker,
     ImageHighlight,
 } from './styles';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+import TestLogo from '../../../assets/Logo/Test-logo.png';
+import api from '../../services/api';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text, Dimensions } from 'react-native';
+import { TextInput, Text, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAuth } from '../../hooks/auth';
+import { useNavigation } from '@react-navigation/native';
+import * as yup from 'yup';
+import getValidationErrors from '../../utils/getValidationErrors';
 const { width } = Dimensions.get('screen');
 
 interface BrazilianState {
     nome: string;
     sigla: string;
+}
+
+interface CompanyData {
+    companyName: string;
+    cnpj: string;
+    companyCity: string;
+}
+
+interface ImageData {
+    name: string;
+    type: string;
+    uri: string;
 }
 
 const SignUpCompany: React.FC = () => {
@@ -39,7 +55,13 @@ const SignUpCompany: React.FC = () => {
     const cityInput = useRef<TextInput>(null);
     const stateInput = useRef<TextInput>(null);
 
-    const [selectedImage, setSelectedImage] = useState('');
+    const navigation = useNavigation();
+
+    const { user } = useAuth();
+
+    const [selectedImage, setSelectedImage] = useState<ImageData>(
+        {} as ImageData,
+    );
 
     const [selectedState, setSelectedState] = useState('');
     const [allStates, setAllStates] = useState<BrazilianState[]>([]);
@@ -67,9 +89,71 @@ const SignUpCompany: React.FC = () => {
         [allStates],
     );
 
-    const handleSubmit = useCallback(data => {
-        console.log(data);
-    }, []);
+    const handleSubmit = useCallback(
+        async (data: CompanyData) => {
+            try {
+                const schema = yup.object().shape({
+                    companyName: yup
+                        .string()
+                        .required('Nome da empresa obrigatório'),
+                    companyCity: yup
+                        .string()
+                        .required('Cidade da empresa obrigatório'),
+                    cnpj: yup
+                        .string()
+                        .required('CNPJ obrigatório')
+                        .min(14, 'O tamanho mínimo do cnpj é de 14 dígitos'),
+                });
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                const companyData = new FormData();
+
+                companyData.append('name', data.companyName);
+                companyData.append(
+                    'adress',
+                    `${data.companyCity}/${selectedState}`,
+                );
+                companyData.append('cnpj', data.cnpj);
+                companyData.append('adminID', user.id);
+
+                if (selectedImage.uri) {
+                    companyData.append('logo', {
+                        uri: selectedImage.uri,
+                        name: `${data.companyName}-${user.id}`,
+                        type: selectedImage.type,
+                    });
+                }
+
+                await api.post('/company/register', companyData);
+
+                navigation.navigate('Dashboard');
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
+
+                    const validationKeys = Object.keys(validationErrors);
+
+                    formRef.current?.setErrors(validationErrors);
+
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
+
+                Alert.alert(
+                    'Problema inesperado',
+                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
+                );
+            }
+        },
+        [selectedState, user, selectedImage, navigation],
+    );
 
     const handleUploadImage = useCallback(() => {
         launchImageLibrary(
@@ -77,8 +161,12 @@ const SignUpCompany: React.FC = () => {
                 mediaType: 'photo',
             },
             ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri) {
-                    setSelectedImage(uri);
+                if (!didCancel && uri && fileName && type) {
+                    setSelectedImage({
+                        name: fileName,
+                        type,
+                        uri,
+                    });
                 }
             },
         );
@@ -122,7 +210,7 @@ const SignUpCompany: React.FC = () => {
 
                     <Input
                         autoCorrect={false}
-                        keyboardType="numbers-and-punctuation"
+                        keyboardType="number-pad"
                         ref={cnpjInput}
                         name="cnpj"
                         placeholder="CNPJ"
@@ -163,7 +251,7 @@ const SignUpCompany: React.FC = () => {
                                 <Picker.Item
                                     key={state.nome}
                                     label={state.sigla}
-                                    value={state.nome}
+                                    value={state.sigla}
                                 />
                             ))}
                         </Picker>
@@ -172,12 +260,12 @@ const SignUpCompany: React.FC = () => {
                     <ImagePicker
                         onPress={handleUploadImage}
                         activeOpacity={0.5}
-                        selectedImage={selectedImage}
+                        selectedImage={selectedImage.uri}
                     >
-                        {selectedImage ? (
+                        {selectedImage.uri ? (
                             <ImageHighlight
                                 source={{
-                                    uri: `${selectedImage}`,
+                                    uri: `${selectedImage.uri}`,
                                 }}
                             />
                         ) : (

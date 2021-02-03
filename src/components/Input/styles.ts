@@ -18,18 +18,18 @@ export const Container = styled.View<InputProps>`
     padding: 1.8px;
 
     ${props =>
-        props.isSelected || props.isFilled
+        props.isErrored &&
+        css`
+            border: 1.8px solid #c02a2a;
+        `}
+
+    ${props =>
+        (props.isSelected || props.isFilled) && !props.isErrored
             ? css`
                   border: 1.8px solid #1c274e;
                   padding: 0;
               `
             : null}
-
-    ${props =>
-        props.isErrored &&
-        css`
-            border: 1.8px solid #c02a2a;
-        `}
 `;
 
 export const Content = styled.TextInput`

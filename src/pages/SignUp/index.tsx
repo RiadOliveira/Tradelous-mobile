@@ -11,11 +11,22 @@ import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Switch, Dimensions } from 'react-native';
+import { TextInput, Switch, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import getValidationErrors from '../../utils/getValidationErrors';
+import * as yup from 'yup';
+import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 
 const { width } = Dimensions.get('screen');
+
+interface SignUpData {
+    email: string;
+    password: string;
+    name: string;
+    confirmPassword: string;
+}
 
 const SignUp: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
@@ -25,6 +36,8 @@ const SignUp: React.FC = () => {
 
     const navigation = useNavigation();
 
+    const { signIn } = useAuth();
+
     const [switchValue, setSwitchValue] = useState(false);
 
     const handleSwitchChange = useCallback(() => {
@@ -32,16 +45,64 @@ const SignUp: React.FC = () => {
     }, []);
 
     const handleSubmit = useCallback(
-        data => {
-            console.log(data);
+        async (data: SignUpData) => {
+            try {
+                const schema = yup.object().shape({
+                    name: yup.string().required('Nome obrigatório'),
+                    email: yup
+                        .string()
+                        .required('E-mail obrigatório')
+                        .email('Formato de e-mail incorreto'),
+                    password: yup
+                        .string()
+                        .required('Senha obrigatória')
+                        .min(8, 'Senha de no mínimo 8 caracteres'),
+                    confirmPassword: yup
+                        .string()
+                        .required('Confirmação de senha obrigatória')
+                        .oneOf(
+                            [yup.ref('password')],
+                            'As senhas inseridas não são iguais',
+                        ),
+                });
 
-            if (switchValue) {
-                navigation.navigate('SignUpCompany');
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.post('/user/signUp', {
+                    ...data,
+                    isAdmin: switchValue,
+                });
+
+                if (switchValue) {
+                    navigation.navigate('SignUpCompany');
+                }
+
+                await signIn(data);
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
+
+                    const validationKeys = Object.keys(validationErrors);
+
+                    formRef.current?.setErrors(validationErrors);
+
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
+
+                Alert.alert(
+                    'Problema inesperado',
+                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
+                );
             }
-
-            //navigation.navigate('Dashboard');
         },
-        [navigation, switchValue],
+        [navigation, switchValue, signIn],
     );
 
     return (
@@ -104,17 +165,14 @@ const SignUp: React.FC = () => {
                     />
 
                     <Input
-                        returnKeyType="send"
+                        returnKeyType="next"
                         autoCapitalize="none"
                         textContentType="password"
                         secureTextEntry
-                        name="passwordConfirm"
+                        name="confirmPassword"
                         placeholder="Confirmar senha"
                         icon="lock-outline"
                         ref={confirmPasswordInput}
-                        onSubmitEditing={() => {
-                            formRef.current?.submitForm();
-                        }}
                     />
 
                     <SwitchField>

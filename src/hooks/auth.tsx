@@ -18,14 +18,14 @@ interface AuthProps {
     token: string;
 }
 
-interface AuthContextData extends AuthProps {
-    signIn(data: SignInData): Promise<AuthProps>;
-    signOut(): Promise<void>;
-}
-
 interface SignInData {
     email: string;
     password: string;
+}
+
+interface AuthContextData extends AuthProps {
+    signIn(data: SignInData): Promise<void>;
+    signOut(): Promise<void>;
 }
 
 const authContext = createContext<AuthContextData>({} as AuthContextData);
@@ -64,8 +64,6 @@ const AuthContext: React.FC = ({ children }) => {
         ]);
 
         setAuthData(response.data);
-
-        return response.data;
     }, []);
 
     const signOut = useCallback(async () => {
@@ -88,6 +86,7 @@ const AuthContext: React.FC = ({ children }) => {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const useAuth = () => useContext(authContext);
 
 export { AuthContext, useAuth };
