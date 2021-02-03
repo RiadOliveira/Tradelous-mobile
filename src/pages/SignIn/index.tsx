@@ -8,17 +8,21 @@ import {
     SignUp,
     SignUpText,
 } from './styles';
+
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import TestLogo from '../../../assets/Logo/Test-logo.png';
+import getValidationErrors from '../../utils/getValidationErrors';
+
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import * as yup from 'yup';
-import getValidationErrors from '../../utils/getValidationErrors';
 import { useAuth } from '../../hooks/auth';
+import { TextInput, Dimensions, Alert } from 'react-native';
+
+import * as yup from 'yup';
+
 const { height } = Dimensions.get('screen');
 
 interface SignInFormData {
@@ -33,48 +37,49 @@ const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const passwordInput = useRef<TextInput>(null);
 
-    const handleSubmit = useCallback(async (data: SignInFormData) => {
-        try {
-            const schema = yup.object().shape({
-                email: yup
-                    .string()
-                    .required('E-mail obrigatório')
-                    .email('Formato de e-mail incorreto'),
-                password: yup
-                    .string()
-                    .required('Senha obrigatória')
-                    .min(8, 'Senha de no mínimo 8 caracteres'),
-            });
+    const handleSubmit = useCallback(
+        async (data: SignInFormData) => {
+            try {
+                const schema = yup.object().shape({
+                    email: yup
+                        .string()
+                        .required('E-mail obrigatório')
+                        .email('Formato de e-mail incorreto'),
+                    password: yup
+                        .string()
+                        .required('Senha obrigatória')
+                        .min(8, 'Senha de no mínimo 8 caracteres'),
+                });
 
-            await schema.validate(data, {
-                abortEarly: false,
-            });
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
 
-            const { token } = await signIn(data);
+                await signIn(data);
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
 
-            //navigation.navigate('Dashboard', { token });
-        } catch (err) {
-            if (err instanceof yup.ValidationError) {
-                const validationErrors = getValidationErrors(err);
+                    const validationKeys = Object.keys(validationErrors);
 
-                const validationKeys = Object.keys(validationErrors);
+                    formRef.current?.setErrors(validationErrors);
 
-                formRef.current?.setErrors(validationErrors);
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
 
                 Alert.alert(
-                    'Problema na validação',
-                    `${validationErrors[validationKeys[0]]}.`,
+                    'Problema inesperado',
+                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
                 );
-
-                return;
             }
-
-            Alert.alert(
-                'Problema inesperado',
-                'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
-            );
-        }
-    }, []);
+        },
+        [signIn],
+    );
 
     return (
         <ScrollView

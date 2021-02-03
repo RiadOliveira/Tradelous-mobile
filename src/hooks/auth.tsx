@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useState, useContext } from 'react';
+import React, {
+    createContext,
+    useCallback,
+    useState,
+    useContext,
+    useEffect,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
 
@@ -27,10 +33,28 @@ const authContext = createContext<AuthContextData>({} as AuthContextData);
 const AuthContext: React.FC = ({ children }) => {
     const [authData, setAuthData] = useState<AuthProps>({} as AuthProps);
 
+    useEffect(() => {
+        async function fetchStorage() {
+            const [user, token] = await AsyncStorage.multiGet([
+                '@Tradelous-user',
+                '@Tradelous-token',
+            ]);
+
+            if (user[1] && token[1]) {
+                setAuthData({
+                    user: JSON.parse(user[1]),
+                    token: token[1],
+                });
+            }
+        }
+
+        fetchStorage();
+    }, []);
+
     const signIn = useCallback(async (data: SignInData) => {
         const response = await api.post<AuthProps>('/user/sessions', data);
 
-        const [, token] = response.data.token;
+        const token = response.data.token;
 
         api.defaults.headers.authorization = token;
 
