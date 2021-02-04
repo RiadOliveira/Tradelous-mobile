@@ -9,6 +9,7 @@ export const Container = styled.View`
     flex: 1;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 `;
 
 export const LogoView = styled.View`

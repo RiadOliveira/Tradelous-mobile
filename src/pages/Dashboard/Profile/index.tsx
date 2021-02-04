@@ -1,31 +1,77 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
     Container,
     ProfileImage,
     SignOutButton,
     SignOutButtonText,
-    ProfileImageContainer,
+    ImagePicker,
 } from './styles';
-import { ScrollView, TextInput } from 'react-native';
+import { Dimensions, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import Input from '../../../components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import Button from '../../../components/Button';
+import api from '../../../services/api';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { launchImageLibrary } from 'react-native-image-picker/src';
+
+const { width } = Dimensions.get('screen');
+
+interface UpdateProfileData {
+    name: string;
+    email: string;
+    password?: string;
+    confirmPassword?: string;
+}
+
+interface ImageData {
+    name: string;
+    type: string;
+    uri: string;
+}
 
 const Profile: React.FC = () => {
     const { signOut } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
-    const passwordInput = useRef<TextInput>(null);
+    const oldPasswordInput = useRef<TextInput>(null);
+    const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
+
+    const [selectedImage, setSelectedImage] = useState<ImageData>(
+        {} as ImageData,
+    );
 
     const { user } = useAuth();
 
-    const handleSubmit = useCallback(() => {}, []);
+    const handleSubmit = useCallback(async (data: UpdateProfileData) => {
+        await api.patch('/user/update', data); //Need to be created on API
+    }, []);
+
+    const handleUploadImage = useCallback(() => {
+        launchImageLibrary(
+            {
+                mediaType: 'photo',
+            },
+            ({ fileName, uri, type, didCancel }) => {
+                if (!didCancel && uri && fileName && type) {
+                    setSelectedImage({
+                        name: fileName,
+                        type,
+                        uri,
+                    });
+                }
+            },
+        );
+    }, []);
 
     return (
         <ScrollView
-            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={{
+                width,
+            }}
+            showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
             <Container>
@@ -37,14 +83,21 @@ const Profile: React.FC = () => {
                     <SignOutButtonText>Sair</SignOutButtonText>
                 </SignOutButton>
 
-                <ProfileImageContainer activeOpacity={0.5}>
-                    <ProfileImage
-                        source={{
-                            uri:
-                                'https://upload.wikimedia.org/wikipedia/en/2/21/Web_of_Spider-Man_Vol_1_129-1.png',
-                        }}
-                    />
-                </ProfileImageContainer>
+                <ImagePicker
+                    onPress={handleUploadImage}
+                    activeOpacity={0.5}
+                    selectedImage={selectedImage.uri}
+                >
+                    {selectedImage.uri ? (
+                        <ProfileImage
+                            source={{
+                                uri: selectedImage.uri,
+                            }}
+                        />
+                    ) : (
+                        <Icon name="person" size={170} color="#1c274e" />
+                    )}
+                </ImagePicker>
 
                 <Form
                     ref={formRef}
@@ -74,7 +127,7 @@ const Profile: React.FC = () => {
                         placeholder="E-mail"
                         icon="mail-outline"
                         onSubmitEditing={() => {
-                            passwordInput.current?.focus();
+                            oldPasswordInput.current?.focus();
                         }}
                         returnKeyType="next"
                     />
@@ -84,10 +137,24 @@ const Profile: React.FC = () => {
                         autoCapitalize="none"
                         textContentType="password"
                         secureTextEntry
-                        name="password"
-                        placeholder="Senha"
+                        name="oldPassword"
+                        placeholder="Senha antiga"
                         icon="lock-outline"
-                        ref={passwordInput}
+                        ref={oldPasswordInput}
+                        onSubmitEditing={() => {
+                            newPasswordInput.current?.focus();
+                        }}
+                    />
+
+                    <Input
+                        returnKeyType="next"
+                        autoCapitalize="none"
+                        textContentType="password"
+                        secureTextEntry
+                        name="newPassword"
+                        placeholder="Nova senha"
+                        icon="lock-outline"
+                        ref={newPasswordInput}
                         onSubmitEditing={() => {
                             confirmPasswordInput.current?.focus();
                         }}
@@ -102,8 +169,20 @@ const Profile: React.FC = () => {
                         placeholder="Confirmar senha"
                         icon="lock-outline"
                         ref={confirmPasswordInput}
+                        onSubmitEditing={() => {
+                            formRef.current?.submitForm();
+                        }}
                     />
                 </Form>
+
+                <Button
+                    biggerText
+                    onPress={() => {
+                        formRef.current?.submitForm();
+                    }}
+                >
+                    Atualizar dados
+                </Button>
             </Container>
         </ScrollView>
     );

@@ -180,7 +180,6 @@ const SignUpCompany: React.FC = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     width,
-                    paddingBottom: 20,
                 }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
@@ -266,7 +265,7 @@ const SignUpCompany: React.FC = () => {
                         {selectedImage.uri ? (
                             <ImageHighlight
                                 source={{
-                                    uri: `${selectedImage.uri}`,
+                                    uri: selectedImage.uri,
                                 }}
                             />
                         ) : (

@@ -1,11 +1,16 @@
 import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
+interface ImagePickerProps {
+    selectedImage: string;
+}
+
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 `;
 
 export const SignOutButton = styled(RectButton)`
@@ -17,7 +22,7 @@ export const SignOutButton = styled(RectButton)`
     justify-content: center;
     align-items: center;
     margin-top: -20px;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 `;
 
 export const SignOutButtonText = styled.Text`
@@ -27,8 +32,14 @@ export const SignOutButtonText = styled.Text`
     margin-top: 20px;
 `;
 
-export const ProfileImageContainer = styled.TouchableOpacity`
-    margin-bottom: 60px;
+export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`
+    background-color: #d8d8d8;
+    border-radius: 100px;
+    margin-bottom: 40px;
+    justify-content: center;
+    align-items: center;
+    padding: ${props => (!!props.selectedImage ? '0px' : '10px')};
+    border: 1px solid #1c274e;
 `;
 
 export const ProfileImage = styled.Image`

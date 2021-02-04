@@ -15,6 +15,7 @@ interface AuthProps {
         name: string;
         isAdmin: boolean;
         email: string;
+        avatar: string;
     };
     token: string;
 }

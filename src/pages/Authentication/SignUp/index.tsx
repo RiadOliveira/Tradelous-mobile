@@ -112,7 +112,6 @@ const SignUp: React.FC = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     width,
-                    paddingBottom: 20,
                 }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
