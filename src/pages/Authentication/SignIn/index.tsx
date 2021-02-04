@@ -9,16 +9,16 @@ import {
     SignUpText,
 } from './styles';
 
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import TestLogo from '../../../assets/Logo/Test-logo.png';
-import getValidationErrors from '../../utils/getValidationErrors';
+import Input from '../../../components/Input';
+import Button from '../../../components/Button';
+import TestLogo from '../../../../assets/Logo/Test-logo.png';
+import getValidationErrors from '../../../utils/getValidationErrors';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../hooks/auth';
+import { useAuth } from '../../../hooks/auth';
 import { TextInput, Dimensions, Alert } from 'react-native';
 
 import * as yup from 'yup';

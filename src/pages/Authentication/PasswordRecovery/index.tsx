@@ -1,8 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 import { Container, LogoView, LogoImage } from './styles';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import TestLogo from '../../../assets/Logo/Test-logo.png';
+import Input from '../../../components/Input';
+import Button from '../../../components/Button';
+import TestLogo from '../../../../assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { ScrollView } from 'react-native-gesture-handler';

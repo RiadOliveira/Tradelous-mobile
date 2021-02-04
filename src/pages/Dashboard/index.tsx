@@ -1,30 +1,54 @@
 import React from 'react';
-import { Container } from './styles';
-import { ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Button from '../../components/Button';
-import { useAuth } from '../../hooks/auth';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Products from './Products';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Profile from './Profile';
+
+const Tab = createBottomTabNavigator();
 
 const Dashboard: React.FC = () => {
-    const navigation = useNavigation();
-    const { signOut } = useAuth();
-
     return (
-        <ScrollView
-            contentContainerStyle={{ flex: 1 }}
-            style={{ flex: 1 }}
-            keyboardShouldPersistTaps="handled"
+        <Tab.Navigator
+            tabBarOptions={{
+                labelStyle: {
+                    fontFamily: 'Poppins-SemiBold',
+                    fontSize: 10,
+                    color: 'black',
+                },
+                allowFontScaling: true,
+                style: {
+                    borderTopColor: '#4058af',
+                    borderTopWidth: 1,
+                },
+            }}
         >
-            <Container>
-                <Button
-                    onPress={() => {
-                        signOut();
-                    }}
-                >
-                    Sair
-                </Button>
-            </Container>
-        </ScrollView>
+            <Tab.Screen
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <Icon
+                            name="inventory"
+                            size={22}
+                            color={focused ? '#1c274e' : '#4058af'}
+                        />
+                    ),
+                }}
+                name="Estoque"
+                component={Products}
+            />
+            <Tab.Screen
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <Icon
+                            name="person"
+                            size={22}
+                            color={focused ? '#1c274e' : '#4058af'}
+                        />
+                    ),
+                }}
+                name="Perfil"
+                component={Profile}
+            />
+        </Tab.Navigator>
     );
 };
 

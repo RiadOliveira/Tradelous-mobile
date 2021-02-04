@@ -14,6 +14,7 @@ interface AuthProps {
         companyId: string;
         name: string;
         isAdmin: boolean;
+        email: string;
     };
     token: string;
 }
