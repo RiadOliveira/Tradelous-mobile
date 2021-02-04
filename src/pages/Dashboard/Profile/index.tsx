@@ -46,7 +46,7 @@ const Profile: React.FC = () => {
     const { user } = useAuth();
 
     const handleSubmit = useCallback(async (data: UpdateProfileData) => {
-        await api.patch('/user/update', data); //Need to be created on API
+        await api.put('/user/update', data); //Need to be created on API (Remember validations)
     }, []);
 
     const handleUploadImage = useCallback(() => {
