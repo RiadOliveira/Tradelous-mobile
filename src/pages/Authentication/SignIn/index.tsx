@@ -74,7 +74,7 @@ const SignIn: React.FC = () => {
 
                 Alert.alert(
                     'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
+                    'Ocorreu algum problema, por favor, tente logar-se novamente.',
                 );
             }
         },

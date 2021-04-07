@@ -6,7 +6,7 @@ import {
     SignOutButtonText,
     ImagePicker,
 } from './styles';
-import { Dimensions, ScrollView, TextInput } from 'react-native';
+import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import Input from '../../../components/Input';
 import { FormHandles } from '@unform/core';
@@ -14,7 +14,9 @@ import { Form } from '@unform/mobile';
 import Button from '../../../components/Button';
 import api from '../../../services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
+import getValidationErrors from '../../../utils/getValidationErrors';
 
 const { width } = Dimensions.get('screen');
 
@@ -25,12 +27,6 @@ interface UpdateProfileData {
     confirmPassword?: string;
 }
 
-interface ImageData {
-    name: string;
-    type: string;
-    uri: string;
-}
-
 const Profile: React.FC = () => {
     const { signOut } = useAuth();
     const formRef = useRef<FormHandles>(null);
@@ -39,15 +35,71 @@ const Profile: React.FC = () => {
     const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
 
-    const [selectedImage, setSelectedImage] = useState<ImageData>(
-        {} as ImageData,
-    );
-
     const { user } = useAuth();
 
-    const handleSubmit = useCallback(async (data: UpdateProfileData) => {
-        await api.put('/user/update', data); //Need to be created on API (Remember validations)
-    }, []);
+    const [selectedImage, setSelectedImage] = useState(() =>
+        user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : '',
+    );
+
+    const handleSubmit = useCallback(
+        async (userData: UpdateProfileData) => {
+            try {
+                const data = new FormData();
+
+                const userDataKeys = Object.keys(userData);
+                const userDataValues = Object.values(userData);
+
+                userDataKeys.forEach((key, index) => {
+                    if (userDataValues[index]) {
+                        data.append(key, userDataValues[index]);
+                    }
+                });
+
+                if (selectedImage) {
+                    data.append('avatar', {
+                        name: `${user.id}.jpg`,
+                        type: 'image/jpg',
+                        uri: selectedImage,
+                    });
+                }
+
+                const schema = yup.object().shape({
+                    //Needs to validate the other fileds
+                    email: yup
+                        .string()
+                        .required('E-mail obrigatório')
+                        .email('Formato de e-mail incorreto'),
+                });
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.put('/user/update', data);
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
+
+                    const validationKeys = Object.keys(validationErrors);
+
+                    formRef.current?.setErrors(validationErrors);
+
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
+
+                Alert.alert(
+                    'Problema inesperado',
+                    'Ocorreu algum problema, por favor, tente novamente.',
+                );
+            }
+        },
+        [selectedImage, user.id],
+    );
 
     const handleUploadImage = useCallback(() => {
         launchImageLibrary(
@@ -56,11 +108,7 @@ const Profile: React.FC = () => {
             },
             ({ fileName, uri, type, didCancel }) => {
                 if (!didCancel && uri && fileName && type) {
-                    setSelectedImage({
-                        name: fileName,
-                        type,
-                        uri,
-                    });
+                    setSelectedImage(uri);
                 }
             },
         );
@@ -86,12 +134,12 @@ const Profile: React.FC = () => {
                 <ImagePicker
                     onPress={handleUploadImage}
                     activeOpacity={0.5}
-                    selectedImage={selectedImage.uri}
+                    selectedImage={selectedImage}
                 >
-                    {selectedImage.uri ? (
+                    {selectedImage ? (
                         <ProfileImage
                             source={{
-                                uri: selectedImage.uri,
+                                uri: selectedImage,
                             }}
                         />
                     ) : (

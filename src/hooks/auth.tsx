@@ -47,6 +47,8 @@ const AuthContext: React.FC = ({ children }) => {
                     user: JSON.parse(user[1]),
                     token: token[1],
                 });
+
+                api.defaults.headers.authorization = `Bearer ${token[1]}`;
             }
         }
 
@@ -58,7 +60,7 @@ const AuthContext: React.FC = ({ children }) => {
 
         const token = response.data.token;
 
-        api.defaults.headers.authorization = token;
+        api.defaults.headers.authorization = `Bearer ${token}`;
 
         await AsyncStorage.multiSet([
             ['@Tradelous-user', JSON.stringify(response.data.user)],
@@ -70,6 +72,7 @@ const AuthContext: React.FC = ({ children }) => {
 
     const signOut = useCallback(async () => {
         await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
+        api.defaults.headers.authorization = undefined;
 
         setAuthData({} as AuthProps);
     }, []);
