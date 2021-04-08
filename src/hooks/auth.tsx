@@ -8,25 +8,27 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
 
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string;
+    password?: string;
+    companyId: string;
+    isAdmin: boolean;
+}
+
 interface AuthProps {
-    user: {
-        id: string;
-        companyId: string;
-        name: string;
-        isAdmin: boolean;
-        email: string;
-        avatar: string;
-    };
+    user: UserData;
     token: string;
 }
 
-interface SignInData {
-    email: string;
-    password: string;
-}
+type SignInData = Pick<UserData, 'email' | 'password'>;
+type UpdateUserData = Pick<UserData, 'name' | 'email' | 'password' | 'avatar'>;
 
 interface AuthContextData extends AuthProps {
     signIn(data: SignInData): Promise<void>;
+    updateUser(userData: UpdateUserData): Promise<void>;
     signOut(): Promise<void>;
 }
 
@@ -70,6 +72,34 @@ const AuthContext: React.FC = ({ children }) => {
         setAuthData(response.data);
     }, []);
 
+    const updateUser = useCallback(async userData => {
+        const data = new FormData();
+
+        const userDataKeys = Object.keys(userData);
+        const userDataValues = Object.values(userData);
+
+        userDataKeys.forEach((key, index) => {
+            if (userDataValues[index]) {
+                data.append(key, userDataValues[index]);
+            }
+        });
+
+        if (userData.avatar) {
+            data.append('avatar', {
+                name: `${authData.user.id}.jpg`,
+                type: 'image/jpg',
+                uri: userData.avatar,
+            });
+        }
+
+        const updatedUser = await api.put('/user/update', data);
+
+        setAuthData(actualData => ({
+            user: updatedUser.data,
+            token: actualData.token,
+        }));
+    }, []);
+
     const signOut = useCallback(async () => {
         await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
         api.defaults.headers.authorization = undefined;
@@ -84,6 +114,7 @@ const AuthContext: React.FC = ({ children }) => {
                 token: authData.token,
                 signIn,
                 signOut,
+                updateUser,
             }}
         >
             {children}

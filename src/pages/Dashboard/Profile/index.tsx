@@ -6,7 +6,13 @@ import {
     SignOutButtonText,
     ImagePicker,
 } from './styles';
-import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
+import {
+    Alert,
+    Dimensions,
+    Keyboard,
+    ScrollView,
+    TextInput,
+} from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import Input from '../../../components/Input';
 import { FormHandles } from '@unform/core';
@@ -23,18 +29,18 @@ const { width } = Dimensions.get('screen');
 interface UpdateProfileData {
     name: string;
     email: string;
-    password?: string;
+    oldPassword?: string;
+    newPassword?: string;
     confirmPassword?: string;
 }
 
 const Profile: React.FC = () => {
-    const { signOut } = useAuth();
+    const { signOut, updateUser } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const oldPasswordInput = useRef<TextInput>(null);
     const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
-
     const { user } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState(() =>
@@ -44,38 +50,43 @@ const Profile: React.FC = () => {
     const handleSubmit = useCallback(
         async (userData: UpdateProfileData) => {
             try {
-                const data = new FormData();
-
-                const userDataKeys = Object.keys(userData);
-                const userDataValues = Object.values(userData);
-
-                userDataKeys.forEach((key, index) => {
-                    if (userDataValues[index]) {
-                        data.append(key, userDataValues[index]);
-                    }
-                });
-
-                if (selectedImage) {
-                    data.append('avatar', {
-                        name: `${user.id}.jpg`,
-                        type: 'image/jpg',
-                        uri: selectedImage,
-                    });
-                }
-
                 const schema = yup.object().shape({
-                    //Needs to validate the other fileds
+                    name: yup.string().required('Nome obrigatório'),
                     email: yup
                         .string()
                         .required('E-mail obrigatório')
                         .email('Formato de e-mail incorreto'),
+                    newPassword: yup.string().optional(),
+                    confirmPassword: yup.string().when('newPassword', {
+                        is: (value: string) => !!value,
+                        then: yup
+                            .string()
+                            .required('Confirmação de senha obrigatória')
+                            .oneOf(
+                                [yup.ref('newPassword'), null],
+                                'As senhas precisam ser iguais',
+                            )
+                            .min(6, 'Senha de, no mínimo, 6 caracteres'),
+                        otherwise: yup.string(),
+                    }),
                 });
 
-                await schema.validate(data, {
+                await schema.validate(userData, {
                     abortEarly: false,
                 });
 
-                await api.put('/user/update', data);
+                await updateUser({ ...userData, avatar: selectedImage });
+
+                if (userData.newPassword) {
+                    formRef.current?.clearField('oldPassword');
+                    formRef.current?.clearField('newPassword');
+                    formRef.current?.clearField('confirmPassword');
+                }
+
+                Alert.alert(
+                    'Operação concluída!',
+                    'A alteração dos dados efetuada com sucesso.',
+                );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -98,7 +109,7 @@ const Profile: React.FC = () => {
                 );
             }
         },
-        [selectedImage, user.id],
+        [selectedImage, updateUser],
     );
 
     const handleUploadImage = useCallback(() => {

@@ -48,7 +48,7 @@ const SignIn: React.FC = () => {
                     password: yup
                         .string()
                         .required('Senha obrigatória')
-                        .min(8, 'Senha de no mínimo 8 caracteres'),
+                        .min(6, 'Senha de no mínimo 6 caracteres'),
                 });
 
                 await schema.validate(data, {

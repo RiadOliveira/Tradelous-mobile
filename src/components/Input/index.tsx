@@ -71,6 +71,8 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             clearValue() {
                 inputValueRef.current.value = '';
                 inputRef.current.clear();
+                setIsFilled(false);
+                setIsErrored(false);
             },
             setValue(value) {
                 inputValueRef.current.value = value;
@@ -78,6 +80,10 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             },
         });
     }, [fieldName, registerField]);
+
+    useEffect(() => {
+        handleTextChanging(inputValueRef.current.value);
+    }, [inputValueRef.current.value, handleTextChanging]);
 
     return (
         <Container
