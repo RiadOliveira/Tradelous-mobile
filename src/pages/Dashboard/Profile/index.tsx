@@ -6,13 +6,7 @@ import {
     SignOutButtonText,
     ImagePicker,
 } from './styles';
-import {
-    Alert,
-    Dimensions,
-    Keyboard,
-    ScrollView,
-    TextInput,
-} from 'react-native';
+import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import Input from '../../../components/Input';
 import { FormHandles } from '@unform/core';
