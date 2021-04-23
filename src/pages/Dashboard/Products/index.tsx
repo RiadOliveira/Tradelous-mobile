@@ -28,7 +28,7 @@ const Products: React.FC = () => {
     const { user } = useAuth();
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
 
-    //const [searchedText, setSearchedText] = useState('');
+    const [searchedText, setSearchedText] = useState('');
     const [isSearchFilled, setIsSearchFilled] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
@@ -65,6 +65,18 @@ const Products: React.FC = () => {
         setIsSearchFocused(value => !value);
     }, []);
 
+    const handleProductSearch = useCallback(searchText => {
+        setSearchedText(searchText);
+    }, []);
+
+    const searchedProducts = useMemo(
+        () =>
+            companyProducts.filter(product =>
+                product.name.toLowerCase().includes(searchedText.toLowerCase()),
+            ),
+        [searchedText, companyProducts],
+    );
+
     return user.companyId ? (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -88,6 +100,7 @@ const Products: React.FC = () => {
                     <SearchBar
                         onChangeText={event => {
                             handleChangeSearch(event);
+                            handleProductSearch(event);
                         }}
                         onFocus={() => {
                             handleSearchFocus();
@@ -102,7 +115,7 @@ const Products: React.FC = () => {
                 </SearchBarContainer>
 
                 {companyProducts ? (
-                    companyProducts.map((product, index) => (
+                    searchedProducts.map((product, index) => (
                         <ProductContainer key={product.id}>
                             <ProductImageContainer hasImage={!!product.image}>
                                 {product.image ? (
@@ -127,7 +140,12 @@ const Products: React.FC = () => {
                                 </ProductPriceText>
                             </ProductData>
 
-                            <ProductText style={{ marginLeft: '9%' }}>
+                            <ProductText
+                                style={{
+                                    position: 'absolute',
+                                    right: 20,
+                                }}
+                            >
                                 {product.brand}
                             </ProductText>
                         </ProductContainer>

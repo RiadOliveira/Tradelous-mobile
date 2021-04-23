@@ -28,6 +28,7 @@ export const SearchBarContainer = styled.View<SearchInputProps>`
     flex-direction: row;
     padding: 1.8px;
     margin-top: 30px;
+    margin-bottom: 30px;
 
     border: ${props => (props.isFocused ? '1.5px solid #1c274e' : 'none')};
 `;
@@ -51,7 +52,7 @@ export const ProductContainer = styled(RectButton)`
     border-radius: 15px;
     background-color: #5170e0;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 `;
 
 export const ProductImageContainer = styled.View<ProductImageContainerProps>`
