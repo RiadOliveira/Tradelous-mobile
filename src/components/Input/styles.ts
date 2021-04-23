@@ -9,7 +9,7 @@ interface InputProps {
 
 export const Container = styled.View<InputProps>`
     background-color: #ffffff;
-    width: 300px;
+    width: 75%;
     height: 60px;
     align-items: center;
     border-radius: 5px;
@@ -20,13 +20,13 @@ export const Container = styled.View<InputProps>`
     ${props =>
         props.isErrored &&
         css`
-            border: 1.8px solid #c02a2a;
+            border: 1.5px solid #c02a2a;
         `}
 
     ${props =>
-        (props.isSelected || props.isFilled) && !props.isErrored
+        props.isSelected && !props.isErrored
             ? css`
-                  border: 1.8px solid #1c274e;
+                  border: 1.5px solid #1c274e;
                   padding: 0;
               `
             : null}

@@ -38,7 +38,9 @@ const Profile: React.FC = () => {
     const { user } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState(() =>
-        user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}` : '',
+        user.avatar
+            ? `${api.defaults.baseURL}/files/avatar/${user.avatar}`
+            : '',
     );
 
     const handleSubmit = useCallback(
