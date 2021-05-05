@@ -11,6 +11,10 @@ interface ProductImageContainerProps {
     hasImage: boolean;
 }
 
+interface ProductAvailabilityProps {
+    hasInStock: boolean;
+}
+
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -40,9 +44,31 @@ export const SearchBar = styled.TextInput`
     margin-top: 5px;
 `;
 
+export const ReturnButton = styled.TouchableOpacity`
+    position: absolute;
+    top: 4%;
+    left: 4%;
+    padding: 2px 0px;
+    width: 48px;
+    height: 48px;
+`;
+
+export const FlashButton = styled.TouchableOpacity`
+    position: absolute;
+    top: 4%;
+    right: 6%;
+    padding: 2px 0px;
+    width: 48px;
+    height: 48px;
+`;
+
 export const Icon = styled(icon)`
     margin-left: 10px;
     margin-right: 10px;
+`;
+
+export const BarCodeButton = styled.TouchableOpacity`
+    padding: 7px 0px;
 `;
 
 export const ProductContainer = styled(RectButton)`
@@ -91,4 +117,13 @@ export const ProductPriceText = styled.Text`
     font-family: Poppins-Regular;
     color: #ffffff;
     font-size: 10px;
+`;
+
+export const ProductAvailabilityText = styled.Text<ProductAvailabilityProps>`
+    font-family: Poppins-Regular;
+    color: #ffffff;
+    font-size: 12px;
+    margin-bottom: -3px;
+
+    color: ${props => (props.hasInStock ? '#68e043' : '#ba1818')};
 `;

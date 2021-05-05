@@ -60,5 +60,7 @@
 		<string>Poppins-SemiBold.ttf</string>
         <string>MaterialIcons</string>
 	</array>
+    <key>NSCameraUsageDescription</key>
+    <string>LaunchCamera</string>
 </dict>
 </plist>

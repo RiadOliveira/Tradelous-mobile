@@ -1,17 +1,29 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import {
     Container,
     Icon,
+    ReturnButton,
+    FlashButton,
     SearchBarContainer,
     SearchBar,
+    BarCodeButton,
     ProductContainer,
     ProductImageContainer,
     ProductImage,
     ProductData,
     ProductText,
     ProductPriceText,
+    ProductAvailabilityText,
 } from './styles';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, BackHandler } from 'react-native';
+import { RNCamera } from 'react-native-camera';
+import BarcodeMask from 'react-native-barcode-mask';
 import { useAuth } from '../../../hooks/auth';
 import api from '../../../services/api';
 
@@ -19,6 +31,7 @@ interface IProduct {
     name: string;
     id: string;
     price: number;
+    quantity: number;
     brand: string;
     qrcode?: string;
     image?: string;
@@ -26,11 +39,16 @@ interface IProduct {
 
 const Products: React.FC = () => {
     const { user } = useAuth();
+    const camera = useRef<RNCamera>(null);
+
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
 
     const [searchedText, setSearchedText] = useState('');
     const [isSearchFilled, setIsSearchFilled] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+    const [isCameraVisible, setIsCameraVisible] = useState(false);
+    const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
     useEffect(() => {
         if (user.companyId) {
@@ -77,7 +95,66 @@ const Products: React.FC = () => {
         [searchedText, companyProducts],
     );
 
-    return user.companyId ? (
+    const handleCameraVisibility = useCallback(() => {
+        setIsCameraVisible(true);
+
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            setIsCameraVisible(false);
+
+            BackHandler.removeEventListener('hardwareBackPress', () => null);
+
+            return null;
+        });
+    }, []);
+
+    const handleCameraFlash = useCallback(() => {
+        setIsFlashEnabled(flashValue => !flashValue);
+    }, []);
+
+    return isCameraVisible ? (
+        <>
+            <RNCamera
+                ref={camera}
+                captureAudio={false}
+                style={{ flex: 1 }}
+                onBarCodeRead={event => {
+                    //It needs to create a external function to handle barCode read.
+                    console.log(event.data);
+                    setIsCameraVisible(false);
+                }}
+                flashMode={isFlashEnabled ? 'torch' : 'off'}
+            >
+                <BarcodeMask
+                    animatedLineColor="#49b454"
+                    animatedLineWidth={'95%'}
+                    lineAnimationDuration={2500}
+                    height="25%"
+                    width="80%"
+                />
+            </RNCamera>
+            <ReturnButton
+                activeOpacity={0.4}
+                onPress={() => {
+                    setIsCameraVisible(false);
+                }}
+            >
+                <Icon name="arrow-back" size={32} color="#ffffff" />
+            </ReturnButton>
+
+            <FlashButton
+                activeOpacity={0.4}
+                onPress={() => {
+                    handleCameraFlash();
+                }}
+            >
+                {isFlashEnabled ? (
+                    <Icon name="flash-on" size={32} color="#ffffff" />
+                ) : (
+                    <Icon name="flash-off" size={32} color="#ffffff" />
+                )}
+            </FlashButton>
+        </>
+    ) : (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
@@ -111,7 +188,12 @@ const Products: React.FC = () => {
                         placeholder="Pesquisar produto..."
                     />
 
-                    <Icon name="qr-code-scanner" size={24} />
+                    <BarCodeButton
+                        onPress={() => handleCameraVisibility()}
+                        activeOpacity={0.4}
+                    >
+                        <Icon name="qr-code-scanner" size={24} />
+                    </BarCodeButton>
                 </SearchBarContainer>
 
                 {companyProducts ? (
@@ -140,14 +222,22 @@ const Products: React.FC = () => {
                                 </ProductPriceText>
                             </ProductData>
 
-                            <ProductText
+                            <ProductData
                                 style={{
                                     position: 'absolute',
                                     right: 20,
+                                    alignItems: 'flex-end',
                                 }}
                             >
-                                {product.brand}
-                            </ProductText>
+                                <ProductText>{product.brand}</ProductText>
+                                <ProductAvailabilityText
+                                    hasInStock={product.quantity > 0}
+                                >
+                                    {product.quantity > 0
+                                        ? 'Em estoque'
+                                        : 'Em falta'}
+                                </ProductAvailabilityText>
+                            </ProductData>
                         </ProductContainer>
                     ))
                 ) : (
@@ -155,8 +245,6 @@ const Products: React.FC = () => {
                 )}
             </Container>
         </ScrollView>
-    ) : (
-        <Container></Container>
     );
 };
 
