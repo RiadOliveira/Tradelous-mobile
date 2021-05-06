@@ -1,15 +1,7 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Container,
     Icon,
-    ReturnButton,
-    FlashButton,
     SearchBarContainer,
     SearchBar,
     BarCodeButton,
@@ -21,11 +13,11 @@ import {
     ProductPriceText,
     ProductAvailabilityText,
 } from './styles';
-import { ScrollView, View, BackHandler } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import BarcodeMask from 'react-native-barcode-mask';
+import { ScrollView, View } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
+import { useCamera } from '../../../hooks/camera';
 import api from '../../../services/api';
+import Camera from '../../../components/Camera';
 
 interface IProduct {
     name: string;
@@ -39,16 +31,13 @@ interface IProduct {
 
 const Products: React.FC = () => {
     const { user } = useAuth();
-    const camera = useRef<RNCamera>(null);
+    const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
 
     const [searchedText, setSearchedText] = useState('');
     const [isSearchFilled, setIsSearchFilled] = useState(false);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
-
-    const [isCameraVisible, setIsCameraVisible] = useState(false);
-    const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
     useEffect(() => {
         if (user.companyId) {
@@ -95,65 +84,8 @@ const Products: React.FC = () => {
         [searchedText, companyProducts],
     );
 
-    const handleCameraVisibility = useCallback(() => {
-        setIsCameraVisible(true);
-
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            setIsCameraVisible(false);
-
-            BackHandler.removeEventListener('hardwareBackPress', () => null);
-
-            return null;
-        });
-    }, []);
-
-    const handleCameraFlash = useCallback(() => {
-        setIsFlashEnabled(flashValue => !flashValue);
-    }, []);
-
     return isCameraVisible ? (
-        <>
-            <RNCamera
-                ref={camera}
-                captureAudio={false}
-                style={{ flex: 1 }}
-                onBarCodeRead={event => {
-                    //It needs to create a external function to handle barCode read.
-                    console.log(event.data);
-                    setIsCameraVisible(false);
-                }}
-                flashMode={isFlashEnabled ? 'torch' : 'off'}
-            >
-                <BarcodeMask
-                    animatedLineColor="#49b454"
-                    animatedLineWidth={'95%'}
-                    lineAnimationDuration={2500}
-                    height="25%"
-                    width="80%"
-                />
-            </RNCamera>
-            <ReturnButton
-                activeOpacity={0.4}
-                onPress={() => {
-                    setIsCameraVisible(false);
-                }}
-            >
-                <Icon name="arrow-back" size={32} color="#ffffff" />
-            </ReturnButton>
-
-            <FlashButton
-                activeOpacity={0.4}
-                onPress={() => {
-                    handleCameraFlash();
-                }}
-            >
-                {isFlashEnabled ? (
-                    <Icon name="flash-on" size={32} color="#ffffff" />
-                ) : (
-                    <Icon name="flash-off" size={32} color="#ffffff" />
-                )}
-            </FlashButton>
-        </>
+        <Camera />
     ) : (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -189,7 +121,7 @@ const Products: React.FC = () => {
                     />
 
                     <BarCodeButton
-                        onPress={() => handleCameraVisibility()}
+                        onPress={() => handleCameraVisibility(true)}
                         activeOpacity={0.4}
                     >
                         <Icon name="qr-code-scanner" size={24} />

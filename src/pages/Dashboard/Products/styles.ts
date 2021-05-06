@@ -44,24 +44,6 @@ export const SearchBar = styled.TextInput`
     margin-top: 5px;
 `;
 
-export const ReturnButton = styled.TouchableOpacity`
-    position: absolute;
-    top: 4%;
-    left: 4%;
-    padding: 2px 0px;
-    width: 48px;
-    height: 48px;
-`;
-
-export const FlashButton = styled.TouchableOpacity`
-    position: absolute;
-    top: 4%;
-    right: 6%;
-    padding: 2px 0px;
-    width: 48px;
-    height: 48px;
-`;
-
 export const Icon = styled(icon)`
     margin-left: 10px;
     margin-right: 10px;
