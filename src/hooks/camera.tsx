@@ -3,9 +3,7 @@ import { BackHandler } from 'react-native';
 
 interface CameraContextInterface {
     isCameraVisible: boolean;
-    isFlashEnabled: boolean;
     handleCameraVisibility(visibility: boolean): void;
-    handleCameraFlash(): void;
 }
 
 const cameraContext = createContext<CameraContextInterface>(
@@ -14,7 +12,6 @@ const cameraContext = createContext<CameraContextInterface>(
 
 const CameraContext: React.FC = ({ children }) => {
     const [isCameraVisible, setIsCameraVisible] = useState(false);
-    const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
     const handleCameraVisibility = useCallback(visibility => {
         if (!visibility) {
@@ -38,17 +35,11 @@ const CameraContext: React.FC = ({ children }) => {
         });
     }, []);
 
-    const handleCameraFlash = useCallback(() => {
-        setIsFlashEnabled(flashValue => !flashValue);
-    }, []);
-
     return (
         <cameraContext.Provider
             value={{
                 isCameraVisible,
-                isFlashEnabled,
                 handleCameraVisibility,
-                handleCameraFlash,
             }}
         >
             {children}

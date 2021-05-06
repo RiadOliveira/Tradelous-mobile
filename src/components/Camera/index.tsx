@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import BarcodeMask from 'react-native-barcode-mask';
 import { RNCamera } from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -6,11 +6,13 @@ import { useCamera } from '../../hooks/camera';
 import { ReturnButton, FlashButton } from './styles';
 
 const Camera: React.FC = ({ ...props }) => {
-    const {
-        isFlashEnabled,
-        handleCameraVisibility,
-        handleCameraFlash,
-    } = useCamera();
+    const { handleCameraVisibility } = useCamera();
+
+    const [isFlashEnabled, setIsFlashEnabled] = useState(false);
+
+    const handleCameraFlash = useCallback(() => {
+        setIsFlashEnabled(flashValue => !flashValue);
+    }, []);
 
     return (
         <>
