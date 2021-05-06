@@ -1,8 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Products from './Products';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Profile from './Profile';
+import RegisterProduct from './RegisterProduct';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useCamera } from '../../hooks/camera';
 
 const Tab = createBottomTabNavigator();
@@ -38,6 +39,19 @@ const Dashboard: React.FC = () => {
                 }}
                 name="Estoque"
                 component={Products}
+            />
+            <Tab.Screen
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <Icon
+                            name="add"
+                            size={30}
+                            color={focused ? '#1c274e' : '#4058af'}
+                        />
+                    ),
+                }}
+                name="Cadastrar produto"
+                component={RegisterProduct}
             />
             <Tab.Screen
                 options={{

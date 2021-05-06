@@ -12,12 +12,17 @@ import {
     ProductText,
     ProductPriceText,
     ProductAvailabilityText,
+    NoProductsContainer,
+    NoProductsText,
 } from './styles';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import { useCamera } from '../../../hooks/camera';
 import api from '../../../services/api';
 import Camera from '../../../components/Camera';
+import ProductDescription from '../ProductDescription';
+import Button from '../../../components/Button';
+import { useNavigation } from '@react-navigation/native';
 
 interface IProduct {
     name: string;
@@ -25,15 +30,19 @@ interface IProduct {
     price: number;
     quantity: number;
     brand: string;
-    qrcode?: string;
+    barCode?: string;
     image?: string;
 }
 
 const Products: React.FC = () => {
     const { user } = useAuth();
     const { isCameraVisible, handleCameraVisibility } = useCamera();
+    const navigation = useNavigation();
 
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
+    const [selectedProductIndex, setSelectedProductIndex] = useState<
+        number | undefined
+    >(undefined);
 
     const [searchedText, setSearchedText] = useState('');
     const [isSearchFilled, setIsSearchFilled] = useState(false);
@@ -84,98 +93,158 @@ const Products: React.FC = () => {
         [searchedText, companyProducts],
     );
 
+    const handleBarCodeRead = useCallback(
+        barCode =>
+            setSelectedProductIndex(() => {
+                const findedProduct = companyProducts.findIndex(
+                    product => product.barCode == barCode,
+                );
+
+                if (findedProduct == -1) {
+                    Alert.alert(
+                        'Código de barras inválido',
+                        'Não foi encontrado nenhum produto com o código escaneado.',
+                    );
+                }
+
+                return findedProduct != -1 ? findedProduct : undefined;
+            }),
+        [companyProducts],
+    );
+
+    const handleProductSelection = useCallback(
+        id =>
+            setSelectedProductIndex(() => {
+                const findedProduct = companyProducts.findIndex(
+                    product => product.id == id,
+                );
+
+                return findedProduct != -1 ? findedProduct : undefined;
+            }),
+        [companyProducts],
+    );
+
     return isCameraVisible ? (
-        <Camera />
+        <Camera
+            onBarCodeRead={event => {
+                handleBarCodeRead(event.data);
+            }}
+        />
     ) : (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            <Container>
-                <SearchBarContainer
-                    isFocused={isSearchFocused}
-                    isFilled={isSearchFilled}
-                >
-                    <Icon
-                        name="search"
-                        size={24}
-                        color={
-                            isSearchFocused || isSearchFilled
-                                ? '#374b92'
-                                : 'black'
-                        }
-                    />
-                    <SearchBar
-                        onChangeText={event => {
-                            handleChangeSearch(event);
-                            handleProductSearch(event);
-                        }}
-                        onFocus={() => {
-                            handleSearchFocus();
-                        }}
-                        onBlur={() => {
-                            handleSearchFocus();
-                        }}
-                        placeholder="Pesquisar produto..."
-                    />
-
-                    <BarCodeButton
-                        onPress={() => handleCameraVisibility(true)}
-                        activeOpacity={0.4}
-                    >
-                        <Icon name="qr-code-scanner" size={24} />
-                    </BarCodeButton>
-                </SearchBarContainer>
-
-                {companyProducts ? (
-                    searchedProducts.map((product, index) => (
-                        <ProductContainer key={product.id}>
-                            <ProductImageContainer hasImage={!!product.image}>
-                                {product.image ? (
-                                    <ProductImage
-                                        source={{
-                                            uri: `${apiStaticUrl}/${product.image}`,
-                                        }}
-                                    />
-                                ) : (
-                                    <Icon
-                                        name="local-offer"
-                                        size={44}
-                                        color="#ffffff"
-                                    />
-                                )}
-                            </ProductImageContainer>
-
-                            <ProductData>
-                                <ProductText>{product.name}</ProductText>
-                                <ProductPriceText>
-                                    {formattedPrices[index]}
-                                </ProductPriceText>
-                            </ProductData>
-
-                            <ProductData
-                                style={{
-                                    position: 'absolute',
-                                    right: 20,
-                                    alignItems: 'flex-end',
-                                }}
+            {!selectedProductIndex ? (
+                <Container>
+                    {companyProducts.length > 0 ? (
+                        <>
+                            <SearchBarContainer
+                                isFocused={isSearchFocused}
+                                isFilled={isSearchFilled}
                             >
-                                <ProductText>{product.brand}</ProductText>
-                                <ProductAvailabilityText
-                                    hasInStock={product.quantity > 0}
+                                <Icon
+                                    name="search"
+                                    size={24}
+                                    color={
+                                        isSearchFocused || isSearchFilled
+                                            ? '#374b92'
+                                            : 'black'
+                                    }
+                                />
+                                <SearchBar
+                                    onChangeText={event => {
+                                        handleChangeSearch(event);
+                                        handleProductSearch(event);
+                                    }}
+                                    onFocus={() => {
+                                        handleSearchFocus();
+                                    }}
+                                    onBlur={() => {
+                                        handleSearchFocus();
+                                    }}
+                                    placeholder="Pesquisar produto..."
+                                />
+
+                                <BarCodeButton
+                                    onPress={() => handleCameraVisibility(true)}
+                                    activeOpacity={0.4}
                                 >
-                                    {product.quantity > 0
-                                        ? 'Em estoque'
-                                        : 'Em falta'}
-                                </ProductAvailabilityText>
-                            </ProductData>
-                        </ProductContainer>
-                    ))
-                ) : (
-                    <View></View>
-                )}
-            </Container>
+                                    <Icon name="qr-code-scanner" size={24} />
+                                </BarCodeButton>
+                            </SearchBarContainer>
+
+                            {searchedProducts.map((product, index) => (
+                                <ProductContainer
+                                    onPress={() => {
+                                        handleProductSelection(product.id);
+                                    }}
+                                    key={product.id}
+                                >
+                                    <ProductImageContainer
+                                        hasImage={!!product.image}
+                                    >
+                                        {product.image ? (
+                                            <ProductImage
+                                                source={{
+                                                    uri: `${apiStaticUrl}/${product.image}`,
+                                                }}
+                                            />
+                                        ) : (
+                                            <Icon
+                                                name="local-offer"
+                                                size={44}
+                                                color="#ffffff"
+                                            />
+                                        )}
+                                    </ProductImageContainer>
+
+                                    <ProductData>
+                                        <ProductText>
+                                            {product.name}
+                                        </ProductText>
+                                        <ProductPriceText>
+                                            {formattedPrices[index]}
+                                        </ProductPriceText>
+                                    </ProductData>
+
+                                    <ProductData
+                                        style={{
+                                            position: 'absolute',
+                                            right: 20,
+                                            alignItems: 'flex-end',
+                                        }}
+                                    >
+                                        <ProductText>
+                                            {product.brand}
+                                        </ProductText>
+                                        <ProductAvailabilityText
+                                            hasInStock={product.quantity > 0}
+                                        >
+                                            {product.quantity > 0
+                                                ? 'Em estoque'
+                                                : 'Em falta'}
+                                        </ProductAvailabilityText>
+                                    </ProductData>
+                                </ProductContainer>
+                            ))}
+                        </>
+                    ) : (
+                        <NoProductsContainer>
+                            {/*Page with message for companies that not have products registered yet.*/}
+                            <Icon name="info" size={100} color="#1c274e" />
+                            <NoProductsText>
+                                Sua empresa ainda não cadastrou nenhum produto,
+                                entre na aba de cadastrar produto para adicionar
+                                o primeiro.
+                            </NoProductsText>
+                        </NoProductsContainer>
+                    )}
+                </Container>
+            ) : (
+                <ProductDescription />
+            )}
         </ScrollView>
     );
 };

@@ -7,7 +7,7 @@ interface ButtonProps {
 
 export const Container = styled(RectButton)<ButtonProps>`
     width: 150px;
-    height: ${props => (props.biggerText ? '60px' : '50px')};
+    height: ${props => (props.biggerText ? '62px' : '50px')};
     justify-content: center;
     align-items: center;
     background-color: #1c274e;
