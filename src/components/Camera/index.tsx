@@ -24,10 +24,12 @@ const Camera: React.FC = ({ ...props }) => {
             >
                 <BarcodeMask
                     animatedLineColor="#49b454"
-                    animatedLineWidth={'95%'}
+                    animatedLineWidth={'2%'}
+                    animatedLineHeight={'100%'}
+                    animatedLineOrientation={'vertical'}
                     lineAnimationDuration={2500}
-                    height="25%"
-                    width="80%"
+                    height={'80%'}
+                    width={'30%'}
                 />
             </RNCamera>
             <ReturnButton
