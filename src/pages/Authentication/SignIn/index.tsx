@@ -150,7 +150,7 @@ const SignIn: React.FC = () => {
                     activeOpacity={0.5}
                 >
                     <SignUpText>
-                        Ainda não possui uma conta? Crie-a agora
+                        Ainda não possui uma conta? Crie-a agora!
                     </SignUpText>
                 </SignUp>
             </Container>

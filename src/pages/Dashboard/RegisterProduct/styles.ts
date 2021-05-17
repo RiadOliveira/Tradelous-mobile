@@ -1,127 +1,65 @@
-import styled, { css } from 'styled-components/native';
-import icon from 'react-native-vector-icons/MaterialIcons';
-import { RectButton } from 'react-native-gesture-handler';
-
-interface SearchInputProps {
-    isFilled: boolean;
-    isFocused: boolean;
-}
-
-interface ProductImageContainerProps {
-    hasImage: boolean;
-}
-
-interface ProductAvailabilityProps {
-    hasInStock: boolean;
-}
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 `;
 
-export const SearchBarContainer = styled.View<SearchInputProps>`
+export const TitleTextContainer = styled.View`
+    margin: 10% 0;
+    background-color: #1c274e;
+    padding: 10px 30px;
+    border-radius: 10px;
+`;
+
+export const TitleText = styled.Text`
+    color: #3680e0;
+    font-family: Poppins-Bold;
+    font-size: 20px;
+`;
+
+export const ImagePicker = styled.TouchableOpacity`
+    width: 100px;
+    height: 100px;
+    background-color: #d8d8d8;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid #1c274e;
+`;
+
+export const ImageHighlight = styled.Image`
+    width: 97.75px;
+    height: 97.75px;
+    border-radius: 20px;
+`;
+
+export const BarCodeScannerContainer = styled.View`
     background-color: #ffffff;
     width: 75%;
     height: 60px;
     align-items: center;
+    justify-content: center;
     border-radius: 5px;
     margin-bottom: 25px;
     flex-direction: row;
     padding: 1.8px;
-    margin-top: 30px;
-    margin-bottom: 30px;
 
-    border: ${props => (props.isFocused ? '1.5px solid #1c274e' : 'none')};
+    position: relative;
 `;
 
-export const SearchBar = styled.TextInput`
+export const BarCodeValue = styled.Text`
     font-family: Poppins-Regular;
     font-size: 15px;
-    flex: 1;
-    margin-top: 5px;
-`;
-
-export const Icon = styled(icon)`
-    margin-left: 10px;
-    margin-right: 10px;
+    color: #8e8e8e;
+    margin-top: 1%;
 `;
 
 export const BarCodeButton = styled.TouchableOpacity`
-    padding: 7px 0px;
-`;
-
-export const ProductContainer = styled(RectButton)`
-    flex-direction: row;
-    width: 75%;
-    height: 64px;
-    border-radius: 15px;
-    background-color: #5170e0;
-    align-items: center;
-    margin-bottom: 12px;
-`;
-
-export const ProductImageContainer = styled.View<ProductImageContainerProps>`
-    height: 100%;
-    justify-content: center;
-    margin-right: 5px;
-    margin-left: 5px;
-
-    ${props =>
-        props.hasImage
-            ? css`
-                  margin-right: 10px;
-                  margin-left: 10px;
-              `
-            : null}
-`;
-
-export const ProductImage = styled.Image`
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-`;
-
-export const ProductData = styled.View`
-    justify-content: center;
-`;
-
-export const ProductText = styled.Text`
-    font-family: Poppins-Regular;
-    color: #ffffff;
-    font-size: 12px;
-    margin-bottom: -3px;
-`;
-
-export const ProductPriceText = styled.Text`
-    font-family: Poppins-Regular;
-    color: #ffffff;
-    font-size: 10px;
-`;
-
-export const ProductAvailabilityText = styled.Text<ProductAvailabilityProps>`
-    font-family: Poppins-Regular;
-    color: #ffffff;
-    font-size: 12px;
-    margin-bottom: -3px;
-
-    color: ${props => (props.hasInStock ? '#68e043' : '#ba1818')};
-`;
-
-export const NoProductsContainer = styled.View`
-    height: 100%;
-    width: 80%;
-    justify-content: center;
-    align-items: center;
-`;
-
-export const NoProductsText = styled.Text`
-    font-family: Poppins-Bold;
-    color: #1c274e;
-    font-size: 16px;
-    text-align: center;
-
-    margin-bottom: 20px;
+    position: absolute;
+    right: 12px;
 `;

@@ -17,7 +17,6 @@ import {
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import TestLogo from '../../../../assets/Logo/Test-logo.png';
-
 import api from '../../../services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -54,7 +53,6 @@ const SignUpCompany: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
-    const stateInput = useRef<TextInput>(null);
 
     const navigation = useNavigation();
 
@@ -89,6 +87,23 @@ const SignUpCompany: React.FC = () => {
             ),
         [allStates],
     );
+
+    const handleUploadImage = useCallback(() => {
+        launchImageLibrary(
+            {
+                mediaType: 'photo',
+            },
+            ({ fileName, uri, type, didCancel }) => {
+                if (!didCancel && uri && fileName && type) {
+                    setSelectedImage({
+                        name: fileName,
+                        type,
+                        uri,
+                    });
+                }
+            },
+        );
+    }, []);
 
     const handleSubmit = useCallback(
         async (data: CompanyData) => {
@@ -156,23 +171,6 @@ const SignUpCompany: React.FC = () => {
         [selectedState, user, selectedImage, navigation],
     );
 
-    const handleUploadImage = useCallback(() => {
-        launchImageLibrary(
-            {
-                mediaType: 'photo',
-            },
-            ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri && fileName && type) {
-                    setSelectedImage({
-                        name: fileName,
-                        type,
-                        uri,
-                    });
-                }
-            },
-        );
-    }, []);
-
     return (
         <Container>
             <ScrollView
@@ -209,11 +207,11 @@ const SignUpCompany: React.FC = () => {
                     />
 
                     <Input
-                        autoCorrect={false}
-                        keyboardType="number-pad"
+                        keyboardType="numeric"
                         ref={cnpjInput}
+                        maxLength={14}
                         name="cnpj"
-                        placeholder="CNPJ"
+                        placeholder="CNPJ (Somente números)"
                         icon="location-city"
                         onSubmitEditing={() => {
                             cityInput.current?.focus();
@@ -229,9 +227,6 @@ const SignUpCompany: React.FC = () => {
                         name="companyCity"
                         placeholder="Cidade"
                         icon="location-city"
-                        onSubmitEditing={() => {
-                            stateInput.current?.focus();
-                        }}
                         returnKeyType="next"
                     />
 
@@ -241,7 +236,7 @@ const SignUpCompany: React.FC = () => {
                             selectedValue={selectedState}
                             style={{
                                 height: 50,
-                                width: 100,
+                                width: '35%',
                             }}
                             onValueChange={itemValue =>
                                 setSelectedState(String(itemValue))
@@ -259,8 +254,7 @@ const SignUpCompany: React.FC = () => {
 
                     <ImagePicker
                         onPress={handleUploadImage}
-                        activeOpacity={0.5}
-                        selectedImage={selectedImage.uri}
+                        activeOpacity={0.7}
                     >
                         {selectedImage.uri ? (
                             <ImageHighlight
@@ -275,18 +269,12 @@ const SignUpCompany: React.FC = () => {
                 </Form>
 
                 <Button
-                    biggerText={true}
+                    biggerText
                     onPress={() => {
                         formRef.current?.submitForm();
                     }}
                 >
-                    <Text
-                        style={{
-                            fontSize: 14,
-                        }}
-                    >
-                        Registrar{'\n'}empresa
-                    </Text>
+                    <Text>Registrar{'\n'}empresa</Text>
                 </Button>
             </ScrollView>
         </Container>

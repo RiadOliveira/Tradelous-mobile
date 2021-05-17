@@ -1,9 +1,5 @@
 import styled from 'styled-components/native';
 
-interface ImagePickerProps {
-    selectedImage: string;
-}
-
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -28,7 +24,7 @@ export const PickerView = styled.View`
     height: 60px;
     align-items: center;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     flex-direction: row;
     justify-content: space-evenly;
     border: 1.8px solid #1c274e;
@@ -40,12 +36,12 @@ export const PickerText = styled.Text`
     margin-top: 5px;
 `;
 
-export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`
+export const ImagePicker = styled.TouchableOpacity`
     width: 100px;
     height: 100px;
     background-color: #d8d8d8;
     border-radius: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     justify-content: center;
     align-items: center;
     border: 1.5px solid #1c274e;

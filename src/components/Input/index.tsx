@@ -92,7 +92,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             isErrored={isErrored}
         >
             <Icon
-                color={isFilled ? '#374b92' : '#000000'}
+                color={isFilled ? '#4058af' : '#000000'}
                 size={24}
                 name={icon}
             />

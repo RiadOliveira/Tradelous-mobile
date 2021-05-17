@@ -3,7 +3,6 @@ import icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
 interface SearchInputProps {
-    isFilled: boolean;
     isFocused: boolean;
 }
 
@@ -28,7 +27,6 @@ export const SearchBarContainer = styled.View<SearchInputProps>`
     height: 60px;
     align-items: center;
     border-radius: 5px;
-    margin-bottom: 25px;
     flex-direction: row;
     padding: 1.8px;
     margin-top: 30px;
@@ -45,8 +43,8 @@ export const SearchBar = styled.TextInput`
 `;
 
 export const Icon = styled(icon)`
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 12px;
+    margin-right: 12px;
 `;
 
 export const BarCodeButton = styled.TouchableOpacity`

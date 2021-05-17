@@ -204,7 +204,7 @@ const Profile: React.FC = () => {
                     <Input
                         returnKeyType="next"
                         autoCapitalize="none"
-                        textContentType="password"
+                        textContentType="newPassword"
                         secureTextEntry
                         name="newPassword"
                         placeholder="Nova senha"
@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
                     <Input
                         returnKeyType="next"
                         autoCapitalize="none"
-                        textContentType="password"
+                        textContentType="newPassword"
                         secureTextEntry
                         name="confirmPassword"
                         placeholder="Confirmar senha"

@@ -16,13 +16,13 @@ import {
     NoProductsText,
 } from './styles';
 import { Alert, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../hooks/auth';
 import { useCamera } from '../../../hooks/camera';
 import api from '../../../services/api';
 import Camera from '../../../components/Camera';
 import ProductDescription from '../ProductDescription';
 import Button from '../../../components/Button';
-import { useNavigation } from '@react-navigation/native';
 
 interface IProduct {
     name: string;
@@ -36,8 +36,8 @@ interface IProduct {
 
 const Products: React.FC = () => {
     const { user } = useAuth();
-    const { isCameraVisible, handleCameraVisibility } = useCamera();
     const navigation = useNavigation();
+    const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
     const [selectedProductIndex, setSelectedProductIndex] = useState<
@@ -138,20 +138,13 @@ const Products: React.FC = () => {
         >
             {!selectedProductIndex ? (
                 <Container>
-                    {companyProducts.length > 0 ? (
+                    {companyProducts.length != 0 ? (
                         <>
-                            <SearchBarContainer
-                                isFocused={isSearchFocused}
-                                isFilled={isSearchFilled}
-                            >
+                            <SearchBarContainer isFocused={isSearchFocused}>
                                 <Icon
                                     name="search"
                                     size={24}
-                                    color={
-                                        isSearchFocused || isSearchFilled
-                                            ? '#374b92'
-                                            : 'black'
-                                    }
+                                    color={isSearchFilled ? '#374b92' : 'black'}
                                 />
                                 <SearchBar
                                     onChangeText={event => {
@@ -235,10 +228,19 @@ const Products: React.FC = () => {
                             {/*Page with message for companies that not have products registered yet.*/}
                             <Icon name="info" size={100} color="#1c274e" />
                             <NoProductsText>
-                                Sua empresa ainda não cadastrou nenhum produto,
-                                entre na aba de cadastrar produto para adicionar
-                                o primeiro.
+                                Parece que sua empresa ainda não cadastrou
+                                nenhum produto, pressione o botão abaixo para
+                                começar agora!
                             </NoProductsText>
+
+                            <Button
+                                biggerText
+                                onPress={() => {
+                                    navigation.navigate('Cadastrar produto');
+                                }}
+                            >
+                                Cadastrar Produto
+                            </Button>
                         </NoProductsContainer>
                     )}
                 </Container>
