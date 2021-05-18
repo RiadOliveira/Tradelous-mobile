@@ -29,6 +29,7 @@ type UpdateUserData = Pick<UserData, 'name' | 'email' | 'password' | 'avatar'>;
 interface AuthContextData extends AuthProps {
     signIn(data: SignInData): Promise<void>;
     updateUser(userData: UpdateUserData): Promise<void>;
+    updateUserCompany(companyId: number): void;
     signOut(): Promise<void>;
 }
 
@@ -59,7 +60,6 @@ const AuthContext: React.FC = ({ children }) => {
 
     const signIn = useCallback(async (data: SignInData) => {
         const response = await api.post<AuthProps>('/user/sessions', data);
-
         const token = response.data.token;
 
         api.defaults.headers.authorization = `Bearer ${token}`;
@@ -103,6 +103,18 @@ const AuthContext: React.FC = ({ children }) => {
         [authData.user],
     );
 
+    const updateUserCompany = useCallback(companyId => {
+        setAuthData(data => {
+            return {
+                ...data,
+                user: {
+                    ...data.user,
+                    companyId,
+                },
+            };
+        });
+    }, []);
+
     const signOut = useCallback(async () => {
         await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
         api.defaults.headers.authorization = undefined;
@@ -118,6 +130,7 @@ const AuthContext: React.FC = ({ children }) => {
                 signIn,
                 signOut,
                 updateUser,
+                updateUserCompany,
             }}
         >
             {children}

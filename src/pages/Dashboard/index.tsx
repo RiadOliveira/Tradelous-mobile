@@ -5,10 +5,12 @@ import Profile from './Profile';
 import RegisterProduct from './RegisterProduct';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useCamera } from '../../hooks/camera';
+import { useAuth } from '../../hooks/auth';
 
 const Tab = createBottomTabNavigator();
 
 const Dashboard: React.FC = () => {
+    const { user } = useAuth();
     const { isCameraVisible } = useCamera();
 
     return (
@@ -27,32 +29,37 @@ const Dashboard: React.FC = () => {
                 },
             }}
         >
-            <Tab.Screen
-                options={{
-                    tabBarIcon: ({ focused }) => (
-                        <Icon
-                            name="inventory"
-                            size={22}
-                            color={focused ? '#1c274e' : '#4058af'}
-                        />
-                    ),
-                }}
-                name="Estoque"
-                component={Products}
-            />
-            <Tab.Screen
-                options={{
-                    tabBarIcon: ({ focused }) => (
-                        <Icon
-                            name="add"
-                            size={30}
-                            color={focused ? '#1c274e' : '#4058af'}
-                        />
-                    ),
-                }}
-                name="Cadastrar produto"
-                component={RegisterProduct}
-            />
+            {user.companyId && (
+                <>
+                    <Tab.Screen
+                        options={{
+                            tabBarIcon: ({ focused }) => (
+                                <Icon
+                                    name="inventory"
+                                    size={22}
+                                    color={focused ? '#1c274e' : '#4058af'}
+                                />
+                            ),
+                        }}
+                        name="Estoque"
+                        component={Products}
+                    />
+                    <Tab.Screen
+                        options={{
+                            tabBarIcon: ({ focused }) => (
+                                <Icon
+                                    name="add"
+                                    size={30}
+                                    color={focused ? '#1c274e' : '#4058af'}
+                                />
+                            ),
+                        }}
+                        name="Cadastrar produto"
+                        component={RegisterProduct}
+                    />
+                </>
+            )}
+
             <Tab.Screen
                 options={{
                     tabBarIcon: ({ focused }) => (

@@ -77,6 +77,11 @@ const SignUp: React.FC = () => {
 
                 if (switchValue) {
                     navigation.navigate('SignUpCompany');
+                } else {
+                    Alert.alert(
+                        'Cadastro efetuado com sucesso!',
+                        'Entre em uma empresa para começar a gerenciar seu estoque.',
+                    );
                 }
 
                 await signIn(data);
@@ -98,7 +103,7 @@ const SignUp: React.FC = () => {
 
                 Alert.alert(
                     'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
+                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
                 );
             }
         },

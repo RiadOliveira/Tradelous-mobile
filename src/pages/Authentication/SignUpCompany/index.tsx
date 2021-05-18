@@ -55,8 +55,7 @@ const SignUpCompany: React.FC = () => {
     const cityInput = useRef<TextInput>(null);
 
     const navigation = useNavigation();
-
-    const { user } = useAuth();
+    const { user, updateUserCompany } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState<ImageData>(
         {} as ImageData,
@@ -143,9 +142,18 @@ const SignUpCompany: React.FC = () => {
                     });
                 }
 
-                await api.post('/company/register', companyData);
+                const {
+                    data: { id },
+                } = await api.post('/company/register', companyData);
+
+                updateUserCompany(id);
 
                 navigation.navigate('Dashboard');
+
+                Alert.alert(
+                    'Cadastro efetuado com sucesso!',
+                    'Realize login para acessar seus dados e de sua empresa.',
+                );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -164,11 +172,11 @@ const SignUpCompany: React.FC = () => {
 
                 Alert.alert(
                     'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente logar-se novamente.',
+                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
                 );
             }
         },
-        [selectedState, user, selectedImage, navigation],
+        [selectedState, user, selectedImage, navigation, updateUserCompany],
     );
 
     return (

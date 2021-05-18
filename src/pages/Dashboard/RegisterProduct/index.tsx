@@ -9,20 +9,24 @@ import {
     BarCodeValue,
     BarCodeButton,
 } from './styles';
-import { ScrollView, TextInput } from 'react-native';
+import { Alert, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '../../../hooks/auth';
 import { useCamera } from '../../../hooks/camera';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/mobile';
+import { launchImageLibrary } from 'react-native-image-picker/src';
+import { useNavigation } from '@react-navigation/native';
+
 import api from '../../../services/api';
 import Camera from '../../../components/Camera';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/mobile';
-import { launchImageLibrary } from 'react-native-image-picker/src';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import * as yup from 'yup';
 
 interface IProduct {
-    name: string;
+    productName: string;
     price: number;
     quantity: number;
     brand: string;
@@ -39,6 +43,7 @@ interface ImageData {
 const RegisterProduct: React.FC = () => {
     const { user } = useAuth();
 
+    const navigation = useNavigation();
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
     const brandInput = useRef<TextInput>(null);
@@ -75,7 +80,75 @@ const RegisterProduct: React.FC = () => {
         );
     }, []);
 
-    const handleSubmit = useCallback(() => {}, []);
+    const handleSubmit = useCallback(
+        async (data: IProduct = { quantity: 0 } as IProduct) => {
+            try {
+                const schema = yup.object().shape({
+                    productName: yup
+                        .string()
+                        .required('Nome do produto obrigatório'),
+                    price: yup
+                        .number()
+                        .required('Preço do produto obrigatório'),
+                    brand: yup
+                        .string()
+                        .required('Marca do produto obrigatória'),
+                    quantity: yup.number().default(0),
+                    barCode: yup.string().optional(),
+                });
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                const productData = new FormData();
+
+                productData.append('name', data.productName);
+                productData.append('price', data.price);
+                productData.append('brand', data.brand);
+                productData.append('quantity', data.quantity);
+
+                if (data.barCode) {
+                    productData.append('barCode', data.barCode);
+                }
+
+                if (selectedImage.uri) {
+                    productData.append('image', {
+                        uri: selectedImage.uri,
+                        name: `${data.productName}-${user.companyId}`,
+                        type: selectedImage.type,
+                    });
+                }
+
+                await api.post('/products/add', productData);
+
+                navigation.navigate('Estoque');
+
+                Alert.alert('Produto adicionado com sucesso!');
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
+
+                    const validationKeys = Object.keys(validationErrors);
+
+                    formRef.current?.setErrors(validationErrors);
+
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
+
+                Alert.alert(
+                    'Problema inesperado',
+                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
+                );
+            }
+        },
+        [selectedImage, user.companyId, navigation],
+    );
 
     return isCameraVisible ? (
         <Camera
@@ -105,7 +178,7 @@ const RegisterProduct: React.FC = () => {
                     <Input
                         autoCorrect={false}
                         autoCapitalize="sentences"
-                        name="name"
+                        name="productName"
                         placeholder="Nome"
                         icon="label-outline"
                         onSubmitEditing={() => {
@@ -115,7 +188,6 @@ const RegisterProduct: React.FC = () => {
                     />
 
                     <Input
-                        autoCorrect={false}
                         keyboardType="numeric"
                         name="price"
                         ref={priceInput}
