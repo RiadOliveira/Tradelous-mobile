@@ -56,6 +56,7 @@ const RegisterProduct: React.FC = () => {
     );
 
     const handleBarCodeRead = useCallback(
+        //Needs to fix bug that inputs are cleaned when camera opens.
         value => {
             setBarCodeValue(value);
             handleCameraVisibility(false);
@@ -81,8 +82,10 @@ const RegisterProduct: React.FC = () => {
     }, []);
 
     const handleSubmit = useCallback(
-        async (data: IProduct = { quantity: 0 } as IProduct) => {
+        async (data: IProduct) => {
             try {
+                data.quantity = data.quantity ? data.quantity : 0;
+
                 const schema = yup.object().shape({
                     productName: yup
                         .string()
@@ -93,7 +96,7 @@ const RegisterProduct: React.FC = () => {
                     brand: yup
                         .string()
                         .required('Marca do produto obrigatória'),
-                    quantity: yup.number().default(0),
+                    quantity: yup.number(),
                     barCode: yup.string().optional(),
                 });
 
@@ -108,8 +111,8 @@ const RegisterProduct: React.FC = () => {
                 productData.append('brand', data.brand);
                 productData.append('quantity', data.quantity);
 
-                if (data.barCode) {
-                    productData.append('barCode', data.barCode);
+                if (barCodeValue) {
+                    productData.append('barCode', barCodeValue);
                 }
 
                 if (selectedImage.uri) {
@@ -122,9 +125,18 @@ const RegisterProduct: React.FC = () => {
 
                 await api.post('/products/add', productData);
 
-                navigation.navigate('Estoque');
+                formRef.current?.reset();
+                setBarCodeValue(0);
+                setSelectedImage({} as ImageData);
 
-                Alert.alert('Produto adicionado com sucesso!');
+                navigation.navigate('Estoque', {
+                    newProduct: data.productName,
+                });
+
+                Alert.alert(
+                    'Produto adicionado com sucesso!',
+                    'O produto foi adicionado ao estoque da empresa.',
+                );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -147,7 +159,7 @@ const RegisterProduct: React.FC = () => {
                 );
             }
         },
-        [selectedImage, user.companyId, navigation],
+        [selectedImage, user.companyId, navigation, barCodeValue],
     );
 
     return isCameraVisible ? (

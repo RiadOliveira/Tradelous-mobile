@@ -16,7 +16,7 @@ import {
     NoProductsText,
 } from './styles';
 import { Alert, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../../../hooks/auth';
 import { useCamera } from '../../../hooks/camera';
 import api from '../../../services/api';
@@ -36,13 +36,14 @@ interface IProduct {
 
 const Products: React.FC = () => {
     const { user } = useAuth();
+    const route = useRoute();
     const navigation = useNavigation();
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
     const [selectedProductIndex, setSelectedProductIndex] = useState<
         number | undefined
-    >(undefined);
+    >(-1);
 
     const [searchedText, setSearchedText] = useState('');
     const [isSearchFilled, setIsSearchFilled] = useState(false);
@@ -54,7 +55,7 @@ const Products: React.FC = () => {
                 setCompanyProducts(response.data);
             });
         }
-    }, [user.companyId]);
+    }, [user.companyId, route.params]);
 
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
@@ -96,6 +97,8 @@ const Products: React.FC = () => {
     const handleBarCodeRead = useCallback(
         barCode =>
             setSelectedProductIndex(() => {
+                handleCameraVisibility(false);
+
                 const findedProduct = companyProducts.findIndex(
                     product => product.barCode == barCode,
                 );
@@ -107,9 +110,9 @@ const Products: React.FC = () => {
                     );
                 }
 
-                return findedProduct != -1 ? findedProduct : undefined;
+                return findedProduct != -1 ? findedProduct : -1;
             }),
-        [companyProducts],
+        [companyProducts, handleCameraVisibility],
     );
 
     const handleProductSelection = useCallback(
@@ -136,7 +139,7 @@ const Products: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            {!selectedProductIndex ? (
+            {selectedProductIndex == -1 ? (
                 <Container>
                     {companyProducts.length != 0 ? (
                         <>
