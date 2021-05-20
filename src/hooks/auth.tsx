@@ -29,14 +29,16 @@ type UpdateUserData = Pick<UserData, 'name' | 'email' | 'password' | 'avatar'>;
 interface AuthContextData extends AuthProps {
     signIn(data: SignInData): Promise<void>;
     updateUser(userData: UpdateUserData): Promise<void>;
-    updateUserCompany(companyId: number): void;
+    updateUserCompany(companyId: number): Promise<void>;
     signOut(): Promise<void>;
+    isReady: boolean;
 }
 
 const authContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthContext: React.FC = ({ children }) => {
     const [authData, setAuthData] = useState<AuthProps>({} as AuthProps);
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         async function fetchStorage() {
@@ -55,7 +57,7 @@ const AuthContext: React.FC = ({ children }) => {
             }
         }
 
-        fetchStorage();
+        fetchStorage().then(() => setIsReady(true));
     }, []);
 
     const signIn = useCallback(async (data: SignInData) => {
@@ -95,6 +97,11 @@ const AuthContext: React.FC = ({ children }) => {
 
             const updatedUser = await api.put('/user/update', data);
 
+            await AsyncStorage.setItem(
+                '@Tradelous-user',
+                JSON.stringify(updatedUser.data),
+            );
+
             setAuthData(actualData => ({
                 user: updatedUser.data,
                 token: actualData.token,
@@ -103,17 +110,25 @@ const AuthContext: React.FC = ({ children }) => {
         [authData.user],
     );
 
-    const updateUserCompany = useCallback(companyId => {
-        setAuthData(data => {
-            return {
-                ...data,
-                user: {
-                    ...data.user,
-                    companyId,
-                },
-            };
-        });
-    }, []);
+    const updateUserCompany = useCallback(
+        async companyId => {
+            await AsyncStorage.setItem(
+                '@Tradelous-user',
+                JSON.stringify({ ...authData.user, companyId }),
+            );
+
+            setAuthData(data => {
+                return {
+                    ...data,
+                    user: {
+                        ...data.user,
+                        companyId,
+                    },
+                };
+            });
+        },
+        [authData.user],
+    );
 
     const signOut = useCallback(async () => {
         await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
@@ -131,6 +146,7 @@ const AuthContext: React.FC = ({ children }) => {
                 signOut,
                 updateUser,
                 updateUserCompany,
+                isReady,
             }}
         >
             {children}

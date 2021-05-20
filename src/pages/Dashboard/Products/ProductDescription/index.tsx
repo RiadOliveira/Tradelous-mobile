@@ -10,22 +10,24 @@ import {
     BarCodeButton,
 } from './styles';
 import { Alert, ScrollView, TextInput } from 'react-native';
-import { useAuth } from '../../../hooks/auth';
-import { useCamera } from '../../../hooks/camera';
+import { useAuth } from '../../../../hooks/auth';
+import { useCamera } from '../../../../hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 
-import api from '../../../services/api';
-import Camera from '../../../components/Camera';
-import Button from '../../../components/Button';
-import Input from '../../../components/Input';
+import api from '../../../../services/api';
+import Camera from '../../../../components/Camera';
+import Button from '../../../../components/Button';
+import Input from '../../../../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import getValidationErrors from '../../../../utils/getValidationErrors';
 import * as yup from 'yup';
+import { useNavigation, useRoute } from '@react-navigation/core';
 
 interface IProduct {
     name: string;
+    id: string;
     price: number;
     quantity: number;
     brand: string;
@@ -39,8 +41,10 @@ interface ImageData {
     uri: string;
 }
 
-const RegisterProduct: React.FC = () => {
+const ProductDescription: React.FC = () => {
     const { user } = useAuth();
+    const navigation = useNavigation();
+    const product = useRoute().params as IProduct;
 
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
@@ -48,16 +52,17 @@ const RegisterProduct: React.FC = () => {
     const quantityInput = useRef<TextInput>(null);
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 
-    const [barCodeValue, setBarCodeValue] = useState(0);
-    const [selectedImage, setSelectedImage] = useState<ImageData>(
-        {} as ImageData,
-    );
-    const [temporaryInputValues, setTemporaryInputValues] = useState(
-        {} as IProduct,
+    const [barCodeValue, setBarCodeValue] = useState(
+        product.barCode ? product.barCode : 0,
     );
 
+    const [selectedImage, setSelectedImage] = useState<ImageData>({
+        uri: product.image
+            ? `${api.defaults.baseURL}/files/productImage/${product.image}`
+            : '',
+    } as ImageData);
+
     const handleCameraOpening = useCallback(() => {
-        setTemporaryInputValues(formRef.current?.getData() as IProduct);
         handleCameraVisibility(true);
     }, [handleCameraVisibility]);
 
@@ -126,16 +131,15 @@ const RegisterProduct: React.FC = () => {
                     });
                 }
 
-                await api.post('/products/add', productData);
+                await api.put(`/products/update/${product.id}`, productData);
 
-                formRef.current?.reset();
-                setSelectedImage({} as ImageData);
-                setBarCodeValue(0);
-                setTemporaryInputValues({} as IProduct);
+                navigation.navigate('ProductsList', {
+                    updatedProduct: product.id,
+                });
 
                 Alert.alert(
-                    'Produto adicionado com sucesso!',
-                    'O produto foi adicionado ao estoque da empresa.',
+                    'Produto atualizado com sucesso!',
+                    'O produto indicado teve seus dados atualizados.',
                 );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
@@ -159,7 +163,7 @@ const RegisterProduct: React.FC = () => {
                 );
             }
         },
-        [selectedImage, user.companyId, barCodeValue],
+        [selectedImage, user.companyId, barCodeValue, navigation, product.id],
     );
 
     return isCameraVisible ? (
@@ -180,7 +184,10 @@ const RegisterProduct: React.FC = () => {
 
                 <Form
                     ref={formRef}
-                    initialData={temporaryInputValues}
+                    initialData={{
+                        ...product,
+                        quantity: product.quantity.toString(),
+                    }}
                     onSubmit={handleSubmit}
                     style={{
                         alignItems: 'center',
@@ -273,11 +280,11 @@ const RegisterProduct: React.FC = () => {
                     biggerText
                     onPress={() => formRef.current?.submitForm()}
                 >
-                    Cadastrar Produto
+                    Atualizar Produto
                 </Button>
             </Container>
         </ScrollView>
     );
 };
 
-export default RegisterProduct;
+export default ProductDescription;
