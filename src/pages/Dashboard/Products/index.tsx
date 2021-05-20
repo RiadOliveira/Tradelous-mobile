@@ -173,9 +173,9 @@ const Products: React.FC = () => {
 
                             {searchedProducts.map((product, index) => (
                                 <ProductContainer
-                                    onPress={() => {
-                                        handleProductSelection(product.id);
-                                    }}
+                                    onPress={() =>
+                                        handleProductSelection(product.id)
+                                    }
                                     key={product.id}
                                 >
                                     <ProductImageContainer
@@ -238,9 +238,9 @@ const Products: React.FC = () => {
 
                             <Button
                                 biggerText
-                                onPress={() => {
-                                    navigation.navigate('Cadastrar produto');
-                                }}
+                                onPress={() =>
+                                    navigation.navigate('Cadastrar produto')
+                                }
                             >
                                 Cadastrar Produto
                             </Button>

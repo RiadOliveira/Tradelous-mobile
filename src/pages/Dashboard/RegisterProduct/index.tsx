@@ -54,9 +54,16 @@ const RegisterProduct: React.FC = () => {
     const [selectedImage, setSelectedImage] = useState<ImageData>(
         {} as ImageData,
     );
+    const [temporaryInputValues, setTemporaryInputValues] = useState(
+        {} as IProduct,
+    );
+
+    const handleCameraOpening = useCallback(() => {
+        setTemporaryInputValues(formRef.current?.getData() as IProduct);
+        handleCameraVisibility(true);
+    }, [handleCameraVisibility]);
 
     const handleBarCodeRead = useCallback(
-        //Needs to fix bug that inputs are cleaned when camera opens.
         value => {
             setBarCodeValue(value);
             handleCameraVisibility(false);
@@ -125,10 +132,6 @@ const RegisterProduct: React.FC = () => {
 
                 await api.post('/products/add', productData);
 
-                formRef.current?.reset();
-                setBarCodeValue(0);
-                setSelectedImage({} as ImageData);
-
                 navigation.navigate('Estoque', {
                     newProduct: data.productName,
                 });
@@ -170,7 +173,6 @@ const RegisterProduct: React.FC = () => {
         />
     ) : (
         <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
@@ -181,6 +183,7 @@ const RegisterProduct: React.FC = () => {
 
                 <Form
                     ref={formRef}
+                    initialData={temporaryInputValues}
                     onSubmit={handleSubmit}
                     style={{
                         alignItems: 'center',
@@ -246,7 +249,7 @@ const RegisterProduct: React.FC = () => {
                         </BarCodeValue>
 
                         <BarCodeButton
-                            onPress={() => handleCameraVisibility(true)}
+                            onPress={() => handleCameraOpening()}
                             activeOpacity={0.4}
                         >
                             <Icon name="qr-code-scanner" size={24} />
@@ -254,7 +257,7 @@ const RegisterProduct: React.FC = () => {
                     </BarCodeScannerContainer>
 
                     <ImagePicker
-                        onPress={handleUploadImage}
+                        onPress={() => handleUploadImage()}
                         activeOpacity={0.7}
                     >
                         {selectedImage.uri ? (
@@ -271,9 +274,7 @@ const RegisterProduct: React.FC = () => {
 
                 <Button
                     biggerText
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
+                    onPress={() => formRef.current?.submitForm()}
                 >
                     Cadastrar Produto
                 </Button>

@@ -130,16 +130,12 @@ const Profile: React.FC = () => {
             keyboardShouldPersistTaps="handled"
         >
             <Container>
-                <SignOutButton
-                    onPress={() => {
-                        signOut();
-                    }}
-                >
+                <SignOutButton onPress={() => signOut()}>
                     <SignOutButtonText>Sair</SignOutButtonText>
                 </SignOutButton>
 
                 <ImagePicker
-                    onPress={handleUploadImage}
+                    onPress={() => handleUploadImage()}
                     activeOpacity={0.5}
                     selectedImage={selectedImage}
                 >
@@ -232,9 +228,7 @@ const Profile: React.FC = () => {
 
                 <Button
                     biggerText
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
+                    onPress={() => formRef.current?.submitForm()}
                 >
                     Atualizar dados
                 </Button>

@@ -261,7 +261,7 @@ const SignUpCompany: React.FC = () => {
                     </PickerView>
 
                     <ImagePicker
-                        onPress={handleUploadImage}
+                        onPress={() => handleUploadImage()}
                         activeOpacity={0.7}
                     >
                         {selectedImage.uri ? (
@@ -278,9 +278,7 @@ const SignUpCompany: React.FC = () => {
 
                 <Button
                     biggerText
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
+                    onPress={() => formRef.current?.submitForm()}
                 >
                     <Text>Registrar{'\n'}empresa</Text>
                 </Button>

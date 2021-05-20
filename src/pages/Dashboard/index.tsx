@@ -40,8 +40,9 @@ const Dashboard: React.FC = () => {
                                     color={focused ? '#1c274e' : '#4058af'}
                                 />
                             ),
+                            tabBarLabel: 'Estoque',
                         }}
-                        name="Estoque"
+                        name="Products"
                         component={Products}
                     />
                     <Tab.Screen
@@ -53,8 +54,10 @@ const Dashboard: React.FC = () => {
                                     color={focused ? '#1c274e' : '#4058af'}
                                 />
                             ),
+                            tabBarLabel: 'Cadastrar produto',
+                            unmountOnBlur: true,
                         }}
-                        name="Cadastrar produto"
+                        name="RegisterProduct"
                         component={RegisterProduct}
                     />
                 </>
@@ -69,8 +72,9 @@ const Dashboard: React.FC = () => {
                             color={focused ? '#1c274e' : '#4058af'}
                         />
                     ),
+                    tabBarLabel: 'Perfil',
                 }}
-                name="Perfil"
+                name="Profile"
                 component={Profile}
             />
         </Tab.Navigator>

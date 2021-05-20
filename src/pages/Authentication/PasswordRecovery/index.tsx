@@ -45,9 +45,7 @@ const PasswordRecovery: React.FC = () => {
 
                 <Button
                     biggerText={true}
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
+                    onPress={() => formRef.current?.submitForm()}
                 >
                     <Text
                         style={{

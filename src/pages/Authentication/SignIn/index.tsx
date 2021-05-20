@@ -127,26 +127,18 @@ const SignIn: React.FC = () => {
                 </Form>
 
                 <ForgotPassword
-                    onPress={() => {
-                        navigation.navigate('PasswordRecovery');
-                    }}
+                    onPress={() => navigation.navigate('PasswordRecovery')}
                     activeOpacity={0.5}
                 >
                     <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
                 </ForgotPassword>
 
-                <Button
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     Entrar
                 </Button>
 
                 <SignUp
-                    onPress={() => {
-                        navigation.navigate('SignUp');
-                    }}
+                    onPress={() => navigation.navigate('SignUp')}
                     activeOpacity={0.5}
                 >
                     <SignUpText>

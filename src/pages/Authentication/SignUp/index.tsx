@@ -192,11 +192,7 @@ const SignUp: React.FC = () => {
                     </SwitchField>
                 </Form>
 
-                <Button
-                    onPress={() => {
-                        formRef.current?.submitForm();
-                    }}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     Criar conta
                 </Button>
             </ScrollView>
