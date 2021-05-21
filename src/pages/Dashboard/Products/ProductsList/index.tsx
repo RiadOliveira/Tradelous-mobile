@@ -67,7 +67,11 @@ const ProductsList: React.FC = () => {
     const formattedPrices = useMemo(
         () =>
             companyProducts.map(
-                product => `R$ ${product.price.toString().replace('.', ',')}`,
+                product =>
+                    `R$ ${Number(product.price)
+                        .toPrecision(3)
+                        .toString()
+                        .replace('.', ',')}`,
             ),
         [companyProducts],
     );

@@ -203,7 +203,7 @@ const RegisterProduct: React.FC = () => {
                         keyboardType="numeric"
                         name="price"
                         ref={priceInput}
-                        placeholder="Preço"
+                        placeholder="Preço (Use . para decimal)"
                         icon="attach-money"
                         onSubmitEditing={() => {
                             brandInput.current?.focus();

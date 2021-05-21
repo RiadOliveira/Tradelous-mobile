@@ -127,19 +127,22 @@ const ProductDescription: React.FC = () => {
                     productData.append('image', {
                         uri: selectedImage.uri,
                         name: `${data.name}-${user.companyId}`,
-                        type: selectedImage.type,
+                        type: 'image/jpeg',
                     });
                 }
 
-                await api.put(`/products/update/${product.id}`, productData);
+                const response = await api.put(
+                    `/products/update/${product.id}`,
+                    productData,
+                );
 
                 navigation.navigate('ProductsList', {
-                    updatedProduct: product.id,
+                    updatedProduct: response.data.updatedAt,
                 });
 
                 Alert.alert(
                     'Produto atualizado com sucesso!',
-                    'O produto indicado teve seus dados atualizados.',
+                    'O produto selecionado teve seus dados atualizados.',
                 );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
@@ -210,7 +213,7 @@ const ProductDescription: React.FC = () => {
                         keyboardType="numeric"
                         name="price"
                         ref={priceInput}
-                        placeholder="Preço"
+                        placeholder="Preço (Use . para decimal)"
                         icon="attach-money"
                         onSubmitEditing={() => {
                             brandInput.current?.focus();
