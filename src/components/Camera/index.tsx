@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import BarcodeMask from 'react-native-barcode-mask';
 import { RNCamera, RNCameraProps } from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useCamera } from '../../hooks/camera';
+import { useCamera } from '@hooks/camera';
 import { ReturnButton, FlashButton } from './styles';
 
 const Camera: React.FC<RNCameraProps> = ({ ...props }) => {

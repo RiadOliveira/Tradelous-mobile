@@ -10,18 +10,18 @@ import {
     BarCodeButton,
 } from './styles';
 import { Alert, ScrollView, TextInput } from 'react-native';
-import { useAuth } from '../../../../hooks/auth';
-import { useCamera } from '../../../../hooks/camera';
+import { useAuth } from '@hooks/auth';
+import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 
-import api from '../../../../services/api';
-import Camera from '../../../../components/Camera';
-import Button from '../../../../components/Button';
-import Input from '../../../../components/Input';
+import api from '@services/api';
+import Camera from '@components/Camera';
+import Button from '@components/Button';
+import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import getValidationErrors from '../../../../utils/getValidationErrors';
+import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/core';
 
@@ -41,6 +41,9 @@ interface ImageData {
     uri: string;
 }
 
+//Needs to create a button to decrease product quantity in one (sell).
+//Needs a button to delete a product.
+//Needs a button to delete product's image.
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
     const navigation = useNavigation();

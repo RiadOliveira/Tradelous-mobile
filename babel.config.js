@@ -14,5 +14,21 @@ module.exports = {
         allowUndefined: false,
       },
     ],
+    [
+        require.resolve('babel-plugin-module-resolver'),
+        {
+          cwd: 'babelrc',
+          extensions: ['.ts', '.tsx', '.js', '.ios.js', '.android.js'],
+          alias: {
+            '@components': './src/components',
+            '@services': './src/services',
+            '@utils': './src/utils',
+            '@hooks': './src/hooks',
+            '@assets': './assets',
+            '@routes/*': './src/routes',
+          }
+        }
+      ],
+      'jest-hoist'
   ],
 };

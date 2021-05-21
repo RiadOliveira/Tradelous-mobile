@@ -7,16 +7,16 @@ import {
     ImagePicker,
 } from './styles';
 import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
-import { useAuth } from '../../../hooks/auth';
-import Input from '../../../components/Input';
+import { useAuth } from '@hooks/auth';
+import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
-import Button from '../../../components/Button';
-import api from '../../../services/api';
+import Button from '@components/Button';
+import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import getValidationErrors from '@utils/getValidationErrors';
 
 const { width } = Dimensions.get('screen');
 
@@ -28,6 +28,7 @@ interface UpdateProfileData {
     confirmPassword?: string;
 }
 
+//Needs a button to delete user's image.
 const Profile: React.FC = () => {
     const { signOut, updateUser } = useAuth();
     const formRef = useRef<FormHandles>(null);

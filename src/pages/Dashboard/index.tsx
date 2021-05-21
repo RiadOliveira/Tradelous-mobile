@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import RegisterProduct from './RegisterProduct';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useCamera } from '../../hooks/camera';
-import { useAuth } from '../../hooks/auth';
+import { useCamera } from '@hooks/camera';
+import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
 
 const Tab = createBottomTabNavigator();

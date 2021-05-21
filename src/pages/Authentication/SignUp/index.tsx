@@ -6,18 +6,18 @@ import {
     SwitchField,
     SwitchText,
 } from './styles';
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
-import TestLogo from '../../../../assets/Logo/Test-logo.png';
+import Input from '@components/Input';
+import Button from '@components/Button';
+import TestLogo from '@assets/Logo/Test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { TextInput, Switch, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
-import api from '../../../services/api';
-import { useAuth } from '../../../hooks/auth';
+import api from '@services/api';
+import { useAuth } from '@hooks/auth';
 
 const { width } = Dimensions.get('screen');
 

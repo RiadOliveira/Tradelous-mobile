@@ -14,10 +14,10 @@ import {
     ImagePicker,
     ImageHighlight,
 } from './styles';
-import Input from '../../../components/Input';
-import Button from '../../../components/Button';
-import TestLogo from '../../../../assets/Logo/Test-logo.png';
-import api from '../../../services/api';
+import Input from '@components/Input';
+import Button from '@components/Button';
+import TestLogo from '@assets/Logo/Test-logo.png';
+import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { Form } from '@unform/mobile';
@@ -26,10 +26,10 @@ import { TextInput, Text, Dimensions, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
-import { useAuth } from '../../../hooks/auth';
+import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import getValidationErrors from '@utils/getValidationErrors';
 const { width } = Dimensions.get('screen');
 
 interface BrazilianState {
