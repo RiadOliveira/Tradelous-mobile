@@ -55,7 +55,7 @@ const SignUpCompany: React.FC = () => {
     const cityInput = useRef<TextInput>(null);
 
     const navigation = useNavigation();
-    const { user, updateUserCompany } = useAuth();
+    const { user, updateUsersCompany } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState<ImageData>(
         {} as ImageData,
@@ -146,7 +146,7 @@ const SignUpCompany: React.FC = () => {
                     data: { id },
                 } = await api.post('/company/register', companyData);
 
-                updateUserCompany(id);
+                updateUsersCompany(id);
 
                 navigation.navigate('Dashboard');
 
@@ -176,7 +176,7 @@ const SignUpCompany: React.FC = () => {
                 );
             }
         },
-        [selectedState, user, selectedImage, navigation, updateUserCompany],
+        [selectedState, user, selectedImage, navigation, updateUsersCompany],
     );
 
     return (

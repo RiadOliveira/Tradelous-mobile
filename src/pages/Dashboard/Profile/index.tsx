@@ -30,7 +30,7 @@ interface UpdateProfileData {
 
 //Needs a button to delete user's image.
 const Profile: React.FC = () => {
-    const { signOut, updateUser } = useAuth();
+    const { signOut, updateUser, updateUsersAvatar } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const oldPasswordInput = useRef<TextInput>(null);
@@ -53,6 +53,7 @@ const Profile: React.FC = () => {
                         .string()
                         .required('E-mail obrigatório')
                         .email('Formato de e-mail incorreto'),
+                    oldPassword: yup.string().optional(),
                     newPassword: yup.string().optional(),
                     confirmPassword: yup.string().when('newPassword', {
                         is: (value: string) => !!value,
@@ -72,7 +73,7 @@ const Profile: React.FC = () => {
                     abortEarly: false,
                 });
 
-                await updateUser({ ...userData, avatar: selectedImage });
+                await updateUser(userData);
 
                 if (userData.newPassword) {
                     formRef.current?.clearField('oldPassword');
@@ -81,8 +82,8 @@ const Profile: React.FC = () => {
                 }
 
                 Alert.alert(
-                    'Operação concluída!',
-                    'A alteração dos dados efetuada com sucesso.',
+                    'Atualização concluída!',
+                    'A alteração dos dados foi efetuada com sucesso.',
                 );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
@@ -106,7 +107,7 @@ const Profile: React.FC = () => {
                 );
             }
         },
-        [selectedImage, updateUser],
+        [updateUser],
     );
 
     const handleUploadImage = useCallback(() => {
@@ -114,13 +115,21 @@ const Profile: React.FC = () => {
             {
                 mediaType: 'photo',
             },
-            ({ fileName, uri, type, didCancel }) => {
+            async ({ fileName, uri, type, didCancel }) => {
                 if (!didCancel && uri && fileName && type) {
-                    setSelectedImage(uri);
+                    try {
+                        await updateUsersAvatar(uri);
+                        setSelectedImage(uri);
+                    } catch {
+                        Alert.alert(
+                            'Falha na atualização',
+                            'Ocorreu um erro ao tentar atualizar o avatar.',
+                        );
+                    }
                 }
             },
         );
-    }, []);
+    }, [updateUsersAvatar]);
 
     return (
         <ScrollView

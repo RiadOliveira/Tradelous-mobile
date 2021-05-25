@@ -38,8 +38,9 @@ const ProductsList: React.FC = () => {
     const { updatedProduct } = (useRoute().params as {
         updatedProduct: string;
     }) || {
-        updatedProduct: 0,
+        updatedProduct: '',
     };
+
     const navigation = useNavigation();
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 

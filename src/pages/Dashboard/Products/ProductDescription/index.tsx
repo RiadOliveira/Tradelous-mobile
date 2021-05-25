@@ -35,12 +35,6 @@ interface IProduct {
     image?: string;
 }
 
-interface ImageData {
-    name: string;
-    type: string;
-    uri: string;
-}
-
 //Needs to create a button to decrease product quantity in one (sell).
 //Needs a button to delete a product.
 //Needs a button to delete product's image.
@@ -56,14 +50,8 @@ const ProductDescription: React.FC = () => {
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [barCodeValue, setBarCodeValue] = useState(
-        product.barCode ? product.barCode : 0,
+        product.barCode ? product.barCode : '',
     );
-
-    const [selectedImage, setSelectedImage] = useState<ImageData>({
-        uri: product.image
-            ? `${api.defaults.baseURL}/files/productImage/${product.image}`
-            : '',
-    } as ImageData);
 
     const handleCameraOpening = useCallback(() => {
         handleCameraVisibility(true);
@@ -76,23 +64,6 @@ const ProductDescription: React.FC = () => {
         },
         [handleCameraVisibility],
     );
-
-    const handleUploadImage = useCallback(() => {
-        launchImageLibrary(
-            {
-                mediaType: 'photo',
-            },
-            ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri && fileName && type) {
-                    setSelectedImage({
-                        name: fileName,
-                        type,
-                        uri,
-                    });
-                }
-            },
-        );
-    }, []);
 
     const handleSubmit = useCallback(
         async (data: IProduct) => {
@@ -108,35 +79,19 @@ const ProductDescription: React.FC = () => {
                         .string()
                         .required('Marca do produto obrigatória'),
                     quantity: yup.number(),
-                    barCode: yup.string().optional(),
                 });
 
                 await schema.validate(data, {
                     abortEarly: false,
                 });
 
-                const productData = new FormData();
-
-                productData.append('name', data.name);
-                productData.append('price', data.price);
-                productData.append('brand', data.brand);
-                productData.append('quantity', data.quantity);
-
                 if (barCodeValue) {
-                    productData.append('barCode', barCodeValue);
-                }
-
-                if (selectedImage.uri) {
-                    productData.append('image', {
-                        uri: selectedImage.uri,
-                        name: `${data.name}-${user.companyId}`,
-                        type: 'image/jpeg',
-                    });
+                    data.barCode = barCodeValue;
                 }
 
                 const response = await api.put(
                     `/products/update/${product.id}`,
-                    productData,
+                    data,
                 );
 
                 navigation.navigate('ProductsList', {
@@ -169,8 +124,45 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [selectedImage, user.companyId, barCodeValue, navigation, product.id],
+        [navigation, product.id, barCodeValue],
     );
+
+    const handleUploadImage = useCallback(() => {
+        launchImageLibrary(
+            {
+                mediaType: 'photo',
+            },
+            async ({ fileName, uri, type, didCancel }) => {
+                if (!didCancel && uri && fileName && type) {
+                    try {
+                        const data = new FormData();
+
+                        data.append('image', {
+                            name: `${formRef.current?.getFieldValue('name')}-${
+                                user.companyId
+                            }`,
+                            type: 'image/jpeg',
+                            uri: uri,
+                        });
+
+                        await api.patch(
+                            `/products/updateImage/${product.id}`,
+                            data,
+                        );
+
+                        await handleSubmit(
+                            formRef.current?.getData() as IProduct,
+                        );
+                    } catch {
+                        Alert.alert(
+                            'Falha na atualização',
+                            'Ocorreu um erro ao tentar atualizar a imagem do produto.',
+                        );
+                    }
+                }
+            },
+        );
+    }, [product.id, user.companyId, handleSubmit]);
 
     return isCameraVisible ? (
         <Camera
@@ -270,10 +262,10 @@ const ProductDescription: React.FC = () => {
                         onPress={() => handleUploadImage()}
                         activeOpacity={0.7}
                     >
-                        {selectedImage.uri ? (
+                        {product.image ? (
                             <ImageHighlight
                                 source={{
-                                    uri: selectedImage.uri,
+                                    uri: `${api.defaults.baseURL}/files/productImage/${product.image}`,
                                 }}
                             />
                         ) : (

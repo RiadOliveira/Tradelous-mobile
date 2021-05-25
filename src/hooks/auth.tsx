@@ -12,7 +12,7 @@ interface UserData {
     id: string;
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
     password?: string;
     companyId?: string;
     isAdmin: boolean;
@@ -23,13 +23,20 @@ interface AuthProps {
     token: string;
 }
 
+interface UpdateUserData {
+    name: string;
+    email: string;
+    oldPassword?: string;
+    newPassword?: string;
+}
+
 type SignInData = Pick<UserData, 'email' | 'password'>;
-type UpdateUserData = Pick<UserData, 'name' | 'email' | 'password' | 'avatar'>;
 
 interface AuthContextData extends AuthProps {
     signIn(data: SignInData): Promise<void>;
     updateUser(userData: UpdateUserData): Promise<void>;
-    updateUserCompany(companyId: number): Promise<void>;
+    updateUsersCompany(companyId: number): Promise<void>;
+    updateUsersAvatar(avatar: string): Promise<void>;
     signOut(): Promise<void>;
     isReady: boolean;
 }
@@ -74,43 +81,58 @@ const AuthContext: React.FC = ({ children }) => {
         setAuthData(response.data);
     }, []);
 
-    const updateUser = useCallback(
-        async userData => {
-            const data = new FormData();
+    const updateUser = useCallback(async (userData: UpdateUserData) => {
+        const response = await api.put('/user/update', userData);
 
-            const userDataKeys = Object.keys(userData);
-            const userDataValues = Object.values(userData);
+        await AsyncStorage.setItem(
+            '@Tradelous-user',
+            JSON.stringify(response.data),
+        );
 
-            userDataKeys.forEach((key, index) => {
-                if (userDataValues[index]) {
-                    data.append(key, userDataValues[index]);
-                }
-            });
+        setAuthData(actualData => ({
+            user: response.data,
+            token: actualData.token,
+        }));
+    }, []);
 
-            if (userData.avatar) {
+    const updateUsersAvatar = useCallback(
+        async avatar => {
+            let data;
+
+            if (avatar) {
+                data = new FormData();
+
                 data.append('avatar', {
                     name: `${authData.user.id}.jpg`,
                     type: 'image/jpg',
-                    uri: userData.avatar,
+                    uri: avatar,
                 });
             }
 
-            const updatedUser = await api.put('/user/update', data);
+            const response = await api.patch('/user/updateAvatar', data);
 
             await AsyncStorage.setItem(
                 '@Tradelous-user',
-                JSON.stringify(updatedUser.data),
+                JSON.stringify({
+                    ...authData.user,
+                    avatar: response.data.avatar,
+                }),
             );
 
-            setAuthData(actualData => ({
-                user: updatedUser.data,
-                token: actualData.token,
-            }));
+            setAuthData(data => {
+                return {
+                    ...data,
+                    user: {
+                        ...data.user,
+                        avatar,
+                    },
+                };
+            });
         },
         [authData.user],
     );
 
-    const updateUserCompany = useCallback(
+    const updateUsersCompany = useCallback(
         async companyId => {
             await AsyncStorage.setItem(
                 '@Tradelous-user',
@@ -145,7 +167,8 @@ const AuthContext: React.FC = ({ children }) => {
                 signIn,
                 signOut,
                 updateUser,
-                updateUserCompany,
+                updateUsersCompany,
+                updateUsersAvatar,
                 isReady,
             }}
         >
