@@ -5,6 +5,8 @@ import {
     SignOutButton,
     SignOutButtonText,
     ImagePicker,
+    ImageContainer,
+    DeleteImageButton,
 } from './styles';
 import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
@@ -28,7 +30,6 @@ interface UpdateProfileData {
     confirmPassword?: string;
 }
 
-//Needs a button to delete user's image.
 const Profile: React.FC = () => {
     const { signOut, updateUser, updateUsersAvatar } = useAuth();
     const formRef = useRef<FormHandles>(null);
@@ -110,26 +111,60 @@ const Profile: React.FC = () => {
         [updateUser],
     );
 
-    const handleUploadImage = useCallback(() => {
-        launchImageLibrary(
-            {
-                mediaType: 'photo',
-            },
-            async ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri && fileName && type) {
-                    try {
-                        await updateUsersAvatar(uri);
-                        setSelectedImage(uri);
-                    } catch {
-                        Alert.alert(
-                            'Falha na atualização',
-                            'Ocorreu um erro ao tentar atualizar o avatar.',
-                        );
-                    }
+    const handleImageData = useCallback(
+        async (handleMode: 'upload' | 'delete') => {
+            if (handleMode == 'delete') {
+                if (!selectedImage) {
+                    Alert.alert(
+                        'Operação indisponível',
+                        'Nenhuma imagem para ser deletada.',
+                    );
+                } else {
+                    Alert.alert(
+                        'Deletar imagem',
+                        'Você deseja mesmo continuar com a exclusão da imagem?',
+                        [
+                            {
+                                text: 'Continuar',
+                                onPress: async () => {
+                                    try {
+                                        await updateUsersAvatar('');
+                                        setSelectedImage('');
+                                    } catch {
+                                        Alert.alert(
+                                            'Falha na exclusão',
+                                            'Ocorreu um erro ao tentar excluir o avatar.',
+                                        );
+                                    }
+                                },
+                            },
+                            { text: 'Cancelar' },
+                        ],
+                    );
                 }
-            },
-        );
-    }, [updateUsersAvatar]);
+            } else {
+                launchImageLibrary(
+                    {
+                        mediaType: 'photo',
+                    },
+                    async ({ fileName, uri, type, didCancel }) => {
+                        if (!didCancel && uri && fileName && type) {
+                            try {
+                                await updateUsersAvatar(uri);
+                                setSelectedImage(uri);
+                            } catch {
+                                Alert.alert(
+                                    'Falha na atualização',
+                                    'Ocorreu um erro ao tentar atualizar o avatar.',
+                                );
+                            }
+                        }
+                    },
+                );
+            }
+        },
+        [updateUsersAvatar, selectedImage],
+    );
 
     return (
         <ScrollView
@@ -144,21 +179,29 @@ const Profile: React.FC = () => {
                     <SignOutButtonText>Sair</SignOutButtonText>
                 </SignOutButton>
 
-                <ImagePicker
-                    onPress={() => handleUploadImage()}
-                    activeOpacity={0.5}
-                    selectedImage={selectedImage}
-                >
-                    {selectedImage ? (
-                        <ProfileImage
-                            source={{
-                                uri: selectedImage,
-                            }}
-                        />
-                    ) : (
-                        <Icon name="person" size={170} color="#1c274e" />
-                    )}
-                </ImagePicker>
+                <ImageContainer>
+                    <ImagePicker
+                        onPress={() => handleImageData('upload')}
+                        activeOpacity={0.5}
+                        selectedImage={selectedImage}
+                    >
+                        {selectedImage ? (
+                            <ProfileImage
+                                source={{
+                                    uri: selectedImage,
+                                }}
+                            />
+                        ) : (
+                            <Icon name="person" size={170} color="#1c274e" />
+                        )}
+                    </ImagePicker>
+
+                    <DeleteImageButton
+                        onPress={() => handleImageData('delete')}
+                    >
+                        <Icon name="clear" size={48} color="#e7e7e7" />
+                    </DeleteImageButton>
+                </ImageContainer>
 
                 <Form
                     ref={formRef}

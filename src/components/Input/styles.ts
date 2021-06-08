@@ -34,7 +34,7 @@ export const Container = styled.View<InputProps>`
 
 export const Content = styled.TextInput`
     font-family: Poppins-Regular;
-    font-size: 15px;
+    font-size: 14px;
     flex: 1;
     margin-top: 5px;
     margin-right: 15px;

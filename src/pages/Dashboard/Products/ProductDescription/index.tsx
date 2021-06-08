@@ -3,11 +3,16 @@ import {
     Container,
     TitleTextContainer,
     TitleText,
-    ImagePicker,
-    ImageHighlight,
+    ProductQuantityContainer,
+    DecreaseQuantityButton,
     BarCodeScannerContainer,
     BarCodeValue,
     BarCodeButton,
+    ImageContainer,
+    ImagePicker,
+    DeleteImageButton,
+    ImageHighlight,
+    ButtonsContainer,
 } from './styles';
 import { Alert, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
@@ -35,13 +40,12 @@ interface IProduct {
     image?: string;
 }
 
-//Needs to create a button to decrease product quantity in one (sell).
-//Needs a button to delete a product.
-//Needs a button to delete product's image.
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
     const navigation = useNavigation();
-    const product = useRoute().params as IProduct;
+    const [product, setProduct] = useState<IProduct>(
+        useRoute().params as IProduct,
+    );
 
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
@@ -68,7 +72,7 @@ const ProductDescription: React.FC = () => {
     const handleSubmit = useCallback(
         async (data: IProduct) => {
             try {
-                data.quantity = data.quantity ? data.quantity : 0;
+                data.quantity = product.quantity ? product.quantity : 0;
 
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome do produto obrigatório'),
@@ -124,45 +128,128 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [navigation, product.id, barCodeValue],
+        [navigation, product.id, barCodeValue, product.quantity],
     );
 
-    const handleUploadImage = useCallback(() => {
-        launchImageLibrary(
-            {
-                mediaType: 'photo',
-            },
-            async ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri && fileName && type) {
-                    try {
-                        const data = new FormData();
+    const handleImageData = useCallback(
+        async (handleMode: 'upload' | 'delete') => {
+            if (handleMode == 'delete') {
+                if (!product.image) {
+                    Alert.alert(
+                        'Operação indisponível',
+                        'Nenhuma imagem para ser deletada.',
+                    );
+                } else {
+                    Alert.alert(
+                        'Deletar imagem',
+                        'Você deseja mesmo continuar com a exclusão da imagem?',
+                        [
+                            {
+                                text: 'Continuar',
+                                onPress: async () => {
+                                    try {
+                                        await api.patch(
+                                            `/products/updateImage/${product.id}`,
+                                        );
 
-                        data.append('image', {
-                            name: `${formRef.current?.getFieldValue('name')}-${
-                                user.companyId
-                            }`,
-                            type: 'image/jpeg',
-                            uri: uri,
-                        });
-
-                        await api.patch(
-                            `/products/updateImage/${product.id}`,
-                            data,
-                        );
-
-                        await handleSubmit(
-                            formRef.current?.getData() as IProduct,
-                        );
-                    } catch {
-                        Alert.alert(
-                            'Falha na atualização',
-                            'Ocorreu um erro ao tentar atualizar a imagem do produto.',
-                        );
-                    }
+                                        await handleSubmit(
+                                            formRef.current?.getData() as IProduct,
+                                        );
+                                    } catch {
+                                        Alert.alert(
+                                            'Falha na exclusão',
+                                            'Ocorreu um erro ao tentar excluir a imagem do produto.',
+                                        );
+                                    }
+                                },
+                            },
+                            { text: 'Cancelar' },
+                        ],
+                    );
                 }
-            },
+            } else {
+                launchImageLibrary(
+                    {
+                        mediaType: 'photo',
+                    },
+                    async ({ fileName, uri, type, didCancel }) => {
+                        if (!didCancel && uri && fileName && type) {
+                            try {
+                                const data = new FormData();
+
+                                data.append('image', {
+                                    name: `${formRef.current?.getFieldValue(
+                                        'name',
+                                    )}-${user.companyId}`,
+                                    type: 'image/jpeg',
+                                    uri: uri,
+                                });
+
+                                await api.patch(
+                                    `/products/updateImage/${product.id}`,
+                                    data,
+                                );
+
+                                await handleSubmit(
+                                    formRef.current?.getData() as IProduct,
+                                );
+                            } catch {
+                                Alert.alert(
+                                    'Falha na atualização',
+                                    'Ocorreu um erro ao tentar atualizar a imagem do produto.',
+                                );
+                            }
+                        }
+                    },
+                );
+            }
+        },
+        [product.id, user.companyId, handleSubmit, product.image],
+    );
+
+    const handleProductDelete = useCallback(async () => {
+        Alert.alert(
+            'Deletar produto',
+            'Você deseja mesmo continuar com a exclusão do produto?',
+            [
+                {
+                    text: 'Continuar',
+                    onPress: async () => {
+                        try {
+                            await api.delete(`/products/delete/${product.id}`);
+                            navigation.navigate('ProductsList', {
+                                updatedProduct: `deleted ${product.id}`,
+                            });
+                            Alert.alert(
+                                'Produto excluído com sucesso!',
+                                'O produto selecionado teve uma exclusão bem sucedida.',
+                            );
+                        } catch {
+                            Alert.alert(
+                                'Falha na exclusão',
+                                'Ocorreu um erro ao tentar excluir o produto.',
+                            );
+                        }
+                    },
+                },
+                { text: 'Cancelar' },
+            ],
         );
-    }, [product.id, user.companyId, handleSubmit]);
+    }, [product.id, navigation]);
+
+    const handleProductQuantityDecrease = useCallback(() => {
+        if (product.quantity > 0) {
+            setProduct(actualProduct => ({
+                ...actualProduct,
+                quantity: actualProduct.quantity - 1,
+            }));
+        } else {
+            Alert.alert(
+                'Falha na diminuição',
+                'Não é possível ficar com a quantidade de um produto negativa.',
+            );
+        }
+    }, [product.quantity]);
 
     return isCameraVisible ? (
         <Camera
@@ -228,14 +315,23 @@ const ProductDescription: React.FC = () => {
                         returnKeyType="next"
                     />
 
-                    <Input
-                        keyboardType="numeric"
-                        name="quantity"
-                        ref={quantityInput}
-                        placeholder="Quantidade em estoque"
-                        icon="inbox"
-                        returnKeyType="next"
-                    />
+                    <ProductQuantityContainer>
+                        <Input
+                            style={{ marginRight: 45 }}
+                            keyboardType="numeric"
+                            name="quantity"
+                            ref={quantityInput}
+                            placeholder="Quantidade em estoque"
+                            icon="inbox"
+                            returnKeyType="next"
+                        />
+
+                        <DecreaseQuantityButton
+                            onPress={() => handleProductQuantityDecrease()}
+                        >
+                            <Icon name="remove" size={30} color="#ffffff" />
+                        </DecreaseQuantityButton>
+                    </ProductQuantityContainer>
 
                     <BarCodeScannerContainer>
                         <Icon
@@ -258,28 +354,46 @@ const ProductDescription: React.FC = () => {
                         </BarCodeButton>
                     </BarCodeScannerContainer>
 
-                    <ImagePicker
-                        onPress={() => handleUploadImage()}
-                        activeOpacity={0.7}
-                    >
-                        {product.image ? (
-                            <ImageHighlight
-                                source={{
-                                    uri: `${api.defaults.baseURL}/files/productImage/${product.image}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="add" size={44} color="#1c274e" />
-                        )}
-                    </ImagePicker>
+                    <ImageContainer>
+                        <ImagePicker
+                            onPress={() => handleImageData('upload')}
+                            activeOpacity={0.7}
+                        >
+                            {product.image ? (
+                                <ImageHighlight
+                                    source={{
+                                        uri: `${api.defaults.baseURL}/files/productImage/${product.image}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon name="add" size={44} color="#1c274e" />
+                            )}
+                        </ImagePicker>
+
+                        <DeleteImageButton
+                            onPress={() => handleImageData('delete')}
+                        >
+                            <Icon name="clear" size={34} color="#e7e7e7" />
+                        </DeleteImageButton>
+                    </ImageContainer>
                 </Form>
 
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
-                    Atualizar Produto
-                </Button>
+                <ButtonsContainer>
+                    <Button
+                        biggerText
+                        onPress={() => formRef.current?.submitForm()}
+                    >
+                        Atualizar Produto
+                    </Button>
+
+                    <Button
+                        biggerText
+                        style={{ backgroundColor: '#c93c3c' }}
+                        onPress={() => handleProductDelete()}
+                    >
+                        Deletar Produto
+                    </Button>
+                </ButtonsContainer>
             </Container>
         </ScrollView>
     );

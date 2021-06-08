@@ -42,8 +42,19 @@ export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`
     border: 1px solid #1c274e;
 `;
 
+export const ImageContainer = styled.View``;
+
 export const ProfileImage = styled.Image`
     width: 180px;
     height: 180px;
     border-radius: 90px;
+`;
+
+export const DeleteImageButton = styled(RectButton)`
+    position: absolute;
+    right: 10px;
+    bottom: 40px;
+    background-color: #de4343;
+    border-radius: 25px;
+    padding: 2px;
 `;

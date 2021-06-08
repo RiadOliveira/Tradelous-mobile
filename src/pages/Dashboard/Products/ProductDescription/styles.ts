@@ -1,3 +1,4 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
@@ -21,6 +22,22 @@ export const TitleText = styled.Text`
     font-size: 20px;
 `;
 
+export const ProductQuantityContainer = styled.View`
+    position: relative;
+`;
+
+export const DecreaseQuantityButton = styled(RectButton)`
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    background-color: #de4343;
+    border-radius: 5px;
+`;
+
+export const ImageContainer = styled.View`
+    position: relative;
+`;
+
 export const ImagePicker = styled.TouchableOpacity`
     width: 100px;
     height: 100px;
@@ -30,6 +47,15 @@ export const ImagePicker = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     border: 1.5px solid #1c274e;
+`;
+
+export const DeleteImageButton = styled(RectButton)`
+    position: absolute;
+    right: -10px;
+    bottom: 13px;
+    background-color: #de4343;
+    border-radius: 25px;
+    padding: 2px;
 `;
 
 export const ImageHighlight = styled.Image`
@@ -62,4 +88,11 @@ export const BarCodeValue = styled.Text`
 export const BarCodeButton = styled.TouchableOpacity`
     position: absolute;
     right: 12px;
+`;
+
+export const ButtonsContainer = styled.View`
+    width: 80%;
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
 `;
