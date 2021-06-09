@@ -113,7 +113,7 @@ const ProductDescription: React.FC = () => {
                 );
 
                 navigation.navigate('ProductsList', {
-                    updatedProduct: response.data.updatedAt,
+                    updatedProduct: response.data,
                 });
 
                 Alert.alert(
@@ -234,7 +234,7 @@ const ProductDescription: React.FC = () => {
                         try {
                             await api.delete(`/products/delete/${product.id}`);
                             navigation.navigate('ProductsList', {
-                                updatedProduct: `deleted ${product.id}`,
+                                updatedProduct: product.id,
                             });
                             Alert.alert(
                                 'Produto excluído com sucesso!',
@@ -272,11 +272,16 @@ const ProductDescription: React.FC = () => {
         return () => {
             if (product.image != productInitialImage) {
                 navigation.navigate('ProductsList', {
-                    updatedProduct: product.image,
+                    updatedProduct: {
+                        // eslint-disable-next-line react-hooks/exhaustive-deps
+                        ...formRef.current?.getData(),
+                        image: product.image,
+                        id: product.id,
+                    } as IProduct,
                 });
             }
         };
-    }, [navigation, product.image, productInitialImage]);
+    }, [navigation, product.image, product.id, productInitialImage]);
 
     return isCameraVisible ? (
         <Camera

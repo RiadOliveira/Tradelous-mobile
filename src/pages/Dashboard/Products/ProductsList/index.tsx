@@ -36,7 +36,7 @@ interface IProduct {
 const ProductsList: React.FC = () => {
     const { user } = useAuth();
     const { updatedProduct } = (useRoute().params as {
-        updatedProduct: string;
+        updatedProduct: string | IProduct;
     }) || {
         updatedProduct: '',
     };
@@ -58,7 +58,27 @@ const ProductsList: React.FC = () => {
                 setHasLoadedProducts(true);
             });
         }
-    }, [user.companyId, updatedProduct]);
+    }, [user.companyId]);
+
+    useEffect(() => {
+        if (updatedProduct) {
+            if (typeof updatedProduct == 'string') {
+                setCompanyProducts(actualProducts =>
+                    actualProducts.filter(
+                        product => product.id != updatedProduct,
+                    ),
+                );
+            } else {
+                setCompanyProducts(actualProducts =>
+                    actualProducts.map(product =>
+                        product.id != updatedProduct.id
+                            ? product
+                            : updatedProduct,
+                    ),
+                );
+            }
+        }
+    }, [updatedProduct]);
 
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
@@ -74,7 +94,8 @@ const ProductsList: React.FC = () => {
                         .toString()
                         .replace('.', ',')}`,
             ),
-        [companyProducts],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [companyProducts, updatedProduct],
     );
 
     const handleChangeSearch = useCallback((event: string) => {
