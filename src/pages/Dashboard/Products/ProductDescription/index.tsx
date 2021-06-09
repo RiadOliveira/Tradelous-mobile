@@ -1,4 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import {
     Container,
     TitleTextContainer,
@@ -43,9 +49,17 @@ interface IProduct {
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
     const navigation = useNavigation();
+
     const [product, setProduct] = useState<IProduct>(
         useRoute().params as IProduct,
     );
+    const apiStaticUrl = useMemo(
+        () => `${api.defaults.baseURL}/files/productImage`,
+        [],
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const productInitialImage = useMemo(() => product.image, []); //Just to store initialImage, for that reason, doesn't has deps.
 
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
@@ -152,9 +166,10 @@ const ProductDescription: React.FC = () => {
                                             `/products/updateImage/${product.id}`,
                                         );
 
-                                        await handleSubmit(
-                                            formRef.current?.getData() as IProduct,
-                                        );
+                                        setProduct(actualProduct => ({
+                                            ...actualProduct,
+                                            image: '',
+                                        }));
                                     } catch {
                                         Alert.alert(
                                             'Falha na exclusão',
@@ -185,14 +200,15 @@ const ProductDescription: React.FC = () => {
                                     uri: uri,
                                 });
 
-                                await api.patch(
+                                const response = await api.patch(
                                     `/products/updateImage/${product.id}`,
                                     data,
                                 );
 
-                                await handleSubmit(
-                                    formRef.current?.getData() as IProduct,
-                                );
+                                setProduct(actualProduct => ({
+                                    ...actualProduct,
+                                    image: response.data.image,
+                                }));
                             } catch {
                                 Alert.alert(
                                     'Falha na atualização',
@@ -204,7 +220,7 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [product.id, user.companyId, handleSubmit, product.image],
+        [product.id, user.companyId, product.image],
     );
 
     const handleProductDelete = useCallback(async () => {
@@ -250,6 +266,17 @@ const ProductDescription: React.FC = () => {
             );
         }
     }, [product.quantity]);
+
+    useEffect(() => {
+        //If the user did modify product's image and not pressed modify button.
+        return () => {
+            if (product.image != productInitialImage) {
+                navigation.navigate('ProductsList', {
+                    updatedProduct: product.image,
+                });
+            }
+        };
+    }, [navigation, product.image, productInitialImage]);
 
     return isCameraVisible ? (
         <Camera
@@ -362,7 +389,7 @@ const ProductDescription: React.FC = () => {
                             {product.image ? (
                                 <ImageHighlight
                                     source={{
-                                        uri: `${api.defaults.baseURL}/files/productImage/${product.image}`,
+                                        uri: `${apiStaticUrl}/${product.image}`,
                                     }}
                                 />
                             ) : (

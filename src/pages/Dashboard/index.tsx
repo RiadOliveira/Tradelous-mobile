@@ -41,7 +41,6 @@ const Dashboard: React.FC = () => {
                                 />
                             ),
                             tabBarLabel: 'Estoque',
-                            unmountOnBlur: true,
                         }}
                         name="Products"
                         component={ProductsRoutes}
