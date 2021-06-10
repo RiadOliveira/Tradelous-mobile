@@ -21,8 +21,8 @@ export const Header = styled.View`
 
 export const SignOutButton = styled(RectButton)`
     background-color: #1c274e;
-    width: 75px;
-    height: 70px;
+    width: 70px;
+    height: 65px;
     border-radius: 20px;
     margin-top: -15px;
     margin-right: -15px;
@@ -35,8 +35,8 @@ export const SignOutButtonText = styled.Text`
     color: #ffffff;
     font-size: 16px;
     position: absolute;
-    bottom: 18%;
-    left: 18%;
+    bottom: 14%;
+    left: 16%;
 `;
 
 export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`

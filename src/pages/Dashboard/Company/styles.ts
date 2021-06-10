@@ -8,40 +8,48 @@ export const Container = styled.View`
     padding-bottom: 30px;
 `;
 
-export const TitleTextContainer = styled.View`
-    margin: 10% 0;
-    background-color: #1c274e;
-    padding: 10px 30px;
-    border-radius: 10px;
-`;
-
-export const TitleText = styled.Text`
-    color: #3680e0;
-    font-family: Poppins-Bold;
-    font-size: 20px;
-`;
-
 export const CompanyContainer = styled.View`
     width: 66%;
     flex-direction: row;
     align-items: center;
+    margin-top: 10%;
+    position: relative;
 `;
 
 export const ImageContainer = styled.View``;
 
 export const CompanyImage = styled.Image`
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
 `;
 
-export const CompanyData = styled.View``;
+export const CompanyIcon = styled.View`
+    width: 100px;
+    height: 100px;
+    background-color: #5170e0;
+    border-radius: 50px;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const CompanyData = styled.View`
+    background-color: #1c274e;
+    height: 100px;
+    width: 90%;
+    justify-content: center;
+    align-items: flex-end;
+    position: absolute;
+    left: 12%;
+    border-radius: 20px;
+`;
 
 export const CompanyName = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
     font-size: 16px;
     color: #ffffff;
+    margin-right: 22%;
 `;
 
 export const CompanyCNPJ = styled.Text`
@@ -49,4 +57,5 @@ export const CompanyCNPJ = styled.Text`
     font-family: Poppins-Bold;
     font-size: 10px;
     color: #ffffff;
+    margin-right: 16%;
 `;

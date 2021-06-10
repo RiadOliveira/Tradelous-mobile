@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     Container,
-    TitleTextContainer,
-    TitleText,
     CompanyContainer,
     ImageContainer,
     CompanyImage,
+    CompanyIcon,
     CompanyData,
     CompanyName,
     CompanyCNPJ,
@@ -22,12 +21,18 @@ interface CompanyData {
     logo?: string;
 }
 
+interface Employee {
+    name: string;
+    email: string;
+    avatar: string;
+    isAdmin: boolean;
+}
+
 const Company: React.FC = () => {
     const [company, setCompany] = useState<CompanyData>({} as CompanyData);
-    const apiStaticUrl = useMemo(
-        () => `${api.defaults.baseURL}/files/logo`,
-        [],
-    );
+    const [employees, setEmployees] = useState<Employee[]>([]); //Needs to add on the screen.
+
+    const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
         api.get('/company').then(response => setCompany(response.data));
@@ -45,27 +50,29 @@ const Company: React.FC = () => {
             keyboardShouldPersistTaps="handled"
         >
             <Container>
-                <TitleTextContainer style={{ elevation: 10 }}>
-                    <TitleText>Dados da empresa</TitleText>
-                </TitleTextContainer>
-
                 <CompanyContainer>
-                    <ImageContainer>
-                        {company.logo ? (
-                            <CompanyImage
-                                source={{
-                                    uri: `${apiStaticUrl}/${company.logo}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="business" size={32} />
-                        )}
-                    </ImageContainer>
-
                     <CompanyData>
                         <CompanyName>{company.name}</CompanyName>
                         <CompanyCNPJ>{formattedCNPJ}</CompanyCNPJ>
                     </CompanyData>
+
+                    <ImageContainer>
+                        {!company.logo ? (
+                            <CompanyImage
+                                source={{
+                                    uri: `${apiStaticUrl}/logo/${company.logo}`,
+                                }}
+                            />
+                        ) : (
+                            <CompanyIcon>
+                                <Icon
+                                    name="business"
+                                    size={50}
+                                    color="#ebebeb"
+                                />
+                            </CompanyIcon>
+                        )}
+                    </ImageContainer>
                 </CompanyContainer>
             </Container>
         </ScrollView>
