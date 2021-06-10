@@ -33,10 +33,10 @@ export const SignOutButton = styled(RectButton)`
 export const SignOutButtonText = styled.Text`
     font-family: 'Poppins-Bold';
     color: #ffffff;
-    font-size: 15px;
+    font-size: 16px;
     position: absolute;
     bottom: 18%;
-    left: 20%;
+    left: 18%;
 `;
 
 export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`

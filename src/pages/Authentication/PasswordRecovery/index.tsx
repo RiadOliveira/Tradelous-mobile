@@ -20,7 +20,8 @@ const PasswordRecovery: React.FC = () => {
 
     return (
         <ScrollView
-            contentContainerStyle={{ flex: 1 }}
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
             <Container>

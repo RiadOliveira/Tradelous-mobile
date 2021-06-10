@@ -124,6 +124,10 @@ const SignUpCompany: React.FC = () => {
                     abortEarly: false,
                 });
 
+                if (data.cnpj.includes('.') || data.cnpj.includes('-')) {
+                    throw new yup.ValidationError('Formato de cnpj inválido');
+                }
+
                 const companyData = new FormData();
 
                 companyData.append('name', data.companyName);
@@ -131,7 +135,7 @@ const SignUpCompany: React.FC = () => {
                     'adress',
                     `${data.companyCity}/${selectedState}`,
                 );
-                companyData.append('cnpj', data.cnpj);
+                companyData.append('cnpj', Number(data.cnpj));
                 companyData.append('adminID', user.id);
 
                 if (selectedImage.uri) {
@@ -162,10 +166,17 @@ const SignUpCompany: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    if (validationKeys.length > 0) {
+                        Alert.alert(
+                            'Problema na validação',
+                            `${validationErrors[validationKeys[0]]}.`,
+                        );
+                    } else {
+                        Alert.alert(
+                            'Problema na validação',
+                            `${err.errors[0]}.`,
+                        );
+                    }
 
                     return;
                 }

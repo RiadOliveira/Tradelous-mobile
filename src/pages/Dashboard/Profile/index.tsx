@@ -9,7 +9,7 @@ import {
     ImageContainer,
     DeleteImageButton,
 } from './styles';
-import { Alert, Dimensions, ScrollView, TextInput } from 'react-native';
+import { Alert, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
 import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
@@ -20,8 +20,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import getValidationErrors from '@utils/getValidationErrors';
-
-const { width } = Dimensions.get('screen');
 
 interface UpdateProfileData {
     name: string;
@@ -168,9 +166,7 @@ const Profile: React.FC = () => {
 
     return (
         <ScrollView
-            contentContainerStyle={{
-                width,
-            }}
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >

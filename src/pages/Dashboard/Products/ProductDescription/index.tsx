@@ -296,6 +296,7 @@ const ProductDescription: React.FC = () => {
         />
     ) : (
         <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
