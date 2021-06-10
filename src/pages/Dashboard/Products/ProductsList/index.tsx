@@ -16,12 +16,13 @@ import {
     NoProductsText,
 } from './styles';
 import { Alert, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
 import api from '@services/api';
 import Camera from '@components/Camera';
 import Button from '@components/Button';
+import { useProducts } from '@hooks/products';
 
 interface IProduct {
     name: string;
@@ -35,11 +36,7 @@ interface IProduct {
 
 const ProductsList: React.FC = () => {
     const { user } = useAuth();
-    const { updatedProduct } = (useRoute().params as {
-        updatedProduct: string | IProduct;
-    }) || {
-        updatedProduct: '',
-    };
+    const { productsStatus, updateProductsStatus } = useProducts();
 
     const navigation = useNavigation();
     const { isCameraVisible, handleCameraVisibility } = useCamera();
@@ -52,33 +49,46 @@ const ProductsList: React.FC = () => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
 
     useEffect(() => {
-        if (user.companyId) {
-            api.get(`/products/${user.companyId}`).then(response => {
+        if (
+            user.companyId &&
+            (productsStatus == 'newProduct' || companyProducts.length === 0)
+        ) {
+            api.get(`/products/`).then(response => {
                 setCompanyProducts(response.data);
                 setHasLoadedProducts(true);
             });
-        }
-    }, [user.companyId]);
+        } else if (
+            productsStatus !== 'noChanges' &&
+            productsStatus !== 'newProduct'
+        ) {
+            if (productsStatus.id.includes('deleted')) {
+                //To delete a product needs to pass deleted + product.id to productsStatus.
+                const deletedProductId = productsStatus.id.split(' ')[1]; //Gets the id.
 
-    useEffect(() => {
-        if (updatedProduct) {
-            if (typeof updatedProduct == 'string') {
-                setCompanyProducts(actualProducts =>
-                    actualProducts.filter(
-                        product => product.id != updatedProduct,
-                    ),
+                setCompanyProducts(
+                    products =>
+                        products.filter(
+                            product => product.id !== deletedProductId,
+                        ), //Update state without api recall.
                 );
             } else {
-                setCompanyProducts(actualProducts =>
-                    actualProducts.map(product =>
-                        product.id != updatedProduct.id
+                setCompanyProducts(products =>
+                    products.map(product =>
+                        product.id !== productsStatus.id
                             ? product
-                            : updatedProduct,
+                            : productsStatus,
                     ),
                 );
             }
         }
-    }, [updatedProduct]);
+
+        updateProductsStatus('noChanges');
+    }, [
+        user.companyId,
+        productsStatus,
+        companyProducts.length,
+        updateProductsStatus,
+    ]);
 
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
@@ -95,7 +105,7 @@ const ProductsList: React.FC = () => {
                         .replace('.', ',')}`,
             ),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [companyProducts, updatedProduct],
+        [companyProducts, productsStatus],
     );
 
     const handleChangeSearch = useCallback((event: string) => {

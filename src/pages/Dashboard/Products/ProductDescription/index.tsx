@@ -1,10 +1,4 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
     Container,
     TitleTextContainer,
@@ -35,6 +29,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/core';
+import { useProducts } from '@hooks/products';
 
 interface IProduct {
     name: string;
@@ -48,6 +43,7 @@ interface IProduct {
 
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
+    const { updateProductsStatus } = useProducts();
     const navigation = useNavigation();
 
     const [product, setProduct] = useState<IProduct>(
@@ -57,9 +53,6 @@ const ProductDescription: React.FC = () => {
         () => `${api.defaults.baseURL}/files/productImage`,
         [],
     );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const productInitialImage = useMemo(() => product.image, []); //Just to store initialImage, for that reason, doesn't has deps.
 
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
@@ -86,35 +79,46 @@ const ProductDescription: React.FC = () => {
     const handleSubmit = useCallback(
         async (data: IProduct) => {
             try {
-                data.quantity = product.quantity ? product.quantity : 0;
+                data.quantity = product.quantity || 0;
+
+                data.quantity = Number(
+                    data.quantity.toString().replace('-', '.'),
+                );
+
+                data.price = data.price || 0;
+
+                data.price = Number(data.price.toString().replace('-', '.'));
+
+                if (barCodeValue) {
+                    data.barCode = barCodeValue;
+                }
 
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome do produto obrigatório'),
                     price: yup
                         .number()
+                        .moreThan(0, 'O preço precisa ser maior que zero')
                         .required('Preço do produto obrigatório'),
                     brand: yup
                         .string()
                         .required('Marca do produto obrigatória'),
-                    quantity: yup.number(),
+                    quantity: yup
+                        .number()
+                        .integer('A quantidade precisa ser um valor inteiro')
+                        .min(0, 'A quantidade não pode ser negativa'),
+                    barCode: yup.string().optional(),
                 });
 
                 await schema.validate(data, {
                     abortEarly: false,
                 });
 
-                if (barCodeValue) {
-                    data.barCode = barCodeValue;
-                }
-
                 const response = await api.put(
                     `/products/update/${product.id}`,
                     data,
                 );
 
-                navigation.navigate('ProductsList', {
-                    updatedProduct: response.data,
-                });
+                updateProductsStatus(response.data);
 
                 Alert.alert(
                     'Produto atualizado com sucesso!',
@@ -142,7 +146,7 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [navigation, product.id, barCodeValue, product.quantity],
+        [product.id, barCodeValue, product.quantity, updateProductsStatus],
     );
 
     const handleImageData = useCallback(
@@ -162,7 +166,7 @@ const ProductDescription: React.FC = () => {
                                 text: 'Continuar',
                                 onPress: async () => {
                                     try {
-                                        await api.patch(
+                                        const response = await api.patch(
                                             `/products/updateImage/${product.id}`,
                                         );
 
@@ -170,6 +174,13 @@ const ProductDescription: React.FC = () => {
                                             ...actualProduct,
                                             image: '',
                                         }));
+
+                                        updateProductsStatus(response.data);
+
+                                        Alert.alert(
+                                            'Exclusão concluída',
+                                            'A imagem do produto foi excluída com sucesso.',
+                                        );
                                     } catch {
                                         Alert.alert(
                                             'Falha na exclusão',
@@ -209,6 +220,13 @@ const ProductDescription: React.FC = () => {
                                     ...actualProduct,
                                     image: response.data.image,
                                 }));
+
+                                updateProductsStatus(response.data);
+
+                                Alert.alert(
+                                    'Atualização concluída',
+                                    'O produto teve sua imagem atualizada com sucesso.',
+                                );
                             } catch {
                                 Alert.alert(
                                     'Falha na atualização',
@@ -220,7 +238,7 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [product.id, user.companyId, product.image],
+        [product.id, user.companyId, product.image, updateProductsStatus],
     );
 
     const handleProductDelete = useCallback(async () => {
@@ -232,10 +250,13 @@ const ProductDescription: React.FC = () => {
                     text: 'Continuar',
                     onPress: async () => {
                         try {
-                            await api.delete(`/products/delete/${product.id}`);
-                            navigation.navigate('ProductsList', {
-                                updatedProduct: product.id,
-                            });
+                            await api.delete(`/products/${product.id}`);
+
+                            navigation.navigate('ProductsList');
+                            updateProductsStatus({
+                                id: `deleted ${product.id}`,
+                            } as IProduct);
+
                             Alert.alert(
                                 'Produto excluído com sucesso!',
                                 'O produto selecionado teve uma exclusão bem sucedida.',
@@ -251,7 +272,7 @@ const ProductDescription: React.FC = () => {
                 { text: 'Cancelar' },
             ],
         );
-    }, [product.id, navigation]);
+    }, [product.id, navigation, updateProductsStatus]);
 
     const handleProductQuantityDecrease = useCallback(() => {
         if (product.quantity > 0) {
@@ -266,22 +287,6 @@ const ProductDescription: React.FC = () => {
             );
         }
     }, [product.quantity]);
-
-    useEffect(() => {
-        //If the user did modify product's image and not pressed modify button.
-        return () => {
-            if (product.image != productInitialImage) {
-                navigation.navigate('ProductsList', {
-                    updatedProduct: {
-                        // eslint-disable-next-line react-hooks/exhaustive-deps
-                        ...formRef.current?.getData(),
-                        image: product.image,
-                        id: product.id,
-                    } as IProduct,
-                });
-            }
-        };
-    }, [navigation, product.image, product.id, productInitialImage]);
 
     return isCameraVisible ? (
         <Camera
@@ -303,6 +308,7 @@ const ProductDescription: React.FC = () => {
                     ref={formRef}
                     initialData={{
                         ...product,
+                        price: product.price.toString(),
                         quantity: product.quantity.toString(),
                     }}
                     onSubmit={handleSubmit}

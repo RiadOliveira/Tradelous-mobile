@@ -144,7 +144,7 @@ const SignUpCompany: React.FC = () => {
 
                 const {
                     data: { id },
-                } = await api.post('/company/register', companyData);
+                } = await api.post('/company/', companyData);
 
                 updateUsersCompany(id);
 

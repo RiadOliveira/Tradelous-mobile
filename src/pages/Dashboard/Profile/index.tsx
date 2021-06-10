@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import {
     Container,
+    Header,
     ProfileImage,
     SignOutButton,
     SignOutButtonText,
@@ -31,13 +32,12 @@ interface UpdateProfileData {
 }
 
 const Profile: React.FC = () => {
-    const { signOut, updateUser, updateUsersAvatar } = useAuth();
+    const { signOut, updateUser, updateUsersAvatar, user } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const oldPasswordInput = useRef<TextInput>(null);
     const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
-    const { user } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState(() =>
         user.avatar
@@ -175,9 +175,11 @@ const Profile: React.FC = () => {
             keyboardShouldPersistTaps="handled"
         >
             <Container>
-                <SignOutButton onPress={() => signOut()}>
-                    <SignOutButtonText>Sair</SignOutButtonText>
-                </SignOutButton>
+                <Header>
+                    <SignOutButton onPress={() => signOut()}>
+                        <SignOutButtonText>Sair</SignOutButtonText>
+                    </SignOutButton>
+                </Header>
 
                 <ImageContainer>
                     <ImagePicker

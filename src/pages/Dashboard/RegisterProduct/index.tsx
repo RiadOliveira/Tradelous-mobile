@@ -23,6 +23,7 @@ import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
+import { useProducts } from '@hooks/products';
 
 interface IProduct {
     name: string;
@@ -41,6 +42,7 @@ interface ImageData {
 
 const RegisterProduct: React.FC = () => {
     const { user } = useAuth();
+    const { updateProductsStatus } = useProducts();
 
     const formRef = useRef<FormHandles>(null);
     const priceInput = useRef<TextInput>(null);
@@ -48,7 +50,7 @@ const RegisterProduct: React.FC = () => {
     const quantityInput = useRef<TextInput>(null);
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 
-    const [barCodeValue, setBarCodeValue] = useState(0);
+    const [barCodeValue, setBarCodeValue] = useState('');
     const [selectedImage, setSelectedImage] = useState<ImageData>(
         {} as ImageData,
     );
@@ -89,17 +91,33 @@ const RegisterProduct: React.FC = () => {
     const handleSubmit = useCallback(
         async (data: IProduct) => {
             try {
-                data.quantity = data.quantity ? data.quantity : 0;
+                data.quantity = data.quantity || 0;
+                data.quantity = Number(
+                    data.quantity.toString().replace('-', '.'),
+                );
+
+                data.price = data.price || 0;
+
+                data.price =
+                    Number(data.price.toString().replace('-', '.')) || 0;
+
+                if (barCodeValue) {
+                    data.barCode = barCodeValue;
+                }
 
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome do produto obrigatório'),
                     price: yup
                         .number()
+                        .moreThan(0, 'O preço precisa ser maior que zero')
                         .required('Preço do produto obrigatório'),
                     brand: yup
                         .string()
                         .required('Marca do produto obrigatória'),
-                    quantity: yup.number(),
+                    quantity: yup
+                        .number()
+                        .integer('A quantidade precisa ser um valor inteiro')
+                        .min(0, 'A quantidade não pode ser negativa'),
                     barCode: yup.string().optional(),
                 });
 
@@ -113,10 +131,7 @@ const RegisterProduct: React.FC = () => {
                 productData.append('price', data.price);
                 productData.append('brand', data.brand);
                 productData.append('quantity', data.quantity);
-
-                if (barCodeValue) {
-                    productData.append('barCode', barCodeValue);
-                }
+                productData.append('barCode', data.barCode);
 
                 if (selectedImage.uri) {
                     productData.append('image', {
@@ -126,12 +141,14 @@ const RegisterProduct: React.FC = () => {
                     });
                 }
 
-                await api.post('/products/add', productData);
+                await api.post('/products/', productData);
 
                 formRef.current?.reset();
                 setSelectedImage({} as ImageData);
-                setBarCodeValue(0);
+                setBarCodeValue('');
                 setTemporaryInputValues({} as IProduct);
+
+                updateProductsStatus('newProduct');
 
                 Alert.alert(
                     'Produto adicionado com sucesso!',
@@ -159,7 +176,7 @@ const RegisterProduct: React.FC = () => {
                 );
             }
         },
-        [selectedImage, user.companyId, barCodeValue],
+        [selectedImage, user.companyId, barCodeValue, updateProductsStatus],
     );
 
     return isCameraVisible ? (

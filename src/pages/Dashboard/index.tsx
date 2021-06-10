@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useCamera } from '@hooks/camera';
 import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
+import Company from './Company';
 
 const Tab = createBottomTabNavigator();
 
@@ -54,11 +55,25 @@ const Dashboard: React.FC = () => {
                                     color={focused ? '#1c274e' : '#4058af'}
                                 />
                             ),
-                            tabBarLabel: 'Cadastrar produto',
+                            tabBarLabel: 'Novo produto',
                             unmountOnBlur: true,
                         }}
                         name="RegisterProduct"
                         component={RegisterProduct}
+                    />
+                    <Tab.Screen
+                        options={{
+                            tabBarIcon: ({ focused }) => (
+                                <Icon
+                                    name="business"
+                                    size={28}
+                                    color={focused ? '#1c274e' : '#4058af'}
+                                />
+                            ),
+                            tabBarLabel: 'Empresa',
+                        }}
+                        name="Company"
+                        component={Company}
                     />
                 </>
             )}
