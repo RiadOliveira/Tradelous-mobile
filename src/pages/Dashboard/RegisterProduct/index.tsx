@@ -101,10 +101,6 @@ const RegisterProduct: React.FC = () => {
                 data.price =
                     Number(data.price.toString().replace('-', '.')) || 0;
 
-                if (barCodeValue) {
-                    data.barCode = barCodeValue;
-                }
-
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome do produto obrigatório'),
                     price: yup
@@ -118,7 +114,6 @@ const RegisterProduct: React.FC = () => {
                         .number()
                         .integer('A quantidade precisa ser um valor inteiro')
                         .min(0, 'A quantidade não pode ser negativa'),
-                    barCode: yup.string().optional(),
                 });
 
                 await schema.validate(data, {
@@ -131,7 +126,10 @@ const RegisterProduct: React.FC = () => {
                 productData.append('price', data.price);
                 productData.append('brand', data.brand);
                 productData.append('quantity', data.quantity);
-                productData.append('barCode', data.barCode);
+
+                if (barCodeValue) {
+                    productData.append('barCode', barCodeValue);
+                }
 
                 if (selectedImage.uri) {
                     productData.append('image', {

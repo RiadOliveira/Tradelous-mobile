@@ -88,13 +88,13 @@ export const ProductData = styled.View`
 export const ProductText = styled.Text`
     font-family: Poppins-Regular;
     color: #ffffff;
-    font-size: 10px;
+    font-size: 11px;
 `;
 
 export const ProductAvailabilityText = styled.Text<ProductAvailabilityProps>`
     font-family: Poppins-Regular;
     color: #ffffff;
-    font-size: 10px;
+    font-size: 11px;
 
     color: ${props => (props.hasInStock ? '#68e043' : '#eb2a2a')};
 `;
