@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Container, LogoView, LogoImage } from './styles';
 import Input from '@components/Input';
 import Button from '@components/Button';
-import TestLogo from '@assets/Logo/Test-logo.png';
+import TestLogo from '@assets/logo/test-logo.png';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';

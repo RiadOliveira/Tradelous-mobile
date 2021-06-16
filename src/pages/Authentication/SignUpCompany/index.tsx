@@ -16,7 +16,7 @@ import {
 } from './styles';
 import Input from '@components/Input';
 import Button from '@components/Button';
-import TestLogo from '@assets/Logo/Test-logo.png';
+import TestLogo from '@assets/logo/test-logo.png';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 

@@ -14,8 +14,8 @@ export const LogoView = styled.View`
 `;
 
 export const LogoImage = styled.Image`
-    width: 200px;
-    height: 100px;
+    width: 220px;
+    height: 130px;
 `;
 
 export const SwitchField = styled.View`

@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+interface EmployeeInterface {
+    isAdmin: boolean;
+}
+
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -9,28 +13,27 @@ export const Container = styled.View`
 `;
 
 export const CompanyContainer = styled.View`
-    width: 66%;
+    width: 80%;
     flex-direction: row;
     align-items: center;
-    margin-top: 10%;
+    margin: 10% 0;
     position: relative;
 `;
 
-export const ImageContainer = styled.View``;
-
-export const CompanyImage = styled.Image`
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
-`;
-
-export const CompanyIcon = styled.View`
+export const LogoContainer = styled.View`
     width: 100px;
     height: 100px;
     background-color: #5170e0;
     border-radius: 50px;
     justify-content: center;
     align-items: center;
+    border: 2px solid #1c274e;
+`;
+
+export const CompanyImage = styled.Image`
+    width: 98px;
+    height: 98px;
+    border-radius: 49px;
 `;
 
 export const CompanyData = styled.View`
@@ -38,24 +41,72 @@ export const CompanyData = styled.View`
     height: 100px;
     width: 90%;
     justify-content: center;
-    align-items: flex-end;
+    align-items: flex-start;
     position: absolute;
-    left: 12%;
+    left: 10%;
     border-radius: 20px;
 `;
 
 export const CompanyName = styled.Text`
-    margin-left: 10px;
     font-family: Poppins-Bold;
-    font-size: 16px;
+    font-size: 18px;
     color: #ffffff;
-    margin-right: 22%;
+    margin-left: 30%;
 `;
 
 export const CompanyCNPJ = styled.Text`
+    font-family: Poppins-Bold;
+    font-size: 12px;
+    color: #ffffff;
+    margin-left: 30.5%;
+`;
+
+export const Employee = styled.View`
+    width: 66%;
+    flex-direction: row;
+    position: relative;
+    margin-bottom: 4%;
+`;
+
+export const EmployeeData = styled.View<EmployeeInterface>`
+    background-color: ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
+    height: 60px;
+    width: 97%;
+    position: absolute;
+    justify-content: center;
+    align-items: flex-start;
+    left: 5%;
+    border-radius: 20px;
+`;
+
+export const EmployeeName = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
-    font-size: 10px;
+    font-size: 14px;
     color: #ffffff;
-    margin-right: 16%;
+    margin-left: 22%;
+`;
+
+export const EmployeeId = styled.Text`
+    margin-left: 10px;
+    font-family: Poppins-Bold;
+    font-size: 8px;
+    color: #ffffff;
+    margin-left: 22.5%;
+`;
+
+export const EmployeeImage = styled.Image`
+    width: 58px;
+    height: 58px;
+    border-radius: 29px;
+`;
+
+export const EmployeeIcon = styled.View<EmployeeInterface>`
+    width: 60px;
+    height: 60px;
+    background-color: #5170e0;
+    border-radius: 30px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
 `;

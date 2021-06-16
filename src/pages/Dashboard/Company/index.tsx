@@ -2,14 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
     Container,
     CompanyContainer,
-    ImageContainer,
+    LogoContainer,
     CompanyImage,
-    CompanyIcon,
     CompanyData,
     CompanyName,
     CompanyCNPJ,
+    Employee,
+    EmployeeData,
+    EmployeeName,
+    EmployeeId,
+    EmployeeImage,
+    EmployeeIcon,
 } from './styles';
-import { ScrollView } from 'react-native';
+import { ActivityIndicator, ScrollView } from 'react-native';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import convertCNPJ from '@utils/convertCNPJ';
@@ -22,6 +27,7 @@ interface CompanyData {
 }
 
 interface Employee {
+    id: string;
     name: string;
     email: string;
     avatar: string;
@@ -30,12 +36,22 @@ interface Employee {
 
 const Company: React.FC = () => {
     const [company, setCompany] = useState<CompanyData>({} as CompanyData);
+    const [hasLoadedCompany, setHasLoadedCompany] = useState(false);
     const [employees, setEmployees] = useState<Employee[]>([]); //Needs to add on the screen.
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        api.get('/company').then(response => setCompany(response.data));
+        api.get('/company').then(response => {
+            setCompany(response.data);
+        });
+    }, []);
+
+    useEffect(() => {
+        api.get('/company/list-employees').then(response => {
+            setEmployees(response.data);
+            setHasLoadedCompany(true);
+        });
     }, []);
 
     const formattedCNPJ = useMemo(
@@ -43,38 +59,78 @@ const Company: React.FC = () => {
         [company.cnpj],
     );
 
+    const orderedEmployees = useMemo(() => {
+        const admin =
+            employees.find(employee => employee.isAdmin) || ({} as Employee); //Always will have a admin.
+
+        const allEmployees = employees.filter(employee => !employee.isAdmin);
+
+        return [admin, ...allEmployees];
+    }, [employees]);
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            <Container>
-                <CompanyContainer>
-                    <CompanyData>
-                        <CompanyName>{company.name}</CompanyName>
-                        <CompanyCNPJ>{formattedCNPJ}</CompanyCNPJ>
-                    </CompanyData>
+            {!hasLoadedCompany ? (
+                <ActivityIndicator
+                    size={64}
+                    color="#374b92"
+                    style={{ backgroundColor: '#49b454', flex: 1 }}
+                />
+            ) : (
+                <Container>
+                    <CompanyContainer>
+                        <CompanyData>
+                            <CompanyName>{company.name}</CompanyName>
+                            <CompanyCNPJ>{formattedCNPJ}</CompanyCNPJ>
+                        </CompanyData>
 
-                    <ImageContainer>
-                        {!company.logo ? (
-                            <CompanyImage
-                                source={{
-                                    uri: `${apiStaticUrl}/logo/${company.logo}`,
-                                }}
-                            />
-                        ) : (
-                            <CompanyIcon>
+                        <LogoContainer>
+                            {company.logo ? (
+                                <CompanyImage
+                                    source={{
+                                        uri: `${apiStaticUrl}/logo/${company.logo}`,
+                                    }}
+                                />
+                            ) : (
                                 <Icon
                                     name="business"
                                     size={50}
                                     color="#ebebeb"
                                 />
-                            </CompanyIcon>
-                        )}
-                    </ImageContainer>
-                </CompanyContainer>
-            </Container>
+                            )}
+                        </LogoContainer>
+                    </CompanyContainer>
+
+                    {orderedEmployees.map(employee => (
+                        <Employee key={employee.id}>
+                            <EmployeeData isAdmin={employee.isAdmin}>
+                                <EmployeeName>{employee.name}</EmployeeName>
+                                <EmployeeId>{employee.email}</EmployeeId>
+                            </EmployeeData>
+
+                            <EmployeeIcon isAdmin={employee.isAdmin}>
+                                {employee.avatar ? (
+                                    <EmployeeImage
+                                        source={{
+                                            uri: `${apiStaticUrl}/avatar/${employee.avatar}`,
+                                        }}
+                                    />
+                                ) : (
+                                    <Icon
+                                        name="person"
+                                        size={30}
+                                        color="#ebebeb"
+                                    />
+                                )}
+                            </EmployeeIcon>
+                        </Employee>
+                    ))}
+                </Container>
+            )}
         </ScrollView>
     );
 };

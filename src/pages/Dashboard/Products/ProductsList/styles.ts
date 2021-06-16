@@ -29,8 +29,7 @@ export const SearchBarContainer = styled.View<SearchInputProps>`
     border-radius: 5px;
     flex-direction: row;
     padding: 1.8px;
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin: 10% 0;
 
     border: ${props => (props.isFocused ? '1.5px solid #1c274e' : 'none')};
 `;

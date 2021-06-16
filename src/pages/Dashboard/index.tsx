@@ -20,11 +20,11 @@ const Dashboard: React.FC = () => {
                 labelStyle: {
                     fontFamily: 'Poppins-SemiBold',
                     fontSize: 10,
-                    color: 'black',
+                    color: '#1c274e',
                 },
                 allowFontScaling: true,
                 style: {
-                    borderTopColor: '#4058af',
+                    borderTopColor: '#1c274e',
                     borderTopWidth: 1,
                     display: isCameraVisible ? 'none' : 'flex',
                 },

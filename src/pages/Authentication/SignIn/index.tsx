@@ -11,7 +11,7 @@ import {
 
 import Input from '@components/Input';
 import Button from '@components/Button';
-import TestLogo from '@assets/Logo/Test-logo.png';
+import TestLogo from '@assets/logo/test-logo.png';
 import getValidationErrors from '@utils/getValidationErrors';
 
 import { Form } from '@unform/mobile';
