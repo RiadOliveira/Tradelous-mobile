@@ -87,7 +87,7 @@ export const EmployeeName = styled.Text`
     margin-left: 22%;
 `;
 
-export const EmployeeId = styled.Text`
+export const EmployeeEmail = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
     font-size: 8px;

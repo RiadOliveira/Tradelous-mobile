@@ -10,7 +10,6 @@ import {
     ProductImage,
     ProductData,
     ProductText,
-    ProductPriceText,
     ProductAvailabilityText,
     NoProductsContainer,
     NoProductsText,
@@ -229,38 +228,41 @@ const ProductsList: React.FC = () => {
                                         ) : (
                                             <Icon
                                                 name="local-offer"
-                                                size={44}
+                                                size={40}
                                                 color="#ffffff"
                                             />
                                         )}
                                     </ProductImageContainer>
 
-                                    <ProductData>
+                                    <ProductData style={{ marginLeft: '1%' }}>
                                         <ProductText>
                                             {product.name}
                                         </ProductText>
-                                        <ProductPriceText>
-                                            {formattedPrices[index]}
-                                        </ProductPriceText>
-                                    </ProductData>
 
-                                    <ProductData
-                                        style={{
-                                            position: 'absolute',
-                                            right: 20,
-                                            alignItems: 'flex-end',
-                                        }}
-                                    >
-                                        <ProductText>
-                                            {product.brand}
-                                        </ProductText>
-                                        <ProductAvailabilityText
-                                            hasInStock={product.quantity > 0}
+                                        <ProductData
+                                            style={{
+                                                flexDirection: 'row',
+                                                width: '98%',
+                                            }}
                                         >
-                                            {product.quantity > 0
-                                                ? 'Em estoque'
-                                                : 'Em falta'}
-                                        </ProductAvailabilityText>
+                                            <ProductText>
+                                                {formattedPrices[index]}
+                                            </ProductText>
+
+                                            <ProductText>
+                                                {product.brand}
+                                            </ProductText>
+
+                                            <ProductAvailabilityText
+                                                hasInStock={
+                                                    product.quantity > 0
+                                                }
+                                            >
+                                                {product.quantity > 0
+                                                    ? 'Em estoque'
+                                                    : 'Em falta'}
+                                            </ProductAvailabilityText>
+                                        </ProductData>
                                     </ProductData>
                                 </ProductContainer>
                             ))}

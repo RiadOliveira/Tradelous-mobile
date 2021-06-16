@@ -55,16 +55,14 @@ export const ProductContainer = styled(RectButton)`
     width: 75%;
     height: 64px;
     border-radius: 15px;
-    background-color: #5170e0;
+    background-color: #1c274e;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 `;
 
 export const ProductImageContainer = styled.View<ProductImageContainerProps>`
     height: 100%;
     justify-content: center;
-    margin-right: 5px;
-    margin-left: 5px;
 
     ${props =>
         props.hasImage
@@ -76,23 +74,18 @@ export const ProductImageContainer = styled.View<ProductImageContainerProps>`
 `;
 
 export const ProductImage = styled.Image`
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
 `;
 
 export const ProductData = styled.View`
-    justify-content: center;
+    margin-top: 1%;
+    width: 70%;
+    justify-content: space-between;
 `;
 
 export const ProductText = styled.Text`
-    font-family: Poppins-Regular;
-    color: #ffffff;
-    font-size: 12px;
-    margin-bottom: -3px;
-`;
-
-export const ProductPriceText = styled.Text`
     font-family: Poppins-Regular;
     color: #ffffff;
     font-size: 10px;
@@ -101,10 +94,9 @@ export const ProductPriceText = styled.Text`
 export const ProductAvailabilityText = styled.Text<ProductAvailabilityProps>`
     font-family: Poppins-Regular;
     color: #ffffff;
-    font-size: 12px;
-    margin-bottom: -3px;
+    font-size: 10px;
 
-    color: ${props => (props.hasInStock ? '#68e043' : '#ba1818')};
+    color: ${props => (props.hasInStock ? '#68e043' : '#eb2a2a')};
 `;
 
 export const NoProductsContainer = styled.View`

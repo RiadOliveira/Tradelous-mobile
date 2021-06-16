@@ -10,7 +10,7 @@ import {
     Employee,
     EmployeeData,
     EmployeeName,
-    EmployeeId,
+    EmployeeEmail,
     EmployeeImage,
     EmployeeIcon,
 } from './styles';
@@ -99,7 +99,7 @@ const Company: React.FC = () => {
                                 <Icon
                                     name="business"
                                     size={50}
-                                    color="#ebebeb"
+                                    color="#ffffff"
                                 />
                             )}
                         </LogoContainer>
@@ -109,7 +109,7 @@ const Company: React.FC = () => {
                         <Employee key={employee.id}>
                             <EmployeeData isAdmin={employee.isAdmin}>
                                 <EmployeeName>{employee.name}</EmployeeName>
-                                <EmployeeId>{employee.email}</EmployeeId>
+                                <EmployeeEmail>{employee.email}</EmployeeEmail>
                             </EmployeeData>
 
                             <EmployeeIcon isAdmin={employee.isAdmin}>
@@ -123,7 +123,7 @@ const Company: React.FC = () => {
                                     <Icon
                                         name="person"
                                         size={30}
-                                        color="#ebebeb"
+                                        color="#ffffff"
                                     />
                                 )}
                             </EmployeeIcon>
