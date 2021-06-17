@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useCamera } from '@hooks/camera';
 import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
-import Company from './Company';
+import CompanyRoutes from './Company';
 
 const Tab = createBottomTabNavigator();
 
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
                             tabBarLabel: 'Empresa',
                         }}
                         name="Company"
-                        component={Company}
+                        component={CompanyRoutes}
                     />
                 </>
             )}

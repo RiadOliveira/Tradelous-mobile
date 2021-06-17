@@ -1,4 +1,6 @@
 import styled from 'styled-components/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { RectButton } from 'react-native-gesture-handler';
 
 interface EmployeeInterface {
     isAdmin: boolean;
@@ -21,24 +23,24 @@ export const CompanyContainer = styled.View`
 `;
 
 export const LogoContainer = styled.View`
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     background-color: #5170e0;
-    border-radius: 50px;
+    border-radius: 55px;
     justify-content: center;
     align-items: center;
     border: 2px solid #1c274e;
 `;
 
 export const CompanyImage = styled.Image`
-    width: 98px;
-    height: 98px;
-    border-radius: 49px;
+    width: 108px;
+    height: 108px;
+    border-radius: 54px;
 `;
 
 export const CompanyData = styled.View`
     background-color: #1c274e;
-    height: 100px;
+    height: 110px;
     width: 90%;
     justify-content: center;
     align-items: flex-start;
@@ -54,12 +56,20 @@ export const CompanyName = styled.Text`
     margin-left: 30%;
 `;
 
-export const CompanyCNPJ = styled.Text`
+export const CompanyAdress = styled.Text`
     font-family: Poppins-Bold;
-    font-size: 12px;
+    font-size: 10px;
     color: #ffffff;
     margin-left: 30.5%;
 `;
+
+export const EditButton = styled(RectButton)`
+    position: absolute;
+    right: 4%;
+    top: 40%;
+`;
+
+export const EditIcon = styled(Icon)``;
 
 export const Employee = styled.View`
     width: 66%;
@@ -90,7 +100,7 @@ export const EmployeeName = styled.Text`
 export const EmployeeEmail = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
-    font-size: 8px;
+    font-size: 8.5px;
     color: #ffffff;
     margin-left: 22.5%;
 `;

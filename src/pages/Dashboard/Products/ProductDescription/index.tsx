@@ -204,11 +204,9 @@ const ProductDescription: React.FC = () => {
                                 const data = new FormData();
 
                                 data.append('image', {
-                                    name: `${formRef.current?.getFieldValue(
-                                        'name',
-                                    )}-${user.companyId}`,
+                                    name: `${user.companyId}:${product.id}`,
                                     type: 'image/jpeg',
-                                    uri: uri,
+                                    uri,
                                 });
 
                                 const response = await api.patch(

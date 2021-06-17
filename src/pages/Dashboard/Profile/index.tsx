@@ -180,7 +180,7 @@ const Profile: React.FC = () => {
                 <ImageContainer>
                     <ImagePicker
                         onPress={() => handleImageData('upload')}
-                        activeOpacity={0.5}
+                        activeOpacity={0.7}
                         selectedImage={selectedImage}
                     >
                         {selectedImage ? (

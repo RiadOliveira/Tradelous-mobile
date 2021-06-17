@@ -19,6 +19,7 @@ export const Container = styled.View`
     flex: 1;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 `;
 
 export const SearchBarContainer = styled.View<SearchInputProps>`
@@ -81,7 +82,7 @@ export const ProductImage = styled.Image`
 
 export const ProductData = styled.View`
     margin-top: 1%;
-    width: 70%;
+    width: 72%;
     justify-content: space-between;
 `;
 
