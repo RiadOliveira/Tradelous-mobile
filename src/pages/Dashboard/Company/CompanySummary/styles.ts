@@ -29,13 +29,13 @@ export const LogoContainer = styled.View`
     border-radius: 55px;
     justify-content: center;
     align-items: center;
-    border: 2px solid #1c274e;
+    border: 3px solid #1c274e;
 `;
 
 export const CompanyImage = styled.Image`
-    width: 108px;
-    height: 108px;
-    border-radius: 54px;
+    width: 106px;
+    height: 106px;
+    border-radius: 53px;
 `;
 
 export const CompanyData = styled.View`

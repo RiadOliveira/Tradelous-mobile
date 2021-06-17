@@ -48,15 +48,15 @@ export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`
     align-items: center;
     padding: ${props => (!!props.selectedImage ? '0px' : '10px')};
 
-    border: 1px solid #1c274e;
+    border: 2px solid #1c274e;
 `;
 
 export const ImageContainer = styled.View``;
 
 export const ProfileImage = styled.Image`
-    width: 190px;
-    height: 190px;
-    border-radius: 95px;
+    width: 191px;
+    height: 191px;
+    border-radius: 95.5px;
 `;
 
 export const DeleteImageButton = styled(RectButton)`

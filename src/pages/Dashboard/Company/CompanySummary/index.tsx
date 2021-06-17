@@ -21,7 +21,7 @@ import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import convertCNPJ from '@utils/convertCNPJ';
 import { useAuth } from '@hooks/auth';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 interface ICompany {
     id: string;
@@ -41,6 +41,9 @@ interface IEmployee {
 
 const CompanySummary: React.FC = () => {
     const { user } = useAuth();
+    const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
+        updatedAt: 0,
+    };
     const navigation = useNavigation();
 
     const [company, setCompany] = useState<ICompany>({} as ICompany);
@@ -53,14 +56,14 @@ const CompanySummary: React.FC = () => {
         api.get('/company').then(response => {
             setCompany(response.data);
         });
-    }, []);
+    }, [updatedAt]);
 
     useEffect(() => {
         api.get('/company/list-employees').then(response => {
             setEmployees(response.data);
             setHasLoadedCompany(true);
         });
-    }, []);
+    }, [user]);
 
     const formattedCNPJ = useMemo(
         () => (company.cnpj ? convertCNPJ(company.cnpj) : 0),

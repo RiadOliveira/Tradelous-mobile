@@ -24,7 +24,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import getValidationErrors from '@utils/getValidationErrors';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 import { Picker } from '@react-native-picker/picker';
 
 interface BrazilianState {
@@ -41,16 +42,15 @@ interface ICompany {
 }
 
 const EditCompany: React.FC = () => {
+    const navigation = useNavigation();
     const company = useRoute().params as ICompany;
 
     const formRef = useRef<FormHandles>(null);
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
 
-    const [selectedImage, setSelectedImage] = useState(() =>
-        company.logo
-            ? `${api.defaults.baseURL}/files/logo/${company.logo}`
-            : '',
+    const [selectedImage, setSelectedImage] = useState<string | null>(() =>
+        company.logo ? company.logo : null,
     );
 
     const [selectedState, setSelectedState] = useState(
@@ -81,60 +81,63 @@ const EditCompany: React.FC = () => {
         [allStates],
     );
 
-    const handleSubmit = useCallback(async (companyData: ICompany) => {
-        try {
-            const schema = yup.object().shape({
-                companyName: yup
-                    .string()
-                    .required('Nome da empresa obrigatório'),
-                companyCity: yup
-                    .string()
-                    .required('Cidade da empresa obrigatório'),
-                cnpj: yup
-                    .string()
-                    .required('CNPJ obrigatório')
-                    .min(14, 'O tamanho mínimo do cnpj é de 14 dígitos'),
-            });
+    const handleSubmit = useCallback(
+        async (companyData: ICompany) => {
+            try {
+                const schema = yup.object().shape({
+                    name: yup.string().required('Nome da empresa obrigatório'),
+                    cnpj: yup
+                        .string()
+                        .required('CNPJ obrigatório')
+                        .min(14, 'O tamanho mínimo do cnpj é de 14 dígitos'),
+                    adress: yup
+                        .string()
+                        .required('Cidade da empresa obrigatório'),
+                });
 
-            await schema.validate(companyData, {
-                abortEarly: false,
-            });
+                await schema.validate(companyData, {
+                    abortEarly: false,
+                });
 
-            if (
-                companyData.cnpj.includes('.') ||
-                companyData.cnpj.includes('-')
-            ) {
-                throw new yup.ValidationError('Formato de cnpj inválido');
-            }
+                if (
+                    companyData.cnpj.includes('.') ||
+                    companyData.cnpj.includes('-')
+                ) {
+                    throw new yup.ValidationError('Formato de cnpj inválido');
+                }
 
-            await api.put('/company/update', companyData);
+                companyData.adress += `/${selectedState}`;
 
-            Alert.alert(
-                'Atualização concluída!',
-                'A alteração da empresa foi efetuada com sucesso.',
-            );
-        } catch (err) {
-            if (err instanceof yup.ValidationError) {
-                const validationErrors = getValidationErrors(err);
-
-                const validationKeys = Object.keys(validationErrors);
-
-                formRef.current?.setErrors(validationErrors);
+                await api.put('/company/update', companyData);
 
                 Alert.alert(
-                    'Problema na validação',
-                    `${validationErrors[validationKeys[0]]}.`,
+                    'Atualização concluída!',
+                    'A alteração da empresa foi efetuada com sucesso.',
                 );
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    const validationErrors = getValidationErrors(err);
 
-                return;
+                    const validationKeys = Object.keys(validationErrors);
+
+                    formRef.current?.setErrors(validationErrors);
+
+                    Alert.alert(
+                        'Problema na validação',
+                        `${validationErrors[validationKeys[0]]}.`,
+                    );
+
+                    return;
+                }
+
+                Alert.alert(
+                    'Problema inesperado',
+                    'Ocorreu algum problema, por favor, tente novamente.',
+                );
             }
-
-            Alert.alert(
-                'Problema inesperado',
-                'Ocorreu algum problema, por favor, tente novamente.',
-            );
-        }
-    }, []);
+        },
+        [selectedState],
+    );
 
     const handleImageData = useCallback(
         async (handleMode: 'upload' | 'delete') => {
@@ -154,7 +157,7 @@ const EditCompany: React.FC = () => {
                                 onPress: async () => {
                                     try {
                                         await api.patch('/company/updateLogo');
-                                        setSelectedImage('');
+                                        setSelectedImage(null);
                                     } catch {
                                         Alert.alert(
                                             'Falha na exclusão',
@@ -183,8 +186,12 @@ const EditCompany: React.FC = () => {
                                     uri,
                                 });
 
-                                await api.patch('/company/updateLogo', data);
-                                setSelectedImage(uri);
+                                const response = await api.patch(
+                                    '/company/updateLogo',
+                                    data,
+                                );
+
+                                setSelectedImage(response.data.logo);
                             } catch {
                                 Alert.alert(
                                     'Falha na atualização',
@@ -199,6 +206,32 @@ const EditCompany: React.FC = () => {
         [selectedImage, company.id],
     );
 
+    useEffect(() => {
+        navigation.addListener('blur', () => {
+            const updatedCompany = JSON.stringify({
+                ...formRef.current?.getData(),
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                adress: `${formRef.current?.getFieldValue(
+                    'adress',
+                )}/${selectedState}`,
+                logo: selectedImage || null,
+            });
+
+            const comparsionCompany = JSON.stringify({
+                name: company.name,
+                cnpj: company.cnpj,
+                adress: company.adress,
+                logo: company.logo,
+            });
+
+            if (comparsionCompany !== updatedCompany) {
+                navigation.navigate('CompanySummary', {
+                    updatedAt: Date.now(),
+                });
+            }
+        });
+    }, [selectedImage, company, navigation, selectedState]);
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -210,12 +243,12 @@ const EditCompany: React.FC = () => {
                     <ImagePicker
                         onPress={() => handleImageData('upload')}
                         activeOpacity={0.7}
-                        selectedImage={selectedImage}
+                        selectedImage={selectedImage || ''}
                     >
                         {selectedImage ? (
                             <CompanyLogo
                                 source={{
-                                    uri: selectedImage,
+                                    uri: `${api.defaults.baseURL}/files/logo/${selectedImage}`,
                                 }}
                             />
                         ) : (
