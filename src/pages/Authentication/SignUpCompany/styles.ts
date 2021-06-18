@@ -1,3 +1,4 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
@@ -36,6 +37,11 @@ export const PickerText = styled.Text`
     margin-top: 5px;
 `;
 
+export const ImageContainer = styled.View`
+    position: relative;
+    margin-bottom: 10px;
+`;
+
 export const ImagePicker = styled.TouchableOpacity`
     width: 100px;
     height: 100px;
@@ -45,6 +51,15 @@ export const ImagePicker = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     border: 1.5px solid #1c274e;
+`;
+
+export const DeleteImageButton = styled(RectButton)`
+    position: absolute;
+    right: -10px;
+    bottom: 13px;
+    background-color: #de4343;
+    border-radius: 25px;
+    padding: 2px;
 `;
 
 export const ImageHighlight = styled.Image`

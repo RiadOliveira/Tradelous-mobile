@@ -113,10 +113,7 @@ const ProductDescription: React.FC = () => {
                     abortEarly: false,
                 });
 
-                const response = await api.put(
-                    `/products/update/${product.id}`,
-                    data,
-                );
+                const response = await api.put(`/products/${product.id}`, data);
 
                 updateProductsStatus(response.data);
 

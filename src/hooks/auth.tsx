@@ -82,7 +82,7 @@ const AuthContext: React.FC = ({ children }) => {
     }, []);
 
     const updateUser = useCallback(async (userData: UpdateUserData) => {
-        const response = await api.put('/user/update', userData);
+        const response = await api.put('/user/', userData);
 
         await AsyncStorage.setItem(
             '@Tradelous-user',

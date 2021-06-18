@@ -66,7 +66,7 @@ export const CompanyAdress = styled.Text`
 export const EditButton = styled(RectButton)`
     position: absolute;
     right: 4%;
-    top: 40%;
+    bottom: 10%;
 `;
 
 export const EditIcon = styled(Icon)``;

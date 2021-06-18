@@ -108,7 +108,7 @@ const EditCompany: React.FC = () => {
 
                 companyData.adress += `/${selectedState}`;
 
-                await api.put('/company/update', companyData);
+                await api.put('/company/', companyData);
 
                 Alert.alert(
                     'Atualização concluída!',

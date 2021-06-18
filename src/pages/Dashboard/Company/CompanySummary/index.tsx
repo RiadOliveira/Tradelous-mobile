@@ -53,7 +53,7 @@ const CompanySummary: React.FC = () => {
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        api.get('/company').then(response => {
+        api.get('/company/').then(response => {
             setCompany(response.data);
         });
     }, [updatedAt]);
@@ -95,7 +95,7 @@ const CompanySummary: React.FC = () => {
                 <Container>
                     <CompanyContainer>
                         <CompanyData>
-                            <CompanyName>Stark Industries</CompanyName>
+                            <CompanyName>{company.name}</CompanyName>
                             <CompanyAdress>
                                 {company.adress}
                                 {'\n'}

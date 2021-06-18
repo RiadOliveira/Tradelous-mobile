@@ -11,7 +11,9 @@ import {
     LogoImage,
     PickerView,
     PickerText,
+    ImageContainer,
     ImagePicker,
+    DeleteImageButton,
     ImageHighlight,
 } from './styles';
 import Input from '@components/Input';
@@ -22,7 +24,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text, Dimensions, Alert } from 'react-native';
+import { TextInput, Text, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -30,7 +32,6 @@ import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import getValidationErrors from '@utils/getValidationErrors';
-const { width } = Dimensions.get('screen');
 
 interface BrazilianState {
     nome: string;
@@ -152,11 +153,15 @@ const SignUpCompany: React.FC = () => {
 
                 updateUsersCompany(id);
 
+                navigation.reset({
+                    routes: [{ name: 'Dashboard' }],
+                });
+
                 navigation.navigate('Dashboard');
 
                 Alert.alert(
-                    'Cadastro efetuado com sucesso!',
-                    'Realize login para acessar seus dados e de sua empresa.',
+                    'Sucesso no cadastro!',
+                    'A criação de sua empresa foi efetuada com sucesso.',
                 );
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
@@ -191,16 +196,12 @@ const SignUpCompany: React.FC = () => {
     );
 
     return (
-        <Container>
-            <ScrollView
-                contentContainerStyle={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width,
-                }}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-            >
+        <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+        >
+            <Container>
                 <LogoView>
                     <LogoImage source={TestLogo} />
                 </LogoView>
@@ -271,20 +272,27 @@ const SignUpCompany: React.FC = () => {
                         </Picker>
                     </PickerView>
 
-                    <ImagePicker
-                        onPress={() => handleUploadImage()}
-                        activeOpacity={0.7}
-                    >
-                        {selectedImage.uri ? (
-                            <ImageHighlight
-                                source={{
-                                    uri: selectedImage.uri,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="add" size={44} color="#1c274e" />
-                        )}
-                    </ImagePicker>
+                    <ImageContainer>
+                        <ImagePicker
+                            onPress={() => handleUploadImage()}
+                            activeOpacity={0.7}
+                        >
+                            {selectedImage.uri ? (
+                                <ImageHighlight
+                                    source={{
+                                        uri: selectedImage.uri,
+                                    }}
+                                />
+                            ) : (
+                                <Icon name="add" size={44} color="#1c274e" />
+                            )}
+                        </ImagePicker>
+                        <DeleteImageButton
+                            onPress={() => setSelectedImage({} as ImageData)}
+                        >
+                            <Icon name="clear" size={34} color="#e7e7e7" />
+                        </DeleteImageButton>
+                    </ImageContainer>
                 </Form>
 
                 <Button
@@ -293,8 +301,8 @@ const SignUpCompany: React.FC = () => {
                 >
                     <Text>Registrar{'\n'}empresa</Text>
                 </Button>
-            </ScrollView>
-        </Container>
+            </Container>
+        </ScrollView>
     );
 };
 
