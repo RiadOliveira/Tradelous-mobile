@@ -39,10 +39,7 @@ const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
                 <Icon name="arrow-back" size={32} color="#ffffff" />
             </ReturnButton>
 
-            <FlashButton
-                activeOpacity={0.4}
-                onPress={() => handleCameraFlash()}
-            >
+            <FlashButton activeOpacity={0.4} onPress={handleCameraFlash}>
                 {isFlashEnabled ? (
                     <Icon name="flash-on" size={32} color="#ffffff" />
                 ) : (

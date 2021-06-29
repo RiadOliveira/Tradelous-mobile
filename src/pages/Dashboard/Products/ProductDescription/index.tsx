@@ -32,7 +32,7 @@ import { useNavigation, useRoute } from '@react-navigation/core';
 import { useProducts } from '@hooks/products';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
-import ErrorCatcher from '../../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 interface IProduct {
     name: string;
@@ -92,7 +92,7 @@ const ProductDescription: React.FC = () => {
     const handleSubmit = useCallback(
         async (data: IProduct) => {
             try {
-                data.quantity = product.quantity || 0;
+                data.quantity = data.quantity || 0;
 
                 data.quantity = Number(
                     data.quantity.toString().replace('-', '.'),
@@ -132,13 +132,13 @@ const ProductDescription: React.FC = () => {
 
                 Toast.show({
                     type: 'success',
-                    text1: 'Atualização do produto concluída!',
+                    text1: 'Produto atualizado com sucesso!',
                 });
             } catch (err) {
                 ErrorCatcher(err, formRef);
             }
         },
-        [product.id, barCodeValue, product.quantity, updateProductsStatus],
+        [product.id, barCodeValue, updateProductsStatus],
     );
 
     const handleImageData = useCallback(
@@ -161,12 +161,12 @@ const ProductDescription: React.FC = () => {
 
                         Toast.show({
                             type: 'success',
-                            text1: 'Imagem do produto excluída com sucesso',
+                            text1: 'A imagem do produto foi excluída!',
                         });
                     } catch {
                         Toast.show({
                             type: 'error',
-                            text1: 'Falha na exclusão da imagem do produto',
+                            text1: 'Falha na exclusão da imagem',
                         });
                     }
                 }
@@ -198,7 +198,7 @@ const ProductDescription: React.FC = () => {
                                 Toast.show({
                                     type: 'success',
                                     text1:
-                                        'Imagem do produto atualizada com sucesso',
+                                        'A imagem do produto foi atualizada!',
                                 });
                             } catch {
                                 Toast.show({
@@ -225,7 +225,7 @@ const ProductDescription: React.FC = () => {
 
             Toast.show({
                 type: 'success',
-                text1: 'Produto excluído com sucesso',
+                text1: 'Produto excluído com sucesso!',
             });
         } catch {
             Toast.show({
@@ -280,7 +280,7 @@ const ProductDescription: React.FC = () => {
                             name="name"
                             placeholder="Nome"
                             icon="label-outline"
-                            onSubmitEditing={priceInput.current?.focus}
+                            onSubmitEditing={() => priceInput.current?.focus()}
                             returnKeyType="next"
                         />
 
@@ -290,7 +290,7 @@ const ProductDescription: React.FC = () => {
                             ref={priceInput}
                             placeholder="Preço (Use . para decimal)"
                             icon="attach-money"
-                            onSubmitEditing={brandInput.current?.focus}
+                            onSubmitEditing={() => brandInput.current?.focus()}
                             returnKeyType="next"
                         />
 
@@ -300,7 +300,9 @@ const ProductDescription: React.FC = () => {
                             placeholder="Marca"
                             icon="tag"
                             ref={brandInput}
-                            onSubmitEditing={quantityInput.current?.focus}
+                            onSubmitEditing={() =>
+                                quantityInput.current?.focus()
+                            }
                             returnKeyType="next"
                         />
 
@@ -386,7 +388,7 @@ const ProductDescription: React.FC = () => {
                     <ButtonsContainer>
                         <Button
                             biggerText
-                            onPress={formRef.current?.submitForm}
+                            onPress={() => formRef.current?.submitForm()}
                         >
                             Atualizar Produto
                         </Button>

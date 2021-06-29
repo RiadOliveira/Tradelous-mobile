@@ -39,8 +39,8 @@ const Modal: React.FC<ModalProps> = ({
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={() => handleResponse()}
-            onBackdropPress={() => handleResponse()}
+            onBackButtonPress={handleResponse}
+            onBackdropPress={handleResponse}
             style={{ justifyContent: 'center', alignItems: 'center' }}
             animationIn="fadeIn"
             animationOut="fadeOut"

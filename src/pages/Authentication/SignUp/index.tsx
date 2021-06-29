@@ -18,7 +18,7 @@ import * as yup from 'yup';
 import api from '@services/api';
 import { useAuth } from '@hooks/auth';
 import Toast from 'react-native-toast-message';
-import ErrorCatcher from '../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 const { width } = Dimensions.get('screen');
 
@@ -118,9 +118,7 @@ const SignUp: React.FC = () => {
                         name="name"
                         placeholder="Nome"
                         icon="person-outline"
-                        onSubmitEditing={() => {
-                            emailInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => emailInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -133,9 +131,7 @@ const SignUp: React.FC = () => {
                         name="email"
                         placeholder="E-mail"
                         icon="mail-outline"
-                        onSubmitEditing={() => {
-                            passwordInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => passwordInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -148,9 +144,9 @@ const SignUp: React.FC = () => {
                         placeholder="Senha"
                         icon="lock-outline"
                         ref={passwordInput}
-                        onSubmitEditing={() => {
-                            confirmPasswordInput.current?.focus();
-                        }}
+                        onSubmitEditing={() =>
+                            confirmPasswordInput.current?.focus()
+                        }
                     />
 
                     <Input

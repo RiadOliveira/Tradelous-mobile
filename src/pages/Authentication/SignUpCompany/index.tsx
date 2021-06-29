@@ -162,7 +162,7 @@ const SignUpCompany: React.FC = () => {
 
                 Toast.show({
                     type: 'success',
-                    text1: 'O cadastro da empresa foi efetuado com sucesso!',
+                    text1: 'Empresa cadastrada com sucesso!',
                 });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
@@ -224,9 +224,7 @@ const SignUpCompany: React.FC = () => {
                         name="companyName"
                         placeholder="Nome da empresa"
                         icon="business"
-                        onSubmitEditing={() => {
-                            cnpjInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => cnpjInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -237,9 +235,7 @@ const SignUpCompany: React.FC = () => {
                         name="cnpj"
                         placeholder="CNPJ (Somente números)"
                         icon="location-city"
-                        onSubmitEditing={() => {
-                            cityInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => cityInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -278,7 +274,7 @@ const SignUpCompany: React.FC = () => {
 
                     <ImageContainer>
                         <ImagePicker
-                            onPress={() => handleUploadImage()}
+                            onPress={handleUploadImage}
                             activeOpacity={0.7}
                         >
                             {selectedImage.uri ? (

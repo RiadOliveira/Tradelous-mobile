@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
-import ErrorCatcher from '../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 interface UpdateProfileData {
     name: string;
@@ -126,6 +126,11 @@ const Profile: React.FC = () => {
                             try {
                                 await updateUsersAvatar(uri);
                                 setSelectedImage(uri);
+
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Avatar atualizado com sucesso!',
+                                });
                             } catch {
                                 Toast.show({
                                     type: 'error',
@@ -157,7 +162,7 @@ const Profile: React.FC = () => {
             >
                 <Container>
                     <Header>
-                        <SignOutButton onPress={() => signOut()}>
+                        <SignOutButton onPress={signOut}>
                             <SignOutButtonText>Sair</SignOutButtonText>
                         </SignOutButton>
                     </Header>
@@ -202,7 +207,7 @@ const Profile: React.FC = () => {
                             name="name"
                             placeholder="Nome"
                             icon="person-outline"
-                            onSubmitEditing={emailInput.current?.focus}
+                            onSubmitEditing={() => emailInput.current?.focus()}
                             returnKeyType="next"
                         />
 
@@ -215,7 +220,9 @@ const Profile: React.FC = () => {
                             name="email"
                             placeholder="E-mail"
                             icon="mail-outline"
-                            onSubmitEditing={oldPasswordInput.current?.focus}
+                            onSubmitEditing={() =>
+                                oldPasswordInput.current?.focus()
+                            }
                             returnKeyType="next"
                         />
 
@@ -228,7 +235,9 @@ const Profile: React.FC = () => {
                             placeholder="Senha antiga"
                             icon="lock-outline"
                             ref={oldPasswordInput}
-                            onSubmitEditing={newPasswordInput.current?.focus}
+                            onSubmitEditing={() =>
+                                newPasswordInput.current?.focus()
+                            }
                         />
 
                         <Input
@@ -240,8 +249,8 @@ const Profile: React.FC = () => {
                             placeholder="Nova senha"
                             icon="lock-outline"
                             ref={newPasswordInput}
-                            onSubmitEditing={
-                                confirmPasswordInput.current?.focus
+                            onSubmitEditing={() =>
+                                confirmPasswordInput.current?.focus()
                             }
                         />
 
@@ -254,11 +263,16 @@ const Profile: React.FC = () => {
                             placeholder="Confirmar senha"
                             icon="lock-outline"
                             ref={confirmPasswordInput}
-                            onSubmitEditing={formRef.current?.submitForm}
+                            onSubmitEditing={() =>
+                                formRef.current?.submitForm()
+                            }
                         />
                     </Form>
 
-                    <Button biggerText onPress={formRef.current?.submitForm}>
+                    <Button
+                        biggerText
+                        onPress={() => formRef.current?.submitForm()}
+                    >
                         Atualizar dados
                     </Button>
                 </Container>

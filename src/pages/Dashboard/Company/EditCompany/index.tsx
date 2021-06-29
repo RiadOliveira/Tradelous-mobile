@@ -15,20 +15,20 @@ import {
     PickerText,
 } from './styles';
 import { ScrollView, TextInput } from 'react-native';
-import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import { launchImageLibrary } from 'react-native-image-picker/src';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
+
+import * as yup from 'yup';
 import Button from '@components/Button';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as yup from 'yup';
-import { launchImageLibrary } from 'react-native-image-picker/src';
-import { useNavigation, useRoute } from '@react-navigation/native';
-
-import { Picker } from '@react-native-picker/picker';
+import Input from '@components/Input';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
-import ErrorCatcher from '../../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 interface BrazilianState {
     nome: string;
@@ -144,6 +144,11 @@ const EditCompany: React.FC = () => {
                     try {
                         await api.patch('/company/updateLogo');
                         setSelectedImage(null);
+
+                        Toast.show({
+                            type: 'success',
+                            text1: 'Logo excluída com sucesso',
+                        });
                     } catch {
                         Toast.show({
                             type: 'error',
@@ -173,6 +178,11 @@ const EditCompany: React.FC = () => {
                                 );
 
                                 setSelectedImage(response.data.logo);
+
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Logo atualizada com sucesso',
+                                });
                             } catch {
                                 Toast.show({
                                     type: 'error',
@@ -279,9 +289,7 @@ const EditCompany: React.FC = () => {
                             name="name"
                             placeholder="Nome da empresa"
                             icon="business"
-                            onSubmitEditing={() => {
-                                cnpjInput.current?.focus();
-                            }}
+                            onSubmitEditing={() => cnpjInput.current?.focus()}
                             returnKeyType="next"
                         />
 
@@ -292,9 +300,7 @@ const EditCompany: React.FC = () => {
                             name="cnpj"
                             placeholder="CNPJ (Somente números)"
                             icon="location-city"
-                            onSubmitEditing={() => {
-                                cityInput.current?.focus();
-                            }}
+                            onSubmitEditing={() => cityInput.current?.focus()}
                             returnKeyType="next"
                         />
 

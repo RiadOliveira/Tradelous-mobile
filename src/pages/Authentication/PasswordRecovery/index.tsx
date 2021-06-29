@@ -38,9 +38,7 @@ const PasswordRecovery: React.FC = () => {
                         name="recoverEmail"
                         placeholder="E-mail de recuperação"
                         icon="mail-outline"
-                        onSubmitEditing={() => {
-                            formRef.current?.submitForm();
-                        }}
+                        onSubmitEditing={() => formRef.current?.submitForm()}
                         returnKeyType="send"
                     />
                 </Form>

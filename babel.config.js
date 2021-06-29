@@ -25,7 +25,8 @@ module.exports = {
             '@utils': './src/utils',
             '@hooks': './src/hooks',
             '@assets': './assets',
-            '@routes/*': './src/routes',
+            '@errors': './src/errors',
+            '@routes': './src/routes',
           }
         }
       ],

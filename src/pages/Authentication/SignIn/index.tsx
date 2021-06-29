@@ -21,7 +21,7 @@ import { useAuth } from '@hooks/auth';
 import { TextInput, Dimensions } from 'react-native';
 
 import * as yup from 'yup';
-import ErrorCatcher from '../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 const { height } = Dimensions.get('screen');
 
@@ -88,9 +88,7 @@ const SignIn: React.FC = () => {
                         name="email"
                         placeholder="E-mail"
                         icon="mail-outline"
-                        onSubmitEditing={() => {
-                            passwordInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => passwordInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -103,9 +101,7 @@ const SignIn: React.FC = () => {
                         placeholder="Senha"
                         icon="lock-outline"
                         ref={passwordInput}
-                        onSubmitEditing={() => {
-                            formRef.current?.submitForm();
-                        }}
+                        onSubmitEditing={() => formRef.current?.submitForm()}
                     />
                 </Form>
 

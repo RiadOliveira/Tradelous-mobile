@@ -24,7 +24,7 @@ import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
-import ErrorCatcher from '../../../errors/errorCatcher';
+import ErrorCatcher from '@errors/errorCatcher';
 
 interface IProduct {
     name: string;
@@ -151,7 +151,7 @@ const RegisterProduct: React.FC = () => {
 
                 Toast.show({
                     type: 'success',
-                    text1: 'Produto adicionado com sucesso',
+                    text1: 'Produto adicionado com sucesso!',
                 });
             } catch (err) {
                 ErrorCatcher(err, formRef);
@@ -192,9 +192,7 @@ const RegisterProduct: React.FC = () => {
                         name="name"
                         placeholder="Nome"
                         icon="label-outline"
-                        onSubmitEditing={() => {
-                            priceInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => priceInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -204,9 +202,7 @@ const RegisterProduct: React.FC = () => {
                         ref={priceInput}
                         placeholder="Preço (Use . para decimal)"
                         icon="attach-money"
-                        onSubmitEditing={() => {
-                            brandInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => brandInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -216,9 +212,7 @@ const RegisterProduct: React.FC = () => {
                         placeholder="Marca"
                         icon="tag"
                         ref={brandInput}
-                        onSubmitEditing={() => {
-                            quantityInput.current?.focus();
-                        }}
+                        onSubmitEditing={() => quantityInput.current?.focus()}
                         returnKeyType="next"
                     />
 
@@ -245,7 +239,7 @@ const RegisterProduct: React.FC = () => {
                         </BarCodeValue>
 
                         <BarCodeButton
-                            onPress={() => handleCameraOpening()}
+                            onPress={handleCameraOpening}
                             activeOpacity={0.4}
                         >
                             <Icon name="qr-code-scanner" size={24} />
@@ -253,7 +247,7 @@ const RegisterProduct: React.FC = () => {
                     </BarCodeScannerContainer>
 
                     <ImagePicker
-                        onPress={() => handleUploadImage()}
+                        onPress={handleUploadImage}
                         activeOpacity={0.7}
                     >
                         {selectedImage.uri ? (
