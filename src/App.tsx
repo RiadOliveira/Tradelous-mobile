@@ -1,8 +1,9 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StatusBar } from 'react-native';
 import Routes from './routes';
 import ContextsProvider from './hooks';
+import { StatusBar } from 'react-native';
+import Toast from '@components/Toast';
 
 const App: React.FC = () => {
     return (
@@ -10,6 +11,7 @@ const App: React.FC = () => {
             <StatusBar barStyle="light-content" />
             <ContextsProvider>
                 <Routes />
+                <Toast />
             </ContextsProvider>
         </>
     );

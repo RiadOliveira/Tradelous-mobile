@@ -11,14 +11,15 @@ import {
 } from './styles';
 import { Alert, ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
-import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import { launchImageLibrary } from 'react-native-image-picker/src';
+
+import Input from '@components/Input';
 import Button from '@components/Button';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
-import { launchImageLibrary } from 'react-native-image-picker/src';
 import getValidationErrors from '@utils/getValidationErrors';
 import Modal from '@components/Modal';
 
