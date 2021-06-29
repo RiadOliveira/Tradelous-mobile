@@ -15,16 +15,16 @@ import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
+import { useProducts } from '@hooks/products';
 
 import api from '@services/api';
 import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
-import { useProducts } from '@hooks/products';
 import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../errors/errorCatcher';
 
 interface IProduct {
     name: string;
@@ -154,28 +154,7 @@ const RegisterProduct: React.FC = () => {
                     text1: 'Produto adicionado com sucesso',
                 });
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [selectedImage, user.companyId, barCodeValue, updateProductsStatus],

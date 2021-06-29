@@ -23,12 +23,12 @@ import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
-import getValidationErrors from '@utils/getValidationErrors';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Picker } from '@react-native-picker/picker';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../../errors/errorCatcher';
 
 interface BrazilianState {
     nome: string;
@@ -126,28 +126,7 @@ const EditCompany: React.FC = () => {
                     text1: 'Atualização da empresa concluída!',
                 });
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [selectedState],

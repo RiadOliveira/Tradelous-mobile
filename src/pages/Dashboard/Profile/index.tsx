@@ -20,9 +20,9 @@ import Button from '@components/Button';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
-import getValidationErrors from '@utils/getValidationErrors';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../errors/errorCatcher';
 
 interface UpdateProfileData {
     name: string;
@@ -91,28 +91,7 @@ const Profile: React.FC = () => {
                     text1: 'Atualização do perfil concluída!',
                 });
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [updateUser],

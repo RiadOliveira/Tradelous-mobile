@@ -27,12 +27,12 @@ import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import { useProducts } from '@hooks/products';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../../errors/errorCatcher';
 
 interface IProduct {
     name: string;
@@ -135,28 +135,7 @@ const ProductDescription: React.FC = () => {
                     text1: 'Atualização do produto concluída!',
                 });
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [product.id, barCodeValue, product.quantity, updateProductsStatus],

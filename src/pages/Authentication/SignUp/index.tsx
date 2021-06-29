@@ -14,11 +14,11 @@ import { FormHandles } from '@unform/core';
 import { TextInput, Switch, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import api from '@services/api';
 import { useAuth } from '@hooks/auth';
 import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../errors/errorCatcher';
 
 const { width } = Dimensions.get('screen');
 
@@ -89,28 +89,7 @@ const SignUp: React.FC = () => {
 
                 await signIn(data);
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [navigation, switchValue, signIn],

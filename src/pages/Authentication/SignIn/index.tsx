@@ -12,7 +12,6 @@ import {
 import Input from '@components/Input';
 import Button from '@components/Button';
 import TestLogo from '@assets/logo/test-logo.png';
-import getValidationErrors from '@utils/getValidationErrors';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -22,7 +21,7 @@ import { useAuth } from '@hooks/auth';
 import { TextInput, Dimensions } from 'react-native';
 
 import * as yup from 'yup';
-import Toast from 'react-native-toast-message';
+import ErrorCatcher from '../../../errors/errorCatcher';
 
 const { height } = Dimensions.get('screen');
 
@@ -58,28 +57,7 @@ const SignIn: React.FC = () => {
 
                 await signIn(data);
             } catch (err) {
-                if (err instanceof yup.ValidationError) {
-                    const validationErrors = getValidationErrors(err);
-
-                    const validationKeys = Object.keys(validationErrors);
-
-                    formRef.current?.setErrors(validationErrors);
-
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Problema na validação',
-                        text2: `${validationErrors[validationKeys[0]]}.`,
-                    });
-
-                    return;
-                }
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
-                });
+                ErrorCatcher(err, formRef);
             }
         },
         [signIn],

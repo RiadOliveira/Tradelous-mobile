@@ -192,8 +192,7 @@ const SignUpCompany: React.FC = () => {
                 Toast.show({
                     type: 'error',
                     text1: 'Problema inesperado',
-                    text2:
-                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                    text2: 'Ocorreu alguma falha, por favor, tente novamente.',
                 });
             }
         },
