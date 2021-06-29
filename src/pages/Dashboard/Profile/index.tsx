@@ -9,7 +9,7 @@ import {
     ImageContainer,
     DeleteImageButton,
 } from './styles';
-import { Alert, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import getValidationErrors from '@utils/getValidationErrors';
 import Modal from '@components/Modal';
+import Toast from 'react-native-toast-message';
 
 interface UpdateProfileData {
     name: string;
@@ -85,10 +86,10 @@ const Profile: React.FC = () => {
                     formRef.current?.clearField('confirmPassword');
                 }
 
-                Alert.alert(
-                    'Atualização concluída!',
-                    'A alteração dos dados foi efetuada com sucesso.',
-                );
+                Toast.show({
+                    type: 'success',
+                    text1: 'Atualização do perfil concluída!',
+                });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -97,18 +98,21 @@ const Profile: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [updateUser],
@@ -118,19 +122,19 @@ const Profile: React.FC = () => {
         async (handleMode: 'upload' | 'delete') => {
             if (handleMode == 'delete') {
                 if (!selectedImage) {
-                    Alert.alert(
-                        'Operação indisponível',
-                        'Nenhuma imagem para ser deletada.',
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Operação indisponível',
+                    });
                 } else {
                     try {
                         await updateUsersAvatar('');
                         setSelectedImage('');
                     } catch {
-                        Alert.alert(
-                            'Falha na exclusão',
-                            'Ocorreu um erro ao tentar excluir o avatar.',
-                        );
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Falha na exclusão do avatar',
+                        });
                     }
                 }
             } else {
@@ -144,10 +148,10 @@ const Profile: React.FC = () => {
                                 await updateUsersAvatar(uri);
                                 setSelectedImage(uri);
                             } catch {
-                                Alert.alert(
-                                    'Falha na atualização',
-                                    'Ocorreu um erro ao tentar atualizar o avatar.',
-                                );
+                                Toast.show({
+                                    type: 'error',
+                                    text1: 'Falha na atualização do avatar',
+                                });
                             }
                         }
                     },

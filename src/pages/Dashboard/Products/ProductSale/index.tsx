@@ -12,7 +12,7 @@ import {
     ProductText,
     ProductAvailabilityText,
 } from './styles';
-import { Alert, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';

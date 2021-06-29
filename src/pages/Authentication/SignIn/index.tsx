@@ -19,9 +19,10 @@ import { FormHandles } from '@unform/core';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
-import { TextInput, Dimensions, Alert } from 'react-native';
+import { TextInput, Dimensions } from 'react-native';
 
 import * as yup from 'yup';
+import Toast from 'react-native-toast-message';
 
 const { height } = Dimensions.get('screen');
 
@@ -64,18 +65,21 @@ const SignIn: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema, por favor, tente logar-se novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [signIn],

@@ -24,7 +24,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text, Alert } from 'react-native';
+import { TextInput, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -32,6 +32,7 @@ import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import getValidationErrors from '@utils/getValidationErrors';
+import Toast from 'react-native-toast-message';
 
 interface BrazilianState {
     nome: string;
@@ -159,10 +160,10 @@ const SignUpCompany: React.FC = () => {
 
                 navigation.navigate('Dashboard');
 
-                Alert.alert(
-                    'Sucesso no cadastro!',
-                    'A criação de sua empresa foi efetuada com sucesso.',
-                );
+                Toast.show({
+                    type: 'success',
+                    text1: 'O cadastro da empresa foi efetuado com sucesso!',
+                });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -172,24 +173,28 @@ const SignUpCompany: React.FC = () => {
                     formRef.current?.setErrors(validationErrors);
 
                     if (validationKeys.length > 0) {
-                        Alert.alert(
-                            'Problema na validação',
-                            `${validationErrors[validationKeys[0]]}.`,
-                        );
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Problema na validação',
+                            text2: `${validationErrors[validationKeys[0]]}.`,
+                        });
                     } else {
-                        Alert.alert(
-                            'Problema na validação',
-                            `${err.errors[0]}.`,
-                        );
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Problema na validação',
+                            text2: `${err.errors[0]}.`,
+                        });
                     }
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [selectedState, user, selectedImage, navigation, updateUsersCompany],

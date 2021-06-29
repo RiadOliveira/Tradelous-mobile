@@ -11,13 +11,14 @@ import Button from '@components/Button';
 import TestLogo from '@assets/logo/test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Switch, Dimensions, Alert } from 'react-native';
+import { TextInput, Switch, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import api from '@services/api';
 import { useAuth } from '@hooks/auth';
+import Toast from 'react-native-toast-message';
 
 const { width } = Dimensions.get('screen');
 
@@ -78,10 +79,12 @@ const SignUp: React.FC = () => {
                 if (switchValue) {
                     navigation.navigate('SignUpCompany');
                 } else {
-                    Alert.alert(
-                        'Cadastro efetuado com sucesso!',
-                        'Entre em uma empresa para começar a gerenciar seu estoque.',
-                    );
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Cadastro realizado com sucesso!',
+                        text2:
+                            'Entre em uma empresa para gerenciar seu estoque.',
+                    });
                 }
 
                 await signIn(data);
@@ -93,18 +96,21 @@ const SignUp: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [navigation, switchValue, signIn],

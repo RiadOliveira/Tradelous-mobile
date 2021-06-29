@@ -14,7 +14,7 @@ import {
     NoProductsContainer,
     NoProductsText,
 } from './styles';
-import { Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
@@ -23,6 +23,7 @@ import { useProducts } from '@hooks/products';
 import api from '@services/api';
 import Camera from '@components/Camera';
 import Button from '@components/Button';
+import Toast from 'react-native-toast-message';
 
 interface IProduct {
     name: string;
@@ -141,10 +142,12 @@ const ProductsList: React.FC = () => {
             handleCameraVisibility(false);
 
             if (findedProductIndex == -1) {
-                Alert.alert(
-                    'Código de barras inválido',
-                    'Não foi encontrado nenhum produto com o código escaneado.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Código de barras inválido',
+                    text2:
+                        'Não foi encontrado nenhum produto com o código escaneado.',
+                });
             } else {
                 navigation.navigate(
                     'ProductDescription',

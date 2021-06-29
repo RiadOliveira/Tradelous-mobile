@@ -14,7 +14,7 @@ import {
     PickerView,
     PickerText,
 } from './styles';
-import { Alert, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -28,6 +28,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Picker } from '@react-native-picker/picker';
 import Modal from '@components/Modal';
+import Toast from 'react-native-toast-message';
 
 interface BrazilianState {
     nome: string;
@@ -120,10 +121,10 @@ const EditCompany: React.FC = () => {
 
                 await api.put('/company/', companyData);
 
-                Alert.alert(
-                    'Atualização concluída!',
-                    'A alteração da empresa foi efetuada com sucesso.',
-                );
+                Toast.show({
+                    type: 'success',
+                    text1: 'Atualização da empresa concluída!',
+                });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -132,18 +133,21 @@ const EditCompany: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [selectedState],
@@ -153,19 +157,19 @@ const EditCompany: React.FC = () => {
         async (handleMode: 'upload' | 'delete') => {
             if (handleMode == 'delete') {
                 if (!selectedImage) {
-                    Alert.alert(
-                        'Operação indisponível',
-                        'Nenhuma imagem para ser deletada.',
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Operação indisponível',
+                    });
                 } else {
                     try {
                         await api.patch('/company/updateLogo');
                         setSelectedImage(null);
                     } catch {
-                        Alert.alert(
-                            'Falha na exclusão',
-                            'Ocorreu um erro ao tentar excluir a logo.',
-                        );
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Falha na exclusão da logo',
+                        });
                     }
                 }
             } else {
@@ -191,10 +195,10 @@ const EditCompany: React.FC = () => {
 
                                 setSelectedImage(response.data.logo);
                             } catch {
-                                Alert.alert(
-                                    'Falha na atualização',
-                                    'Ocorreu um erro ao tentar atualizar a logo.',
-                                );
+                                Toast.show({
+                                    type: 'error',
+                                    text1: 'Falha na atualização da logo',
+                                });
                             }
                         }
                     },

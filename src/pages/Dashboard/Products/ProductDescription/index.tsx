@@ -15,7 +15,7 @@ import {
     ImageHighlight,
     ButtonsContainer,
 } from './styles';
-import { Alert, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
@@ -32,6 +32,7 @@ import * as yup from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import { useProducts } from '@hooks/products';
 import Modal from '@components/Modal';
+import Toast from 'react-native-toast-message';
 
 interface IProduct {
     name: string;
@@ -129,10 +130,10 @@ const ProductDescription: React.FC = () => {
 
                 updateProductsStatus(response.data);
 
-                Alert.alert(
-                    'Produto atualizado com sucesso!',
-                    'O produto selecionado teve seus dados atualizados.',
-                );
+                Toast.show({
+                    type: 'success',
+                    text1: 'Atualização do produto concluída!',
+                });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -141,18 +142,21 @@ const ProductDescription: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [product.id, barCodeValue, product.quantity, updateProductsStatus],
@@ -162,10 +166,10 @@ const ProductDescription: React.FC = () => {
         async (handleMode: 'upload' | 'delete') => {
             if (handleMode == 'delete') {
                 if (!productImage) {
-                    Alert.alert(
-                        'Operação indisponível',
-                        'Nenhuma imagem para ser deletada.',
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Operação indisponível',
+                    });
                 } else {
                     try {
                         const response = await api.patch(
@@ -176,15 +180,15 @@ const ProductDescription: React.FC = () => {
 
                         updateProductsStatus(response.data);
 
-                        Alert.alert(
-                            'Exclusão concluída',
-                            'A imagem do produto foi excluída com sucesso.',
-                        );
+                        Toast.show({
+                            type: 'success',
+                            text1: 'Imagem do produto excluída com sucesso',
+                        });
                     } catch {
-                        Alert.alert(
-                            'Falha na exclusão',
-                            'Ocorreu um erro ao tentar excluir a imagem do produto.',
-                        );
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Falha na exclusão da imagem do produto',
+                        });
                     }
                 }
             } else {
@@ -212,15 +216,16 @@ const ProductDescription: React.FC = () => {
 
                                 updateProductsStatus(response.data);
 
-                                Alert.alert(
-                                    'Atualização concluída',
-                                    'O produto teve sua imagem atualizada com sucesso.',
-                                );
+                                Toast.show({
+                                    type: 'success',
+                                    text1:
+                                        'Imagem do produto atualizada com sucesso',
+                                });
                             } catch {
-                                Alert.alert(
-                                    'Falha na atualização',
-                                    'Ocorreu um erro ao tentar atualizar a imagem do produto.',
-                                );
+                                Toast.show({
+                                    type: 'error',
+                                    text1: 'Falha na atualização do produto',
+                                });
                             }
                         }
                     },
@@ -239,15 +244,15 @@ const ProductDescription: React.FC = () => {
                 id: `deleted ${product.id}`,
             } as IProduct);
 
-            Alert.alert(
-                'Produto excluído com sucesso!',
-                'O produto selecionado teve uma exclusão bem sucedida.',
-            );
+            Toast.show({
+                type: 'success',
+                text1: 'Produto excluído com sucesso',
+            });
         } catch {
-            Alert.alert(
-                'Falha na exclusão',
-                'Ocorreu um erro ao tentar excluir o produto.',
-            );
+            Toast.show({
+                type: 'error',
+                text1: 'Falha na exclusão do produto',
+            });
         }
     }, [product.id, navigation, updateProductsStatus]);
 

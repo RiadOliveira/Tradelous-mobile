@@ -9,7 +9,7 @@ import {
     BarCodeValue,
     BarCodeButton,
 } from './styles';
-import { Alert, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
@@ -24,6 +24,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import { useProducts } from '@hooks/products';
+import Toast from 'react-native-toast-message';
 
 interface IProduct {
     name: string;
@@ -148,10 +149,10 @@ const RegisterProduct: React.FC = () => {
 
                 updateProductsStatus('newProduct');
 
-                Alert.alert(
-                    'Produto adicionado com sucesso!',
-                    'O produto foi adicionado ao estoque da empresa.',
-                );
+                Toast.show({
+                    type: 'success',
+                    text1: 'Produto adicionado com sucesso',
+                });
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -160,18 +161,21 @@ const RegisterProduct: React.FC = () => {
 
                     formRef.current?.setErrors(validationErrors);
 
-                    Alert.alert(
-                        'Problema na validação',
-                        `${validationErrors[validationKeys[0]]}.`,
-                    );
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Problema na validação',
+                        text2: `${validationErrors[validationKeys[0]]}.`,
+                    });
 
                     return;
                 }
 
-                Alert.alert(
-                    'Problema inesperado',
-                    'Ocorreu algum problema na aplicação, por favor, tente novamente.',
-                );
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2:
+                        'Ocorreu alguma falha no sistema, por favor, tente novamente.',
+                });
             }
         },
         [selectedImage, user.companyId, barCodeValue, updateProductsStatus],
