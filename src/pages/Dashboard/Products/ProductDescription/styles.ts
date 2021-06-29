@@ -26,12 +26,19 @@ export const ProductQuantityContainer = styled.View`
     position: relative;
 `;
 
-export const DecreaseQuantityButton = styled(RectButton)`
+export const SellProductButton = styled(RectButton)`
     position: absolute;
-    right: 10px;
-    top: 15px;
+    right: 3%;
+    top: 14%;
     background-color: #de4343;
+    padding: 5px;
     border-radius: 5px;
+`;
+
+export const SellProductButtonText = styled.Text`
+    font-family: Poppins-Regular;
+    color: #ffffff;
+    font-size: 14px;
 `;
 
 export const ImageContainer = styled.View`

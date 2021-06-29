@@ -27,6 +27,7 @@ import getValidationErrors from '@utils/getValidationErrors';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Picker } from '@react-native-picker/picker';
+import Modal from '@components/Modal';
 
 interface BrazilianState {
     nome: string;
@@ -41,6 +42,12 @@ interface ICompany {
     logo?: string;
 }
 
+interface ModalProps {
+    actionFunction?: () => Promise<void>;
+    text?: string;
+    visibility: boolean;
+}
+
 const EditCompany: React.FC = () => {
     const navigation = useNavigation();
     const company = useRoute().params as ICompany;
@@ -49,13 +56,16 @@ const EditCompany: React.FC = () => {
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
 
+    const [modalProps, setModalProps] = useState<ModalProps>({
+        visibility: false,
+    });
     const [selectedImage, setSelectedImage] = useState<string | null>(() =>
         company.logo ? company.logo : null,
     );
-
     const [selectedState, setSelectedState] = useState(
         company.adress.split('/')[1],
     );
+
     const [allStates, setAllStates] = useState<BrazilianState[]>([]);
 
     useEffect(() => {
@@ -148,27 +158,15 @@ const EditCompany: React.FC = () => {
                         'Nenhuma imagem para ser deletada.',
                     );
                 } else {
-                    Alert.alert(
-                        'Deletar imagem',
-                        'Você deseja mesmo continuar com a exclusão da imagem?',
-                        [
-                            {
-                                text: 'Continuar',
-                                onPress: async () => {
-                                    try {
-                                        await api.patch('/company/updateLogo');
-                                        setSelectedImage(null);
-                                    } catch {
-                                        Alert.alert(
-                                            'Falha na exclusão',
-                                            'Ocorreu um erro ao tentar excluir a logo.',
-                                        );
-                                    }
-                                },
-                            },
-                            { text: 'Cancelar' },
-                        ],
-                    );
+                    try {
+                        await api.patch('/company/updateLogo');
+                        setSelectedImage(null);
+                    } catch {
+                        Alert.alert(
+                            'Falha na exclusão',
+                            'Ocorreu um erro ao tentar excluir a logo.',
+                        );
+                    }
                 }
             } else {
                 launchImageLibrary(
@@ -233,113 +231,134 @@ const EditCompany: React.FC = () => {
     }, [selectedImage, company, navigation, selectedState]);
 
     return (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Container>
-                <ImageContainer>
-                    <ImagePicker
-                        onPress={() => handleImageData('upload')}
-                        activeOpacity={0.7}
-                        selectedImage={selectedImage || ''}
-                    >
-                        {selectedImage ? (
-                            <CompanyLogo
-                                source={{
-                                    uri: `${api.defaults.baseURL}/files/logo/${selectedImage}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="business" size={140} color="#1c274e" />
-                        )}
-                    </ImagePicker>
+        <>
+            <Modal
+                actionFunction={modalProps.actionFunction}
+                setVisibility={setModalProps}
+                isVisible={modalProps.visibility}
+                text={modalProps.text ?? ''}
+                iconProps={{ name: 'delete', color: '#de4343' }}
+            />
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Container>
+                    <ImageContainer>
+                        <ImagePicker
+                            onPress={() => handleImageData('upload')}
+                            activeOpacity={0.7}
+                            selectedImage={selectedImage || ''}
+                        >
+                            {selectedImage ? (
+                                <CompanyLogo
+                                    source={{
+                                        uri: `${api.defaults.baseURL}/files/logo/${selectedImage}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon
+                                    name="business"
+                                    size={140}
+                                    color="#1c274e"
+                                />
+                            )}
+                        </ImagePicker>
 
-                    <DeleteImageButton
-                        onPress={() => handleImageData('delete')}
-                    >
-                        <Icon name="clear" size={48} color="#e7e7e7" />
-                    </DeleteImageButton>
-                </ImageContainer>
-
-                <Form
-                    ref={formRef}
-                    onSubmit={handleSubmit}
-                    initialData={{
-                        ...company,
-                        adress: company.adress.split('/')[0],
-                    }}
-                >
-                    <Input
-                        autoCorrect={false}
-                        textContentType="organizationName"
-                        autoCapitalize="words"
-                        name="name"
-                        placeholder="Nome da empresa"
-                        icon="business"
-                        onSubmitEditing={() => {
-                            cnpjInput.current?.focus();
-                        }}
-                        returnKeyType="next"
-                    />
-
-                    <Input
-                        keyboardType="numeric"
-                        ref={cnpjInput}
-                        maxLength={14}
-                        name="cnpj"
-                        placeholder="CNPJ (Somente números)"
-                        icon="location-city"
-                        onSubmitEditing={() => {
-                            cityInput.current?.focus();
-                        }}
-                        returnKeyType="next"
-                    />
-
-                    <Input
-                        autoCorrect={false}
-                        textContentType="addressCity"
-                        autoCapitalize="words"
-                        ref={cityInput}
-                        name="adress"
-                        placeholder="Cidade"
-                        icon="location-city"
-                        returnKeyType="next"
-                    />
-
-                    <PickerView>
-                        <PickerText>Selecione o Estado:</PickerText>
-                        <Picker
-                            selectedValue={selectedState}
-                            style={{
-                                height: 50,
-                                width: '35%',
-                            }}
-                            onValueChange={itemValue =>
-                                setSelectedState(String(itemValue))
+                        <DeleteImageButton
+                            onPress={() =>
+                                setModalProps({
+                                    visibility: true,
+                                    actionFunction: () =>
+                                        handleImageData('delete'),
+                                    text:
+                                        'Tem certeza que deseja deletar a imagem da empresa?',
+                                })
                             }
                         >
-                            {formattedStatesList.map(state => (
-                                <Picker.Item
-                                    key={state.nome}
-                                    label={state.sigla}
-                                    value={state.sigla}
-                                />
-                            ))}
-                        </Picker>
-                    </PickerView>
-                </Form>
+                            <Icon name="clear" size={48} color="#e7e7e7" />
+                        </DeleteImageButton>
+                    </ImageContainer>
 
-                <Button
-                    style={{ position: 'absolute', bottom: '5%' }}
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
-                    Atualizar dados
-                </Button>
-            </Container>
-        </ScrollView>
+                    <Form
+                        ref={formRef}
+                        onSubmit={handleSubmit}
+                        initialData={{
+                            ...company,
+                            adress: company.adress.split('/')[0],
+                        }}
+                    >
+                        <Input
+                            autoCorrect={false}
+                            textContentType="organizationName"
+                            autoCapitalize="words"
+                            name="name"
+                            placeholder="Nome da empresa"
+                            icon="business"
+                            onSubmitEditing={() => {
+                                cnpjInput.current?.focus();
+                            }}
+                            returnKeyType="next"
+                        />
+
+                        <Input
+                            keyboardType="numeric"
+                            ref={cnpjInput}
+                            maxLength={14}
+                            name="cnpj"
+                            placeholder="CNPJ (Somente números)"
+                            icon="location-city"
+                            onSubmitEditing={() => {
+                                cityInput.current?.focus();
+                            }}
+                            returnKeyType="next"
+                        />
+
+                        <Input
+                            autoCorrect={false}
+                            textContentType="addressCity"
+                            autoCapitalize="words"
+                            ref={cityInput}
+                            name="adress"
+                            placeholder="Cidade"
+                            icon="location-city"
+                            returnKeyType="next"
+                        />
+
+                        <PickerView>
+                            <PickerText>Selecione o Estado:</PickerText>
+                            <Picker
+                                selectedValue={selectedState}
+                                style={{
+                                    height: 50,
+                                    width: '35%',
+                                }}
+                                onValueChange={itemValue =>
+                                    setSelectedState(String(itemValue))
+                                }
+                            >
+                                {formattedStatesList.map(state => (
+                                    <Picker.Item
+                                        key={state.nome}
+                                        label={state.sigla}
+                                        value={state.sigla}
+                                    />
+                                ))}
+                            </Picker>
+                        </PickerView>
+                    </Form>
+
+                    <Button
+                        style={{ position: 'absolute', bottom: '5%' }}
+                        biggerText
+                        onPress={() => formRef.current?.submitForm()}
+                    >
+                        Atualizar dados
+                    </Button>
+                </Container>
+            </ScrollView>
+        </>
     );
 };
 

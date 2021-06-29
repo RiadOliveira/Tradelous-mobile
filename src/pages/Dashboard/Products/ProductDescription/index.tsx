@@ -4,7 +4,8 @@ import {
     TitleTextContainer,
     TitleText,
     ProductQuantityContainer,
-    DecreaseQuantityButton,
+    SellProductButton,
+    SellProductButtonText,
     BarCodeScannerContainer,
     BarCodeValue,
     BarCodeButton,
@@ -30,6 +31,7 @@ import getValidationErrors from '@utils/getValidationErrors';
 import * as yup from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import { useProducts } from '@hooks/products';
+import Modal from '@components/Modal';
 
 interface IProduct {
     name: string;
@@ -41,14 +43,24 @@ interface IProduct {
     image?: string;
 }
 
+interface ModalProps {
+    actionFunction?: () => Promise<void>;
+    text?: string;
+    visibility: boolean;
+}
+
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
     const { updateProductsStatus } = useProducts();
     const navigation = useNavigation();
 
-    const [product, setProduct] = useState<IProduct>(
-        useRoute().params as IProduct,
-    );
+    const product = useRoute().params as IProduct;
+
+    const [productImage, setProductImage] = useState(product.image || '');
+    const [modalProps, setModalProps] = useState<ModalProps>({
+        visibility: false,
+    });
+
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
         [],
@@ -149,46 +161,31 @@ const ProductDescription: React.FC = () => {
     const handleImageData = useCallback(
         async (handleMode: 'upload' | 'delete') => {
             if (handleMode == 'delete') {
-                if (!product.image) {
+                if (!productImage) {
                     Alert.alert(
                         'Operação indisponível',
                         'Nenhuma imagem para ser deletada.',
                     );
                 } else {
-                    Alert.alert(
-                        'Deletar imagem',
-                        'Você deseja mesmo continuar com a exclusão da imagem?',
-                        [
-                            {
-                                text: 'Continuar',
-                                onPress: async () => {
-                                    try {
-                                        const response = await api.patch(
-                                            `/products/updateImage/${product.id}`,
-                                        );
+                    try {
+                        const response = await api.patch(
+                            `/products/updateImage/${product.id}`,
+                        );
 
-                                        setProduct(actualProduct => ({
-                                            ...actualProduct,
-                                            image: '',
-                                        }));
+                        setProductImage('');
 
-                                        updateProductsStatus(response.data);
+                        updateProductsStatus(response.data);
 
-                                        Alert.alert(
-                                            'Exclusão concluída',
-                                            'A imagem do produto foi excluída com sucesso.',
-                                        );
-                                    } catch {
-                                        Alert.alert(
-                                            'Falha na exclusão',
-                                            'Ocorreu um erro ao tentar excluir a imagem do produto.',
-                                        );
-                                    }
-                                },
-                            },
-                            { text: 'Cancelar' },
-                        ],
-                    );
+                        Alert.alert(
+                            'Exclusão concluída',
+                            'A imagem do produto foi excluída com sucesso.',
+                        );
+                    } catch {
+                        Alert.alert(
+                            'Falha na exclusão',
+                            'Ocorreu um erro ao tentar excluir a imagem do produto.',
+                        );
+                    }
                 }
             } else {
                 launchImageLibrary(
@@ -211,10 +208,7 @@ const ProductDescription: React.FC = () => {
                                     data,
                                 );
 
-                                setProduct(actualProduct => ({
-                                    ...actualProduct,
-                                    image: response.data.image,
-                                }));
+                                setProductImage(response.data.image);
 
                                 updateProductsStatus(response.data);
 
@@ -233,55 +227,29 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [product.id, user.companyId, product.image, updateProductsStatus],
+        [product.id, user.companyId, productImage, updateProductsStatus],
     );
 
     const handleProductDelete = useCallback(async () => {
-        Alert.alert(
-            'Deletar produto',
-            'Você deseja mesmo continuar com a exclusão do produto?',
-            [
-                {
-                    text: 'Continuar',
-                    onPress: async () => {
-                        try {
-                            await api.delete(`/products/${product.id}`);
+        try {
+            await api.delete(`/products/${product.id}`);
 
-                            navigation.navigate('ProductsList');
-                            updateProductsStatus({
-                                id: `deleted ${product.id}`,
-                            } as IProduct);
+            navigation.navigate('ProductsList');
+            updateProductsStatus({
+                id: `deleted ${product.id}`,
+            } as IProduct);
 
-                            Alert.alert(
-                                'Produto excluído com sucesso!',
-                                'O produto selecionado teve uma exclusão bem sucedida.',
-                            );
-                        } catch {
-                            Alert.alert(
-                                'Falha na exclusão',
-                                'Ocorreu um erro ao tentar excluir o produto.',
-                            );
-                        }
-                    },
-                },
-                { text: 'Cancelar' },
-            ],
-        );
-    }, [product.id, navigation, updateProductsStatus]);
-
-    const handleProductQuantityDecrease = useCallback(() => {
-        if (product.quantity > 0) {
-            setProduct(actualProduct => ({
-                ...actualProduct,
-                quantity: actualProduct.quantity - 1,
-            }));
-        } else {
             Alert.alert(
-                'Falha na diminuição',
-                'Não é possível ficar com a quantidade de um produto negativa.',
+                'Produto excluído com sucesso!',
+                'O produto selecionado teve uma exclusão bem sucedida.',
+            );
+        } catch {
+            Alert.alert(
+                'Falha na exclusão',
+                'Ocorreu um erro ao tentar excluir o produto.',
             );
         }
-    }, [product.quantity]);
+    }, [product.id, navigation, updateProductsStatus]);
 
     return isCameraVisible ? (
         <Camera
@@ -290,146 +258,173 @@ const ProductDescription: React.FC = () => {
             }}
         />
     ) : (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Container>
-                <TitleTextContainer style={{ elevation: 10 }}>
-                    <TitleText>Dados do produto</TitleText>
-                </TitleTextContainer>
+        <>
+            <Modal
+                actionFunction={modalProps.actionFunction}
+                setVisibility={setModalProps}
+                isVisible={modalProps.visibility}
+                text={modalProps.text ?? ''}
+                iconProps={{ name: 'delete', color: '#de4343' }}
+            />
 
-                <Form
-                    ref={formRef}
-                    initialData={{
-                        ...product,
-                        price: product.price.toString(),
-                        quantity: product.quantity.toString(),
-                    }}
-                    onSubmit={handleSubmit}
-                    style={{
-                        alignItems: 'center',
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        autoCorrect={false}
-                        autoCapitalize="sentences"
-                        name="name"
-                        placeholder="Nome"
-                        icon="label-outline"
-                        onSubmitEditing={() => {
-                            priceInput.current?.focus();
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Container>
+                    <TitleTextContainer style={{ elevation: 10 }}>
+                        <TitleText>Dados do produto</TitleText>
+                    </TitleTextContainer>
+
+                    <Form
+                        ref={formRef}
+                        initialData={{
+                            ...product,
+                            price: product.price.toString(),
+                            quantity: product.quantity.toString(),
                         }}
-                        returnKeyType="next"
-                    />
-
-                    <Input
-                        keyboardType="numeric"
-                        name="price"
-                        ref={priceInput}
-                        placeholder="Preço (Use . para decimal)"
-                        icon="attach-money"
-                        onSubmitEditing={() => {
-                            brandInput.current?.focus();
+                        onSubmit={handleSubmit}
+                        style={{
+                            alignItems: 'center',
+                            width: '100%',
                         }}
-                        returnKeyType="next"
-                    />
-
-                    <Input
-                        autoCapitalize="words"
-                        name="brand"
-                        placeholder="Marca"
-                        icon="tag"
-                        ref={brandInput}
-                        onSubmitEditing={() => {
-                            quantityInput.current?.focus();
-                        }}
-                        returnKeyType="next"
-                    />
-
-                    <ProductQuantityContainer>
+                    >
                         <Input
-                            style={{ marginRight: 45 }}
-                            keyboardType="numeric"
-                            name="quantity"
-                            ref={quantityInput}
-                            placeholder="Quantidade em estoque"
-                            icon="inbox"
+                            autoCorrect={false}
+                            autoCapitalize="sentences"
+                            name="name"
+                            placeholder="Nome"
+                            icon="label-outline"
+                            onSubmitEditing={priceInput.current?.focus}
                             returnKeyType="next"
                         />
 
-                        <DecreaseQuantityButton
-                            onPress={() => handleProductQuantityDecrease()}
-                        >
-                            <Icon name="remove" size={30} color="#ffffff" />
-                        </DecreaseQuantityButton>
-                    </ProductQuantityContainer>
-
-                    <BarCodeScannerContainer>
-                        <Icon
-                            name="qr-code"
-                            size={24}
-                            style={{ position: 'absolute', left: 12 }}
-                            color={barCodeValue ? '#374b92' : 'black'}
+                        <Input
+                            keyboardType="numeric"
+                            name="price"
+                            ref={priceInput}
+                            placeholder="Preço (Use . para decimal)"
+                            icon="attach-money"
+                            onSubmitEditing={brandInput.current?.focus}
+                            returnKeyType="next"
                         />
-                        <BarCodeValue>
-                            {barCodeValue
-                                ? barCodeValue
-                                : 'Sem código inserido'}
-                        </BarCodeValue>
 
-                        <BarCodeButton
-                            onPress={() => handleCameraOpening()}
-                            activeOpacity={0.4}
+                        <Input
+                            autoCapitalize="words"
+                            name="brand"
+                            placeholder="Marca"
+                            icon="tag"
+                            ref={brandInput}
+                            onSubmitEditing={quantityInput.current?.focus}
+                            returnKeyType="next"
+                        />
+
+                        <ProductQuantityContainer>
+                            <Input
+                                style={{ marginRight: 88 }}
+                                keyboardType="numeric"
+                                name="quantity"
+                                ref={quantityInput}
+                                placeholder="Quant. em estoque"
+                                icon="inbox"
+                                returnKeyType="next"
+                            />
+
+                            <SellProductButton
+                                onPress={() =>
+                                    navigation.navigate('ProductSale', product)
+                                }
+                            >
+                                <SellProductButtonText>
+                                    Vender
+                                </SellProductButtonText>
+                            </SellProductButton>
+                        </ProductQuantityContainer>
+
+                        <BarCodeScannerContainer>
+                            <Icon
+                                name="qr-code"
+                                size={24}
+                                style={{ position: 'absolute', left: 12 }}
+                                color={barCodeValue ? '#374b92' : 'black'}
+                            />
+                            <BarCodeValue>
+                                {barCodeValue
+                                    ? barCodeValue
+                                    : 'Sem código inserido'}
+                            </BarCodeValue>
+
+                            <BarCodeButton
+                                onPress={handleCameraOpening}
+                                activeOpacity={0.4}
+                            >
+                                <Icon name="qr-code-scanner" size={24} />
+                            </BarCodeButton>
+                        </BarCodeScannerContainer>
+
+                        <ImageContainer>
+                            <ImagePicker
+                                onPress={() => handleImageData('upload')}
+                                activeOpacity={0.7}
+                            >
+                                {productImage ? (
+                                    <ImageHighlight
+                                        source={{
+                                            uri: `${apiStaticUrl}/${productImage}`,
+                                        }}
+                                    />
+                                ) : (
+                                    <Icon
+                                        name="add"
+                                        size={44}
+                                        color="#1c274e"
+                                    />
+                                )}
+                            </ImagePicker>
+
+                            <DeleteImageButton
+                                onPress={() =>
+                                    setModalProps({
+                                        visibility: true,
+                                        actionFunction: () =>
+                                            handleImageData('delete'),
+                                        text:
+                                            'Tem certeza que deseja deletar a imagem desse produto?',
+                                    })
+                                }
+                            >
+                                <Icon name="clear" size={34} color="#e7e7e7" />
+                            </DeleteImageButton>
+                        </ImageContainer>
+                    </Form>
+
+                    <ButtonsContainer>
+                        <Button
+                            biggerText
+                            onPress={formRef.current?.submitForm}
                         >
-                            <Icon name="qr-code-scanner" size={24} />
-                        </BarCodeButton>
-                    </BarCodeScannerContainer>
+                            Atualizar Produto
+                        </Button>
 
-                    <ImageContainer>
-                        <ImagePicker
-                            onPress={() => handleImageData('upload')}
-                            activeOpacity={0.7}
+                        <Button
+                            biggerText
+                            style={{ backgroundColor: '#c93c3c' }}
+                            onPress={() =>
+                                setModalProps({
+                                    visibility: true,
+                                    actionFunction: handleProductDelete,
+                                    text:
+                                        'Tem certeza que deseja deletar esse produto?',
+                                })
+                            }
                         >
-                            {product.image ? (
-                                <ImageHighlight
-                                    source={{
-                                        uri: `${apiStaticUrl}/${product.image}`,
-                                    }}
-                                />
-                            ) : (
-                                <Icon name="add" size={44} color="#1c274e" />
-                            )}
-                        </ImagePicker>
-
-                        <DeleteImageButton
-                            onPress={() => handleImageData('delete')}
-                        >
-                            <Icon name="clear" size={34} color="#e7e7e7" />
-                        </DeleteImageButton>
-                    </ImageContainer>
-                </Form>
-
-                <ButtonsContainer>
-                    <Button
-                        biggerText
-                        onPress={() => formRef.current?.submitForm()}
-                    >
-                        Atualizar Produto
-                    </Button>
-
-                    <Button
-                        biggerText
-                        style={{ backgroundColor: '#c93c3c' }}
-                        onPress={() => handleProductDelete()}
-                    >
-                        Deletar Produto
-                    </Button>
-                </ButtonsContainer>
-            </Container>
-        </ScrollView>
+                            Deletar Produto
+                        </Button>
+                    </ButtonsContainer>
+                </Container>
+            </ScrollView>
+        </>
     );
 };
 

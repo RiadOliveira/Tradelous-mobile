@@ -18,10 +18,11 @@ import { Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
+import { useProducts } from '@hooks/products';
+
 import api from '@services/api';
 import Camera from '@components/Camera';
 import Button from '@components/Button';
-import { useProducts } from '@hooks/products';
 
 interface IProduct {
     name: string;

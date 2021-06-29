@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import getValidationErrors from '@utils/getValidationErrors';
+import Modal from '@components/Modal';
 
 interface UpdateProfileData {
     name: string;
@@ -37,6 +38,9 @@ const Profile: React.FC = () => {
     const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
 
+    const [modalProps, setModalProps] = useState({
+        visibility: false,
+    });
     const [selectedImage, setSelectedImage] = useState(() =>
         user.avatar
             ? `${api.defaults.baseURL}/files/avatar/${user.avatar}`
@@ -118,27 +122,15 @@ const Profile: React.FC = () => {
                         'Nenhuma imagem para ser deletada.',
                     );
                 } else {
-                    Alert.alert(
-                        'Deletar imagem',
-                        'Você deseja mesmo continuar com a exclusão da imagem?',
-                        [
-                            {
-                                text: 'Continuar',
-                                onPress: async () => {
-                                    try {
-                                        await updateUsersAvatar('');
-                                        setSelectedImage('');
-                                    } catch {
-                                        Alert.alert(
-                                            'Falha na exclusão',
-                                            'Ocorreu um erro ao tentar excluir o avatar.',
-                                        );
-                                    }
-                                },
-                            },
-                            { text: 'Cancelar' },
-                        ],
-                    );
+                    try {
+                        await updateUsersAvatar('');
+                        setSelectedImage('');
+                    } catch {
+                        Alert.alert(
+                            'Falha na exclusão',
+                            'Ocorreu um erro ao tentar excluir o avatar.',
+                        );
+                    }
                 }
             } else {
                 launchImageLibrary(
@@ -165,126 +157,129 @@ const Profile: React.FC = () => {
     );
 
     return (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Container>
-                <Header>
-                    <SignOutButton onPress={() => signOut()}>
-                        <SignOutButtonText>Sair</SignOutButtonText>
-                    </SignOutButton>
-                </Header>
+        <>
+            <Modal
+                actionFunction={() => handleImageData('delete')}
+                setVisibility={setModalProps}
+                isVisible={modalProps.visibility}
+                text="Tem certeza que deseja deletar seu avatar?"
+                iconProps={{ name: 'delete', color: '#de4343' }}
+            />
 
-                <ImageContainer>
-                    <ImagePicker
-                        onPress={() => handleImageData('upload')}
-                        activeOpacity={0.7}
-                        selectedImage={selectedImage}
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Container>
+                    <Header>
+                        <SignOutButton onPress={() => signOut()}>
+                            <SignOutButtonText>Sair</SignOutButtonText>
+                        </SignOutButton>
+                    </Header>
+
+                    <ImageContainer>
+                        <ImagePicker
+                            onPress={() => handleImageData('upload')}
+                            activeOpacity={0.7}
+                            selectedImage={selectedImage}
+                        >
+                            {selectedImage ? (
+                                <ProfileImage
+                                    source={{
+                                        uri: selectedImage,
+                                    }}
+                                />
+                            ) : (
+                                <Icon
+                                    name="person"
+                                    size={170}
+                                    color="#1c274e"
+                                />
+                            )}
+                        </ImagePicker>
+
+                        <DeleteImageButton
+                            onPress={() => setModalProps({ visibility: true })}
+                        >
+                            <Icon name="clear" size={48} color="#e7e7e7" />
+                        </DeleteImageButton>
+                    </ImageContainer>
+
+                    <Form
+                        ref={formRef}
+                        onSubmit={handleSubmit}
+                        initialData={{ name: user.name, email: user.email }}
                     >
-                        {selectedImage ? (
-                            <ProfileImage
-                                source={{
-                                    uri: selectedImage,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="person" size={170} color="#1c274e" />
-                        )}
-                    </ImagePicker>
+                        <Input
+                            autoCorrect={false}
+                            textContentType="username"
+                            autoCapitalize="words"
+                            name="name"
+                            placeholder="Nome"
+                            icon="person-outline"
+                            onSubmitEditing={emailInput.current?.focus}
+                            returnKeyType="next"
+                        />
 
-                    <DeleteImageButton
-                        onPress={() => handleImageData('delete')}
-                    >
-                        <Icon name="clear" size={48} color="#e7e7e7" />
-                    </DeleteImageButton>
-                </ImageContainer>
+                        <Input
+                            autoCorrect={false}
+                            textContentType="emailAddress"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            ref={emailInput}
+                            name="email"
+                            placeholder="E-mail"
+                            icon="mail-outline"
+                            onSubmitEditing={oldPasswordInput.current?.focus}
+                            returnKeyType="next"
+                        />
 
-                <Form
-                    ref={formRef}
-                    onSubmit={handleSubmit}
-                    initialData={{ name: user.name, email: user.email }}
-                >
-                    <Input
-                        autoCorrect={false}
-                        textContentType="username"
-                        autoCapitalize="words"
-                        name="name"
-                        placeholder="Nome"
-                        icon="person-outline"
-                        onSubmitEditing={() => {
-                            emailInput.current?.focus();
-                        }}
-                        returnKeyType="next"
-                    />
+                        <Input
+                            returnKeyType="next"
+                            autoCapitalize="none"
+                            textContentType="password"
+                            secureTextEntry
+                            name="oldPassword"
+                            placeholder="Senha antiga"
+                            icon="lock-outline"
+                            ref={oldPasswordInput}
+                            onSubmitEditing={newPasswordInput.current?.focus}
+                        />
 
-                    <Input
-                        autoCorrect={false}
-                        textContentType="emailAddress"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        ref={emailInput}
-                        name="email"
-                        placeholder="E-mail"
-                        icon="mail-outline"
-                        onSubmitEditing={() => {
-                            oldPasswordInput.current?.focus();
-                        }}
-                        returnKeyType="next"
-                    />
+                        <Input
+                            returnKeyType="next"
+                            autoCapitalize="none"
+                            textContentType="newPassword"
+                            secureTextEntry
+                            name="newPassword"
+                            placeholder="Nova senha"
+                            icon="lock-outline"
+                            ref={newPasswordInput}
+                            onSubmitEditing={
+                                confirmPasswordInput.current?.focus
+                            }
+                        />
 
-                    <Input
-                        returnKeyType="next"
-                        autoCapitalize="none"
-                        textContentType="password"
-                        secureTextEntry
-                        name="oldPassword"
-                        placeholder="Senha antiga"
-                        icon="lock-outline"
-                        ref={oldPasswordInput}
-                        onSubmitEditing={() => {
-                            newPasswordInput.current?.focus();
-                        }}
-                    />
+                        <Input
+                            returnKeyType="next"
+                            autoCapitalize="none"
+                            textContentType="newPassword"
+                            secureTextEntry
+                            name="confirmPassword"
+                            placeholder="Confirmar senha"
+                            icon="lock-outline"
+                            ref={confirmPasswordInput}
+                            onSubmitEditing={formRef.current?.submitForm}
+                        />
+                    </Form>
 
-                    <Input
-                        returnKeyType="next"
-                        autoCapitalize="none"
-                        textContentType="newPassword"
-                        secureTextEntry
-                        name="newPassword"
-                        placeholder="Nova senha"
-                        icon="lock-outline"
-                        ref={newPasswordInput}
-                        onSubmitEditing={() => {
-                            confirmPasswordInput.current?.focus();
-                        }}
-                    />
-
-                    <Input
-                        returnKeyType="next"
-                        autoCapitalize="none"
-                        textContentType="newPassword"
-                        secureTextEntry
-                        name="confirmPassword"
-                        placeholder="Confirmar senha"
-                        icon="lock-outline"
-                        ref={confirmPasswordInput}
-                        onSubmitEditing={() => {
-                            formRef.current?.submitForm();
-                        }}
-                    />
-                </Form>
-
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
-                    Atualizar dados
-                </Button>
-            </Container>
-        </ScrollView>
+                    <Button biggerText onPress={formRef.current?.submitForm}>
+                        Atualizar dados
+                    </Button>
+                </Container>
+            </ScrollView>
+        </>
     );
 };
 

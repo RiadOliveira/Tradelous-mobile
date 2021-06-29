@@ -12,7 +12,7 @@ interface IProduct {
 
 interface ProductsContextInterface {
     productsStatus: IProduct | 'newProduct' | 'noChanges'; //IProduct when modified some product (contains the product).
-    updateProductsStatus(products: IProduct | 'newProduct' | 'noChanges'): void;
+    updateProductsStatus(product: IProduct | 'newProduct' | 'noChanges'): void;
 }
 
 const productsContext = createContext<ProductsContextInterface>(
