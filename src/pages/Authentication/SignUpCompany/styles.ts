@@ -21,7 +21,7 @@ export const LogoImage = styled.Image`
 
 export const PickerView = styled.View`
     background-color: #ffffff;
-    width: 300px;
+    width: 75%;
     height: 60px;
     align-items: center;
     border-radius: 5px;

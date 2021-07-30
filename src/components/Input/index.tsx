@@ -82,8 +82,10 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     }, [fieldName, registerField]);
 
     useEffect(() => {
-        handleTextChanging(inputValueRef.current.value);
-    }, [inputValueRef.current.value, handleTextChanging]);
+        //In order to verify changes when the value is modified on parent.
+        inputValueRef.current.value = props.value ?? defaultValue;
+        handleTextChanging(props.value ?? defaultValue);
+    }, [props.value, handleTextChanging, defaultValue]);
 
     return (
         <Container

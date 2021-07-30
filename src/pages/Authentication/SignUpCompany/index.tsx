@@ -21,6 +21,9 @@ import Button from '@components/Button';
 import TestLogo from '@assets/logo/test-logo.png';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import getValidationErrors from '@utils/getValidationErrors';
+import Toast from 'react-native-toast-message';
+import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -30,9 +33,6 @@ import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
-import * as yup from 'yup';
-import getValidationErrors from '@utils/getValidationErrors';
-import Toast from 'react-native-toast-message';
 
 interface BrazilianState {
     nome: string;
@@ -256,7 +256,7 @@ const SignUpCompany: React.FC = () => {
                             selectedValue={selectedState}
                             style={{
                                 height: 50,
-                                width: '35%',
+                                width: '30%',
                             }}
                             onValueChange={itemValue =>
                                 setSelectedState(String(itemValue))

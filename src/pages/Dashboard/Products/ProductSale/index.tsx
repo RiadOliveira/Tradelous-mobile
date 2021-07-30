@@ -8,14 +8,23 @@ import {
     TitleText,
     ImageContainer,
     ImageHighlight,
+    ProductSellContainer,
+    TotalSellPrice,
+    AuxiliarBar,
+    TotalSellPriceText,
+    PickerView,
+    PickerText,
 } from './styles';
 import { ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { useProducts } from '@hooks/products';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { useCallback } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import formatPrice from '@utils/formatPrice';
+import { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
 
 interface IProduct {
     name: string;
@@ -30,8 +39,10 @@ interface IProduct {
 const ProductSale: React.FC = () => {
     const product = useRoute().params as IProduct;
     const { updateProductsStatus } = useProducts();
+    const [soldQuantity, setSoldQuantity] = useState(0);
+    const [totalValue, setTotalValue] = useState('');
+    const [sellMethod, setSellMethod] = useState('money');
 
-    const navigation = useNavigation();
     const formRef = useRef<FormHandles>(null);
 
     const apiStaticUrl = useMemo(
@@ -40,19 +51,24 @@ const ProductSale: React.FC = () => {
     );
 
     const formattedPrice = useMemo(
-        () =>
-            product
-                ? `R$ ${Number(product.price)
-                      .toPrecision(3)
-                      .toString()
-                      .replace('.', ',')}`
-                : 0,
+        () => (product ? formatPrice(product.price) : '0'),
         [product],
     );
 
-    const handleSubmit = useCallback(() => {
-        console.log("Handle product's sale");
-    }, []);
+    const handleQuantityChange = useCallback(
+        (value: string) => {
+            setSoldQuantity(Number(value));
+            setTotalValue(formatPrice(Number(value) * product.price));
+        },
+        [product.price],
+    );
+
+    const handleSubmit = useCallback(
+        (data: { type: string; soldQuantity: string }) => {
+            console.log('Submit');
+        },
+        [],
+    );
 
     return (
         <ScrollView
@@ -126,9 +142,55 @@ const ProductSale: React.FC = () => {
                             />
                         )}
                     </ImageContainer>
+
+                    <ProductSellContainer>
+                        <Input
+                            keyboardType="numeric"
+                            name="soldQuantity"
+                            placeholder="Quant. vendida"
+                            icon="inbox"
+                            style={{ marginRight: 100 }}
+                            value={soldQuantity ? soldQuantity.toString() : ''}
+                            onChangeText={value => handleQuantityChange(value)}
+                        />
+
+                        <TotalSellPrice>
+                            <AuxiliarBar />
+                            <TotalSellPriceText>
+                                Preço:{'\n'}
+                                {totalValue || '0,00 R$'}
+                            </TotalSellPriceText>
+                        </TotalSellPrice>
+                    </ProductSellContainer>
+
+                    <PickerView>
+                        <PickerText>Selecione o método:</PickerText>
+                        <Picker
+                            selectedValue={sellMethod}
+                            style={{
+                                height: 50,
+                                width: '44%',
+                                marginRight: -2,
+                            }}
+                            onValueChange={itemValue =>
+                                setSellMethod(String(itemValue))
+                            }
+                            mode="dropdown"
+                        >
+                            <Picker.Item
+                                key="0"
+                                label="Dinheiro"
+                                value="money"
+                            />
+                            <Picker.Item key="1" label="Cartão" value="card" />
+                        </Picker>
+                    </PickerView>
                 </Form>
 
-                <Button biggerText onPress={handleSubmit}>
+                <Button
+                    biggerText
+                    onPress={() => formRef.current?.submitForm()}
+                >
                     Confirmar venda
                 </Button>
             </Container>

@@ -37,3 +37,53 @@ export const ImageHighlight = styled.Image`
     height: 97.75px;
     border-radius: 20px;
 `;
+
+export const ProductSellContainer = styled.View`
+    position: relative;
+`;
+
+export const TotalSellPrice = styled.View`
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #1c274e;
+    border-radius: 5px;
+    height: 60px;
+    width: 22%;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const AuxiliarBar = styled.View`
+    height: 60px;
+    width: 4px;
+    background-color: #1c274e;
+    position: absolute;
+    left: 0;
+`;
+
+export const TotalSellPriceText = styled.Text`
+    font-family: Poppins-Bold;
+    color: #ffffff;
+    font-size: 12px;
+    text-align: center;
+`;
+
+export const PickerView = styled.View`
+    background-color: #ffffff;
+    width: 75%;
+    height: 60px;
+    align-items: center;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1.8px solid #1c274e;
+`;
+
+export const PickerText = styled.Text`
+    font-family: Poppins-SemiBold;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-left: 10px;
+`;

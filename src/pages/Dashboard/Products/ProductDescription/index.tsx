@@ -22,6 +22,8 @@ import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
+import { useNavigation, useRoute } from '@react-navigation/core';
+import { useProducts } from '@hooks/products';
 
 import api from '@services/api';
 import Camera from '@components/Camera';
@@ -29,8 +31,6 @@ import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import { useProducts } from '@hooks/products';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
@@ -56,9 +56,8 @@ const ProductDescription: React.FC = () => {
     const { updateProductsStatus } = useProducts();
     const navigation = useNavigation();
 
-    const product = useRoute().params as IProduct;
+    const [product, setProduct] = useState(useRoute().params as IProduct);
 
-    const [productImage, setProductImage] = useState(product.image || '');
     const [modalProps, setModalProps] = useState<ModalProps>({
         visibility: false,
     });
@@ -130,6 +129,7 @@ const ProductDescription: React.FC = () => {
                 const response = await api.put(`/products/${product.id}`, data);
 
                 updateProductsStatus(response.data);
+                setProduct(response.data);
 
                 Toast.show({
                     type: 'success',
@@ -145,7 +145,7 @@ const ProductDescription: React.FC = () => {
     const handleImageData = useCallback(
         async (handleMode: 'upload' | 'delete') => {
             if (handleMode == 'delete') {
-                if (!productImage) {
+                if (!product.image) {
                     Toast.show({
                         type: 'error',
                         text1: 'Operação indisponível',
@@ -156,9 +156,8 @@ const ProductDescription: React.FC = () => {
                             `/products/updateImage/${product.id}`,
                         );
 
-                        setProductImage('');
-
                         updateProductsStatus(response.data);
+                        setProduct(response.data);
 
                         Toast.show({
                             type: 'success',
@@ -192,8 +191,7 @@ const ProductDescription: React.FC = () => {
                                     data,
                                 );
 
-                                setProductImage(response.data.image);
-
+                                setProduct(response.data);
                                 updateProductsStatus(response.data);
 
                                 Toast.show({
@@ -212,7 +210,7 @@ const ProductDescription: React.FC = () => {
                 );
             }
         },
-        [product.id, user.companyId, productImage, updateProductsStatus],
+        [product.id, user.companyId, updateProductsStatus, product.image],
     );
 
     const handleProductDelete = useCallback(async () => {
@@ -319,9 +317,15 @@ const ProductDescription: React.FC = () => {
                             />
 
                             <SellProductButton
-                                onPress={() =>
-                                    navigation.navigate('ProductSale', product)
-                                }
+                                onPress={() => {
+                                    Toast.show({
+                                        type: 'info',
+                                        text1: 'Venda quase concluída',
+                                        text2:
+                                            'Insira a quantidade vendida para finalizá-la.',
+                                    });
+                                    navigation.navigate('ProductSale', product);
+                                }}
                             >
                                 <AuxiliarBar />
                                 <SellProductButtonText>
@@ -356,10 +360,10 @@ const ProductDescription: React.FC = () => {
                                 onPress={() => handleImageData('upload')}
                                 activeOpacity={0.7}
                             >
-                                {productImage ? (
+                                {product.image ? (
                                     <ImageHighlight
                                         source={{
-                                            uri: `${apiStaticUrl}/${productImage}`,
+                                            uri: `${apiStaticUrl}/${product.image}`,
                                         }}
                                     />
                                 ) : (

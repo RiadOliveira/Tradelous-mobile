@@ -1,4 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
+import Input from '@components/Input';
+import Button from '@components/Button';
+import TestLogo from '@assets/logo/test-logo.png';
+import Toast from 'react-native-toast-message';
+import ErrorCatcher from '@errors/errorCatcher';
+import api from '@services/api';
+import * as yup from 'yup';
+
 import {
     Container,
     LogoView,
@@ -6,19 +14,12 @@ import {
     SwitchField,
     SwitchText,
 } from './styles';
-import Input from '@components/Input';
-import Button from '@components/Button';
-import TestLogo from '@assets/logo/test-logo.png';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { TextInput, Switch, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import * as yup from 'yup';
-import api from '@services/api';
 import { useAuth } from '@hooks/auth';
-import Toast from 'react-native-toast-message';
-import ErrorCatcher from '@errors/errorCatcher';
 
 const { width } = Dimensions.get('screen');
 

@@ -24,6 +24,7 @@ import api from '@services/api';
 import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Toast from 'react-native-toast-message';
+import formatPrice from '@utils/formatPrice';
 
 interface IProduct {
     name: string;
@@ -97,14 +98,7 @@ const ProductsList: React.FC = () => {
     );
 
     const formattedPrices = useMemo(
-        () =>
-            companyProducts.map(
-                product =>
-                    `R$ ${Number(product.price)
-                        .toPrecision(3)
-                        .toString()
-                        .replace('.', ',')}`,
-            ),
+        () => companyProducts.map(product => formatPrice(product.price)),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [companyProducts, productsStatus],
     );
