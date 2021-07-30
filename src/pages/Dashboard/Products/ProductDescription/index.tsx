@@ -5,6 +5,7 @@ import {
     TitleText,
     ProductQuantityContainer,
     SellProductButton,
+    AuxiliarBar,
     SellProductButtonText,
     BarCodeScannerContainer,
     BarCodeValue,
@@ -322,6 +323,7 @@ const ProductDescription: React.FC = () => {
                                     navigation.navigate('ProductSale', product)
                                 }
                             >
+                                <AuxiliarBar />
                                 <SellProductButtonText>
                                     Vender
                                 </SellProductButtonText>

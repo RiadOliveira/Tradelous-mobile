@@ -147,7 +147,7 @@ const EditCompany: React.FC = () => {
 
                         Toast.show({
                             type: 'success',
-                            text1: 'Logo excluída com sucesso',
+                            text1: 'Logo excluída com sucesso!',
                         });
                     } catch {
                         Toast.show({
@@ -181,7 +181,7 @@ const EditCompany: React.FC = () => {
 
                                 Toast.show({
                                     type: 'success',
-                                    text1: 'Logo atualizada com sucesso',
+                                    text1: 'Logo atualizada com sucesso!',
                                 });
                             } catch {
                                 Toast.show({

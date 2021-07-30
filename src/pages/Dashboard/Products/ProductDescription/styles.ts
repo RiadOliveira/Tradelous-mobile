@@ -28,17 +28,28 @@ export const ProductQuantityContainer = styled.View`
 
 export const SellProductButton = styled(RectButton)`
     position: absolute;
-    right: 3%;
-    top: 14%;
+    right: 0;
+    top: 0;
     background-color: #de4343;
-    padding: 5px;
     border-radius: 5px;
+    height: 60px;
+    width: 18%;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const AuxiliarBar = styled.View`
+    height: 60px;
+    width: 4px;
+    background-color: #de4343;
+    position: absolute;
+    left: 0;
 `;
 
 export const SellProductButtonText = styled.Text`
-    font-family: Poppins-Regular;
+    font-family: Poppins-Bold;
     color: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
 `;
 
 export const ImageContainer = styled.View`
