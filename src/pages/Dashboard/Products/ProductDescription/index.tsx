@@ -322,7 +322,7 @@ const ProductDescription: React.FC = () => {
                                         type: 'info',
                                         text1: 'Venda quase concluída',
                                         text2:
-                                            'Insira a quantidade vendida para finalizá-la.',
+                                            'Insira a quantidade e o método para finalizá-la.',
                                     });
                                     navigation.navigate('ProductSale', product);
                                 }}

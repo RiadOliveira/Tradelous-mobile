@@ -2,6 +2,12 @@ import React, { useMemo, useRef } from 'react';
 import api from '@services/api';
 import Button from '@components/Button';
 import Input from '@components/Input';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import formatPrice from '@utils/formatPrice';
+import Toast from 'react-native-toast-message';
+import ErrorCatcher from '@errors/errorCatcher';
+import * as yup from 'yup';
+
 import {
     Container,
     TitleTextContainer,
@@ -16,13 +22,11 @@ import {
     PickerText,
 } from './styles';
 import { ScrollView } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useProducts } from '@hooks/products';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { useCallback } from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import formatPrice from '@utils/formatPrice';
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 
@@ -35,7 +39,6 @@ interface IProduct {
     image?: string;
 }
 
-//Needs a button to select the quantity of the product that will be sell.
 const ProductSale: React.FC = () => {
     const product = useRoute().params as IProduct;
     const { updateProductsStatus } = useProducts();
@@ -44,6 +47,7 @@ const ProductSale: React.FC = () => {
     const [sellMethod, setSellMethod] = useState('money');
 
     const formRef = useRef<FormHandles>(null);
+    const navigation = useNavigation();
 
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
@@ -64,10 +68,47 @@ const ProductSale: React.FC = () => {
     );
 
     const handleSubmit = useCallback(
-        (data: { type: string; soldQuantity: string }) => {
-            console.log('Submit');
+        async (data: { soldQuantity: number }) => {
+            try {
+                data.soldQuantity = Number(data.soldQuantity);
+
+                const schema = yup.object().shape({
+                    soldQuantity: yup
+                        .number()
+                        .min(1, 'A quantidade vendida precisa ser no mínimo 1')
+                        .max(
+                            product.quantity,
+                            'Quantidade requisitada maior que a disponível',
+                        )
+                        .required('Quantidade vendida obrigatória'),
+                });
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.post(`/sales`, {
+                    method: sellMethod,
+                    quantity: soldQuantity,
+                    productId: product.id,
+                });
+
+                updateProductsStatus({
+                    ...product,
+                    quantity: product.quantity - soldQuantity,
+                });
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Venda registrada com sucesso!',
+                });
+
+                navigation.navigate('ProductsList');
+            } catch (err) {
+                ErrorCatcher(err, formRef);
+            }
         },
-        [],
+        [product, soldQuantity, updateProductsStatus, sellMethod, navigation],
     );
 
     return (
