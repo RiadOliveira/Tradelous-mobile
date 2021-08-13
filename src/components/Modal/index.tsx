@@ -27,10 +27,10 @@ const Modal: React.FC<ModalProps> = ({
     setVisibility,
     actionFunction,
 }) => {
-    const handleResponse = (responseIsTrue = false) => {
+    const handleResponse = (response: boolean) => {
         setVisibility({ visibility: false });
 
-        if (responseIsTrue && actionFunction) {
+        if (response && actionFunction) {
             actionFunction();
         }
     };
@@ -39,8 +39,8 @@ const Modal: React.FC<ModalProps> = ({
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={handleResponse}
-            onBackdropPress={handleResponse}
+            onBackButtonPress={() => handleResponse(false)}
+            onBackdropPress={() => handleResponse(false)}
             style={{ justifyContent: 'center', alignItems: 'center' }}
             animationIn="fadeIn"
             animationOut="fadeOut"
