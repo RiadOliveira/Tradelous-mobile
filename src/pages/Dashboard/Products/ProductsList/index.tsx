@@ -55,7 +55,7 @@ const ProductsList: React.FC = () => {
             user.companyId &&
             (productsStatus == 'newProduct' || companyProducts.length === 0)
         ) {
-            api.get(`/products/`).then(response => {
+            api.get('/products').then(response => {
                 setCompanyProducts(response.data);
                 setHasLoadedProducts(true);
             });

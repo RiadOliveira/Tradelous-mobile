@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     Container,
-    Employee,
-    EmployeeData,
-    EmployeeName,
-    EmployeeEmail,
-    EmployeeImage,
-    EmployeeIcon,
+    Sale,
+    SaleData,
+    SaleName,
+    SaleSub,
+    SaleImage,
+    SaleIcon,
 } from './styles';
 import { ActivityIndicator, ScrollView } from 'react-native';
-import { useAuth } from '@hooks/auth';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DatePicker from '@components/DatePicker';
 
 interface IEmployee {
     id: string;
@@ -21,29 +21,44 @@ interface IEmployee {
     isAdmin: boolean;
 }
 
-const Sales: React.FC = () => {
-    const { user } = useAuth();
+interface IProduct {
+    id: string;
+    name: string;
+    price: number;
+    brand: string;
+    image?: string;
+}
 
-    const [hasLoadedCompany, setHasLoadedCompany] = useState(false);
-    const [employees, setEmployees] = useState<IEmployee[]>([]); //Needs to add on the screen.
+interface ISale {
+    id: string;
+    companyId: string;
+    employeeId: string;
+    productId: string;
+    date: string;
+    method: 'money' | 'card';
+    quantity: number;
+    totalPrice: number;
+    employee: IEmployee;
+    product: IProduct;
+}
+
+const Sales: React.FC = () => {
+    const [hasLoadedSales, setHasLoadedSales] = useState(false);
+
+    const [sales, setSales] = useState<ISale[]>([]);
+    const [dateOfSales, setDateofSales] = useState<Date>(new Date(Date.now()));
+    const [datePickerVisibility, setDatePickerVisibility] = useState(true);
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        api.get('/company/list-employees').then(response => {
-            setEmployees(response.data);
-            setHasLoadedCompany(true);
+        api.get(
+            `/sales/day/${dateOfSales.getDate()}-${dateOfSales.getMonth() + 1}`,
+        ).then(response => {
+            setSales(response.data);
+            setHasLoadedSales(true);
         });
-    }, [user]);
-
-    const orderedEmployees = useMemo(() => {
-        const admin =
-            employees.find(employee => employee.isAdmin) || ({} as IEmployee); //Always will have a admin.
-
-        const allEmployees = employees.filter(employee => !employee.isAdmin);
-
-        return [admin, ...allEmployees];
-    }, [employees]);
+    }, [dateOfSales]);
 
     return (
         <ScrollView
@@ -51,7 +66,7 @@ const Sales: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            {!hasLoadedCompany ? (
+            {!hasLoadedSales ? (
                 <ActivityIndicator
                     size={64}
                     color="#374b92"
@@ -59,18 +74,25 @@ const Sales: React.FC = () => {
                 />
             ) : (
                 <Container>
-                    {orderedEmployees.map(employee => (
-                        <Employee key={employee.id}>
-                            <EmployeeData isAdmin={employee.isAdmin}>
-                                <EmployeeName>{employee.name}</EmployeeName>
-                                <EmployeeEmail>{employee.email}</EmployeeEmail>
-                            </EmployeeData>
+                    <DatePicker
+                        dateState={dateOfSales}
+                        isVisible={datePickerVisibility}
+                        setDateFunction={setDateofSales}
+                        setVisibility={setDatePickerVisibility}
+                    />
 
-                            <EmployeeIcon isAdmin={employee.isAdmin}>
-                                {employee.avatar ? (
-                                    <EmployeeImage
+                    {sales.map(sale => (
+                        <Sale key={sale.id}>
+                            <SaleData>
+                                <SaleName>{sale.product.name}</SaleName>
+                                <SaleSub>{sale.employee.email}</SaleSub>
+                            </SaleData>
+
+                            <SaleIcon>
+                                {sale.product.image ? (
+                                    <SaleImage
                                         source={{
-                                            uri: `${apiStaticUrl}/avatar/${employee.avatar}`,
+                                            uri: `${apiStaticUrl}/avatar/${sale.product.image}`,
                                         }}
                                     />
                                 ) : (
@@ -80,8 +102,8 @@ const Sales: React.FC = () => {
                                         color="#ffffff"
                                     />
                                 )}
-                            </EmployeeIcon>
-                        </Employee>
+                            </SaleIcon>
+                        </Sale>
                     ))}
                 </Container>
             )}

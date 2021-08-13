@@ -37,5 +37,5 @@ export const ModalButton = styled(RectButton)`
 
 export const ModalButtonText = styled.Text`
     color: #ffffff;
-    font-family: 'Poppins-Regular';
+    font-family: 'Poppins-Bold';
 `;

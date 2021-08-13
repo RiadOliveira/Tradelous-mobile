@@ -1,9 +1,5 @@
 import styled from 'styled-components/native';
 
-interface EmployeeInterface {
-    isAdmin: boolean;
-}
-
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -12,15 +8,15 @@ export const Container = styled.View`
     padding-bottom: 30px;
 `;
 
-export const Employee = styled.View`
+export const Sale = styled.View`
     width: 66%;
     flex-direction: row;
     position: relative;
     margin-bottom: 4%;
 `;
 
-export const EmployeeData = styled.View<EmployeeInterface>`
-    background-color: ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
+export const SaleData = styled.View`
+    background-color: #2c3f82;
     height: 60px;
     width: 97%;
     position: absolute;
@@ -30,7 +26,7 @@ export const EmployeeData = styled.View<EmployeeInterface>`
     border-radius: 20px;
 `;
 
-export const EmployeeName = styled.Text`
+export const SaleName = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
     font-size: 14px;
@@ -38,7 +34,7 @@ export const EmployeeName = styled.Text`
     margin-left: 22%;
 `;
 
-export const EmployeeEmail = styled.Text`
+export const SaleSub = styled.Text`
     margin-left: 10px;
     font-family: Poppins-Bold;
     font-size: 8.5px;
@@ -46,18 +42,18 @@ export const EmployeeEmail = styled.Text`
     margin-left: 22.5%;
 `;
 
-export const EmployeeImage = styled.Image`
+export const SaleImage = styled.Image`
     width: 58px;
     height: 58px;
     border-radius: 29px;
 `;
 
-export const EmployeeIcon = styled.View<EmployeeInterface>`
+export const SaleIcon = styled.View`
     width: 60px;
     height: 60px;
     background-color: #5170e0;
     border-radius: 30px;
     justify-content: center;
     align-items: center;
-    border: 2px solid ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
+    border: 2px solid #2c3f82;
 `;
