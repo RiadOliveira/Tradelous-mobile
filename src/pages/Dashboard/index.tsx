@@ -7,6 +7,7 @@ import { useCamera } from '@hooks/camera';
 import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
 import CompanyRoutes from './Company';
+import Sales from './Sales';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,9 +24,11 @@ const Dashboard: React.FC = () => {
                     color: '#1c274e',
                 },
                 allowFontScaling: true,
+                tabStyle: {},
                 style: {
+                    height: 52,
                     borderTopColor: '#1c274e',
-                    borderTopWidth: 1,
+                    borderTopWidth: 1.5,
                     display: isCameraVisible ? 'none' : 'flex',
                 },
             }}
@@ -51,7 +54,7 @@ const Dashboard: React.FC = () => {
                             tabBarIcon: ({ focused }) => (
                                 <Icon
                                     name="add"
-                                    size={30}
+                                    size={31}
                                     color={focused ? '#1c274e' : '#4058af'}
                                 />
                             ),
@@ -60,6 +63,20 @@ const Dashboard: React.FC = () => {
                         }}
                         name="RegisterProduct"
                         component={RegisterProduct}
+                    />
+                    <Tab.Screen
+                        options={{
+                            tabBarIcon: ({ focused }) => (
+                                <Icon
+                                    name="shopping-bag"
+                                    size={27}
+                                    color={focused ? '#1c274e' : '#4058af'}
+                                />
+                            ),
+                            tabBarLabel: 'Vendas',
+                        }}
+                        name="Sales"
+                        component={Sales}
                     />
                     <Tab.Screen
                         options={{
@@ -83,7 +100,7 @@ const Dashboard: React.FC = () => {
                     tabBarIcon: ({ focused }) => (
                         <Icon
                             name="person"
-                            size={22}
+                            size={28}
                             color={focused ? '#1c274e' : '#4058af'}
                         />
                     ),
