@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     Container,
+    FilterContainer,
+    Icon,
+    PickerView,
+    DatePickerButton,
     Sale,
     SaleData,
     SaleName,
@@ -10,8 +14,8 @@ import {
 } from './styles';
 import { ActivityIndicator, ScrollView } from 'react-native';
 import api from '@services/api';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from '@components/DatePicker';
+import { Picker } from '@react-native-picker/picker';
 
 interface IEmployee {
     id: string;
@@ -42,22 +46,48 @@ interface ISale {
     product: IProduct;
 }
 
+type SearchType = 'day' | 'week' | 'month';
+
 const Sales: React.FC = () => {
     const [hasLoadedSales, setHasLoadedSales] = useState(false);
+    const [searchType, setSearchType] = useState<SearchType>('day');
 
     const [sales, setSales] = useState<ISale[]>([]);
     const [dateOfSales, setDateofSales] = useState<Date>(new Date(Date.now()));
-    const [datePickerVisibility, setDatePickerVisibility] = useState(true);
+    const [datePickerVisibility, setDatePickerVisibility] = useState(false);
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        api.get(
-            `/sales/day/${dateOfSales.getDate()}-${dateOfSales.getMonth() + 1}`,
-        ).then(response => {
-            setSales(response.data);
-            setHasLoadedSales(true);
-        });
+        setHasLoadedSales(false);
+
+        if (searchType == 'day') {
+            api.get(
+                `/sales/day/${dateOfSales.getDate()}-${
+                    dateOfSales.getMonth() + 1
+                }`,
+            ).then(response => {
+                setSales(response.data);
+                setHasLoadedSales(true);
+            });
+        } else if (searchType == 'month') {
+            api.get(`/sales/month/${dateOfSales.getMonth() + 1}`).then(
+                response => {
+                    setSales(response.data);
+                    setHasLoadedSales(true);
+                },
+            );
+        } else {
+            api.get(
+                `/sales/week/${dateOfSales.getFullYear()}-${dateOfSales.getDate()}-${
+                    dateOfSales.getMonth() + 1
+                }`,
+            ).then(response => {
+                setSales(response.data);
+                setHasLoadedSales(true);
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateOfSales]);
 
     return (
@@ -80,6 +110,51 @@ const Sales: React.FC = () => {
                         setDateFunction={setDateofSales}
                         setVisibility={setDatePickerVisibility}
                     />
+
+                    <FilterContainer>
+                        <Icon name="filter-alt" size={30} color={'#374b92'} />
+
+                        <PickerView>
+                            <Picker
+                                selectedValue={searchType}
+                                style={{
+                                    height: '100%',
+                                    width: '100%',
+                                }}
+                                mode="dropdown"
+                                onValueChange={itemValue =>
+                                    setSearchType(itemValue as SearchType)
+                                }
+                            >
+                                <Picker.Item
+                                    key={'SearchType0'}
+                                    label={'Diário'}
+                                    value={'day'}
+                                />
+                                <Picker.Item
+                                    key={'SearchType1'}
+                                    label={'Semanal'}
+                                    value={'week'}
+                                />
+                                <Picker.Item
+                                    key={'SearchType2'}
+                                    label={'Mensal'}
+                                    value={'month'}
+                                />
+                            </Picker>
+                        </PickerView>
+
+                        <DatePickerButton
+                            activeOpacity={0.4}
+                            onPress={() => setDatePickerVisibility(true)}
+                        >
+                            <Icon
+                                name="calendar-today"
+                                size={30}
+                                color={'#374b92'}
+                            />
+                        </DatePickerButton>
+                    </FilterContainer>
 
                     {sales.map(sale => (
                         <Sale key={sale.id}>

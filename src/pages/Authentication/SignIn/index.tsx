@@ -25,7 +25,7 @@ import ErrorCatcher from '@errors/errorCatcher';
 
 const { height } = Dimensions.get('screen');
 
-interface SignInFormData {
+interface ISignInFormData {
     email: string;
     password: string;
 }
@@ -38,7 +38,7 @@ const SignIn: React.FC = () => {
     const passwordInput = useRef<TextInput>(null);
 
     const handleSubmit = useCallback(
-        async (data: SignInFormData) => {
+        async (data: ISignInFormData) => {
             try {
                 const schema = yup.object().shape({
                     email: yup

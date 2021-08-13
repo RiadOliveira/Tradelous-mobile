@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
-interface EmployeeInterface {
+interface EmployeeProps {
     isAdmin: boolean;
 }
 
@@ -78,7 +78,7 @@ export const Employee = styled.View`
     margin-bottom: 4%;
 `;
 
-export const EmployeeData = styled.View<EmployeeInterface>`
+export const EmployeeData = styled.View<EmployeeProps>`
     background-color: ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
     height: 60px;
     width: 97%;
@@ -111,7 +111,7 @@ export const EmployeeImage = styled.Image`
     border-radius: 29px;
 `;
 
-export const EmployeeIcon = styled.View<EmployeeInterface>`
+export const EmployeeIcon = styled.View<EmployeeProps>`
     width: 60px;
     height: 60px;
     background-color: #5170e0;

@@ -8,7 +8,7 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
 
-interface UserData {
+interface IUserData {
     id: string;
     name: string;
     email: string;
@@ -18,33 +18,33 @@ interface UserData {
     isAdmin: boolean;
 }
 
-interface AuthProps {
-    user: UserData;
+interface IAuthProps {
+    user: IUserData;
     token: string;
 }
 
-interface UpdateUserData {
+interface IUpdateUserData {
     name: string;
     email: string;
     oldPassword?: string;
     newPassword?: string;
 }
 
-type SignInData = Pick<UserData, 'email' | 'password'>;
+type SignInData = Pick<IUserData, 'email' | 'password'>;
 
-interface AuthContextData extends AuthProps {
+interface IAuthContextData extends IAuthProps {
     signIn(data: SignInData): Promise<void>;
-    updateUser(userData: UpdateUserData): Promise<void>;
+    updateUser(userData: IUpdateUserData): Promise<void>;
     updateUsersCompany(companyId: number): Promise<void>;
     updateUsersAvatar(avatar: string): Promise<void>;
     signOut(): Promise<void>;
     isReady: boolean;
 }
 
-const authContext = createContext<AuthContextData>({} as AuthContextData);
+const authContext = createContext<IAuthContextData>({} as IAuthContextData);
 
 const AuthContext: React.FC = ({ children }) => {
-    const [authData, setAuthData] = useState<AuthProps>({} as AuthProps);
+    const [authData, setAuthData] = useState<IAuthProps>({} as IAuthProps);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const AuthContext: React.FC = ({ children }) => {
     }, []);
 
     const signIn = useCallback(async (data: SignInData) => {
-        const response = await api.post<AuthProps>('/user/sessions', data);
+        const response = await api.post<IAuthProps>('/user/sessions', data);
         const token = response.data.token;
 
         api.defaults.headers.authorization = `Bearer ${token}`;
@@ -81,7 +81,7 @@ const AuthContext: React.FC = ({ children }) => {
         setAuthData(response.data);
     }, []);
 
-    const updateUser = useCallback(async (userData: UpdateUserData) => {
+    const updateUser = useCallback(async (userData: IUpdateUserData) => {
         const response = await api.put('/user/', userData);
 
         await AsyncStorage.setItem(
@@ -156,7 +156,7 @@ const AuthContext: React.FC = ({ children }) => {
         await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
         api.defaults.headers.authorization = undefined;
 
-        setAuthData({} as AuthProps);
+        setAuthData({} as IAuthProps);
     }, []);
 
     return (

@@ -30,7 +30,7 @@ import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 
-interface BrazilianState {
+interface IBrazilianState {
     nome: string;
     sigla: string;
 }
@@ -67,10 +67,10 @@ const EditCompany: React.FC = () => {
         company.adress.split('/')[1],
     );
 
-    const [allStates, setAllStates] = useState<BrazilianState[]>([]);
+    const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
 
     useEffect(() => {
-        api.get<BrazilianState[]>(
+        api.get<IBrazilianState[]>(
             'https://servicodados.ibge.gov.br/api/v1/localidades/estados',
             {
                 baseURL: '',

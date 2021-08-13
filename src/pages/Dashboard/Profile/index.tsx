@@ -24,7 +24,7 @@ import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 
-interface UpdateProfileData {
+interface IUpdateProfileData {
     name: string;
     email: string;
     oldPassword?: string;
@@ -50,7 +50,7 @@ const Profile: React.FC = () => {
     );
 
     const handleSubmit = useCallback(
-        async (userData: UpdateProfileData) => {
+        async (userData: IUpdateProfileData) => {
             try {
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome obrigatório'),

@@ -34,18 +34,18 @@ import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
 
-interface BrazilianState {
+interface IBrazilianState {
     nome: string;
     sigla: string;
 }
 
-interface CompanyData {
+interface ICompanyData {
     companyName: string;
     cnpj: string;
     companyCity: string;
 }
 
-interface ImageData {
+interface IImageData {
     name: string;
     type: string;
     uri: string;
@@ -59,15 +59,15 @@ const SignUpCompany: React.FC = () => {
     const navigation = useNavigation();
     const { user, updateUsersCompany } = useAuth();
 
-    const [selectedImage, setSelectedImage] = useState<ImageData>(
-        {} as ImageData,
+    const [selectedImage, setSelectedImage] = useState<IImageData>(
+        {} as IImageData,
     );
 
     const [selectedState, setSelectedState] = useState('');
-    const [allStates, setAllStates] = useState<BrazilianState[]>([]);
+    const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
 
     useEffect(() => {
-        api.get<BrazilianState[]>(
+        api.get<IBrazilianState[]>(
             'https://servicodados.ibge.gov.br/api/v1/localidades/estados',
             {
                 baseURL: '',
@@ -107,7 +107,7 @@ const SignUpCompany: React.FC = () => {
     }, []);
 
     const handleSubmit = useCallback(
-        async (data: CompanyData) => {
+        async (data: ICompanyData) => {
             try {
                 const schema = yup.object().shape({
                     companyName: yup
@@ -288,7 +288,7 @@ const SignUpCompany: React.FC = () => {
                             )}
                         </ImagePicker>
                         <DeleteImageButton
-                            onPress={() => setSelectedImage({} as ImageData)}
+                            onPress={() => setSelectedImage({} as IImageData)}
                         >
                             <Icon name="clear" size={34} color="#e7e7e7" />
                         </DeleteImageButton>

@@ -10,14 +10,12 @@ interface IProduct {
     image?: string;
 }
 
-interface ProductsContextInterface {
+interface IProductsContext {
     productsStatus: IProduct | 'newProduct' | 'noChanges'; //IProduct when modified some product (contains the product).
     updateProductsStatus(product: IProduct | 'newProduct' | 'noChanges'): void;
 }
 
-const productsContext = createContext<ProductsContextInterface>(
-    {} as ProductsContextInterface,
-);
+const productsContext = createContext<IProductsContext>({} as IProductsContext);
 
 const ProductsContext: React.FC = ({ children }) => {
     const [productsStatus, setProductsStatus] = useState<

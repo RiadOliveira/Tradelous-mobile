@@ -203,7 +203,11 @@ const ProductsList: React.FC = () => {
                                     onPress={() => handleCameraVisibility(true)}
                                     activeOpacity={0.4}
                                 >
-                                    <Icon name="qr-code-scanner" size={24} />
+                                    <Icon
+                                        name="qr-code-scanner"
+                                        size={24}
+                                        color="#374b92"
+                                    />
                                 </BarCodeButton>
                             </SearchBarContainer>
 

@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import icon from 'react-native-vector-icons/MaterialIcons';
 
 export const Container = styled.View`
     background-color: #49b454;
@@ -7,6 +8,30 @@ export const Container = styled.View`
     align-items: center;
     padding-bottom: 30px;
 `;
+
+export const FilterContainer = styled.View`
+    background-color: #ffffff;
+    width: 75%;
+    height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    flex-direction: row;
+    padding: 1.8px;
+    margin: 10% 0;
+`;
+
+export const Icon = styled(icon)`
+    margin-left: 12px;
+    margin-right: 12px;
+`;
+
+export const PickerView = styled.View`
+    width: 44%;
+    height: 50px;
+`;
+
+export const DatePickerButton = styled.TouchableOpacity``;
 
 export const Sale = styled.View`
     width: 66%;

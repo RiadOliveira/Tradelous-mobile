@@ -23,7 +23,7 @@ import { useAuth } from '@hooks/auth';
 
 const { width } = Dimensions.get('screen');
 
-interface SignUpData {
+interface ISignUpData {
     email: string;
     password: string;
     name: string;
@@ -47,7 +47,7 @@ const SignUp: React.FC = () => {
     }, []);
 
     const handleSubmit = useCallback(
-        async (data: SignUpData) => {
+        async (data: ISignUpData) => {
             try {
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome obrigatório'),

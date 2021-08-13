@@ -35,7 +35,7 @@ interface IProduct {
     image?: string;
 }
 
-interface ImageData {
+interface IImageData {
     name: string;
     type: string;
     uri: string;
@@ -52,8 +52,8 @@ const RegisterProduct: React.FC = () => {
     const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [barCodeValue, setBarCodeValue] = useState('');
-    const [selectedImage, setSelectedImage] = useState<ImageData>(
-        {} as ImageData,
+    const [selectedImage, setSelectedImage] = useState<IImageData>(
+        {} as IImageData,
     );
     const [temporaryInputValues, setTemporaryInputValues] = useState(
         {} as IProduct,
@@ -143,7 +143,7 @@ const RegisterProduct: React.FC = () => {
                 await api.post('/products/', productData);
 
                 formRef.current?.reset();
-                setSelectedImage({} as ImageData);
+                setSelectedImage({} as IImageData);
                 setBarCodeValue('');
                 setTemporaryInputValues({} as IProduct);
 

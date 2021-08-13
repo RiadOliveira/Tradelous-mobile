@@ -1,14 +1,12 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import { BackHandler } from 'react-native';
 
-interface CameraContextInterface {
+interface ICameraContext {
     isCameraVisible: boolean;
     handleCameraVisibility(visibility: boolean): void;
 }
 
-const cameraContext = createContext<CameraContextInterface>(
-    {} as CameraContextInterface,
-);
+const cameraContext = createContext<ICameraContext>({} as ICameraContext);
 
 const CameraContext: React.FC = ({ children }) => {
     const [isCameraVisible, setIsCameraVisible] = useState(false);
