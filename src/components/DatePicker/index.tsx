@@ -39,7 +39,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
             coverScreen={false}
             onBackButtonPress={() => setVisibility(false)}
             onBackdropPress={() => setVisibility(false)}
-            style={{ justifyContent: 'center', alignItems: 'center' }}
+            style={{
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                marginTop: '50%',
+            }}
             animationIn="fadeIn"
             animationOut="fadeOut"
         >
@@ -53,7 +57,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                         new Date(actualYear, actualMonth, actualDay),
                         -1,
                     )}
-                    maximumDate={new Date(Date.now())}
+                    //maximumDate={new Date(Date.now())}
                 />
 
                 <DatePickerButton onPress={confirmPicker}>

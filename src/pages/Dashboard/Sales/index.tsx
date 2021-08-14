@@ -70,7 +70,7 @@ const Sales: React.FC = () => {
             api.get(
                 `/sales/day/${dateOfSales.getDate()}-${
                     dateOfSales.getMonth() + 1
-                }`,
+                }-${dateOfSales.getFullYear()}`,
             ).then(response => {
                 setSales(response.data);
 
@@ -79,16 +79,18 @@ const Sales: React.FC = () => {
                 }
             });
         } else if (searchType == 'month') {
-            api.get(`/sales/month/${dateOfSales.getMonth() + 1}`).then(
-                response => {
-                    setSales(response.data);
-                },
-            );
+            api.get(
+                `/sales/month/${
+                    dateOfSales.getMonth() + 1
+                }-${dateOfSales.getFullYear()}`,
+            ).then(response => {
+                setSales(response.data);
+            });
         } else {
             api.get(
-                `/sales/week/${dateOfSales.getFullYear()}-${dateOfSales.getDate()}-${
+                `/sales/week/${dateOfSales.getDate()}-${
                     dateOfSales.getMonth() + 1
-                }`,
+                }-${dateOfSales.getFullYear()}`,
             ).then(response => {
                 setSales(response.data);
             });
@@ -124,6 +126,7 @@ const Sales: React.FC = () => {
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
+            scrollEnabled={!datePickerVisibility}
         >
             {!hasLoadedSales ? (
                 <ActivityIndicator

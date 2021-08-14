@@ -1,10 +1,13 @@
 import styled from 'styled-components/native';
+import { Dimensions } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+
+const { height: screenHeight } = Dimensions.get('screen');
 
 export const DatePickerView = styled.View`
     background-color: #ffffff;
     width: 80%;
-    height: 42%;
+    height: ${0.35 * screenHeight}px;
     border-radius: 15px;
 
     align-items: center;
