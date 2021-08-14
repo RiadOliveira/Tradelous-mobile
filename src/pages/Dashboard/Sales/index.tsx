@@ -7,8 +7,7 @@ import {
     DatePickerButton,
     Sale,
     SaleData,
-    SaleName,
-    SaleSub,
+    SaleText,
     SaleImage,
     SaleIcon,
 } from './styles';
@@ -16,6 +15,8 @@ import { ActivityIndicator, ScrollView } from 'react-native';
 import api from '@services/api';
 import DatePicker from '@components/DatePicker';
 import { Picker } from '@react-native-picker/picker';
+import { useProducts } from '@hooks/products';
+import formatPrice from '@utils/formatPrice';
 
 interface IEmployee {
     id: string;
@@ -49,6 +50,8 @@ interface ISale {
 type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
+    const { productsStatus } = useProducts();
+
     const [hasLoadedSales, setHasLoadedSales] = useState(false);
     const [searchType, setSearchType] = useState<SearchType>('day');
 
@@ -59,8 +62,6 @@ const Sales: React.FC = () => {
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        setHasLoadedSales(false);
-
         if (searchType == 'day') {
             api.get(
                 `/sales/day/${dateOfSales.getDate()}-${
@@ -68,13 +69,15 @@ const Sales: React.FC = () => {
                 }`,
             ).then(response => {
                 setSales(response.data);
-                setHasLoadedSales(true);
+
+                if (!hasLoadedSales) {
+                    setHasLoadedSales(true);
+                }
             });
         } else if (searchType == 'month') {
             api.get(`/sales/month/${dateOfSales.getMonth() + 1}`).then(
                 response => {
                     setSales(response.data);
-                    setHasLoadedSales(true);
                 },
             );
         } else {
@@ -84,11 +87,33 @@ const Sales: React.FC = () => {
                 }`,
             ).then(response => {
                 setSales(response.data);
-                setHasLoadedSales(true);
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateOfSales]);
+    }, [dateOfSales, searchType]);
+
+    useEffect(() => {
+        if (productsStatus !== 'noChanges' && productsStatus !== 'newProduct') {
+            setSales(prevSales =>
+                prevSales.map(sale => {
+                    if (sale.productId == productsStatus.id) {
+                        return {
+                            ...sale,
+                            product: productsStatus,
+                        };
+                    }
+
+                    return sale;
+                }),
+            );
+        }
+    }, [productsStatus]);
+
+    const formattedProductPrices = useMemo(
+        () => sales.map(sale => formatPrice(sale.product.price)),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [productsStatus, sales],
+    );
 
     return (
         <ScrollView
@@ -105,7 +130,6 @@ const Sales: React.FC = () => {
             ) : (
                 <Container>
                     <DatePicker
-                        dateState={dateOfSales}
                         isVisible={datePickerVisibility}
                         setDateFunction={setDateofSales}
                         setVisibility={setDatePickerVisibility}
@@ -156,28 +180,49 @@ const Sales: React.FC = () => {
                         </DatePickerButton>
                     </FilterContainer>
 
-                    {sales.map(sale => (
+                    {sales.map((sale, index) => (
                         <Sale key={sale.id}>
-                            <SaleData>
-                                <SaleName>{sale.product.name}</SaleName>
-                                <SaleSub>{sale.employee.email}</SaleSub>
-                            </SaleData>
-
-                            <SaleIcon>
+                            <SaleIcon hasImage={!!sale.product.image}>
                                 {sale.product.image ? (
                                     <SaleImage
                                         source={{
-                                            uri: `${apiStaticUrl}/avatar/${sale.product.image}`,
+                                            uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
                                         }}
                                     />
                                 ) : (
                                     <Icon
-                                        name="person"
-                                        size={30}
+                                        name="shopping-cart"
+                                        size={40}
                                         color="#ffffff"
                                     />
                                 )}
                             </SaleIcon>
+
+                            <SaleData>
+                                <SaleData
+                                    style={{
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                    }}
+                                >
+                                    <SaleText>{sale.product.name}</SaleText>
+                                    <SaleText>Qntd: {sale.quantity}</SaleText>
+                                    <SaleText>
+                                        {formattedProductPrices[index]}
+                                    </SaleText>
+                                </SaleData>
+
+                                <SaleData
+                                    style={{
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                    }}
+                                >
+                                    <SaleText>{sale.employee.name}</SaleText>
+
+                                    <SaleText>{sale.date}</SaleText>
+                                </SaleData>
+                            </SaleData>
                         </Sale>
                     ))}
                 </Container>

@@ -8,23 +8,30 @@ import {
     DatePickerButton,
     DatePickerButtonText,
 } from './styles';
+import { useState } from 'react';
+import { useCallback } from 'react';
 
 interface DatePickerProps {
     isVisible?: boolean;
-    dateState: Date;
     setVisibility(visibility: boolean): void;
     setDateFunction(date: Date): void;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
     isVisible = false,
-    dateState = new Date(Date.now()),
     setVisibility,
     setDateFunction,
 }) => {
+    const [dateValue, setDateValue] = useState(new Date(Date.now()));
+
     const actualDay = new Date(Date.now()).getDate();
     const actualMonth = new Date(Date.now()).getMonth() + 1;
     const actualYear = new Date(Date.now()).getFullYear();
+
+    const confirmPicker = useCallback(() => {
+        setDateFunction(dateValue);
+        setVisibility(false);
+    }, [dateValue, setDateFunction, setVisibility]);
 
     return (
         <ModalContainer
@@ -40,8 +47,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 <DatePickerComponent
                     mode="date"
                     androidVariant="nativeAndroid"
-                    date={dateState}
-                    onDateChange={date => setDateFunction(date)}
+                    date={dateValue}
+                    onDateChange={date => setDateValue(date)}
                     minimumDate={addYears(
                         new Date(actualYear, actualMonth, actualDay),
                         -1,
@@ -49,7 +56,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                     maximumDate={new Date(Date.now())}
                 />
 
-                <DatePickerButton onPress={() => setVisibility(false)}>
+                <DatePickerButton onPress={confirmPicker}>
                     <DatePickerButtonText>Confirmar</DatePickerButtonText>
                 </DatePickerButton>
             </DatePickerView>

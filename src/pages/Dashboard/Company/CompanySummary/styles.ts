@@ -106,9 +106,9 @@ export const EmployeeEmail = styled.Text`
 `;
 
 export const EmployeeImage = styled.Image`
-    width: 58px;
-    height: 58px;
-    border-radius: 29px;
+    width: 56px;
+    height: 56px;
+    border-radius: 30px;
 `;
 
 export const EmployeeIcon = styled.View<EmployeeProps>`

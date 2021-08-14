@@ -55,7 +55,7 @@ export const ProductContainer = styled(RectButton)`
     flex-direction: row;
     width: 75%;
     height: 64px;
-    border-radius: 15px;
+    border-radius: 8px;
     background-color: #1c274e;
     align-items: center;
     margin-bottom: 16px;
@@ -75,8 +75,8 @@ export const ProductImageContainer = styled.View<ProductImageContainerProps>`
 `;
 
 export const ProductImage = styled.Image`
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 20px;
 `;
 

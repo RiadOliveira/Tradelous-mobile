@@ -1,5 +1,9 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import icon from 'react-native-vector-icons/MaterialIcons';
+
+interface SaleIconProps {
+    hasImage: boolean;
+}
 
 export const Container = styled.View`
     background-color: #49b454;
@@ -12,13 +16,15 @@ export const Container = styled.View`
 export const FilterContainer = styled.View`
     background-color: #ffffff;
     width: 75%;
-    height: 60px;
+    height: 64px;
     align-items: center;
     justify-content: space-between;
     border-radius: 5px;
     flex-direction: row;
     padding: 1.8px;
     margin: 10% 0;
+
+    border: 1.5px solid #374b92;
 `;
 
 export const Icon = styled(icon)`
@@ -27,58 +33,51 @@ export const Icon = styled(icon)`
 `;
 
 export const PickerView = styled.View`
-    width: 44%;
-    height: 50px;
+    width: 45%;
+    height: 42px;
+    border: 2px solid #1c274e;
+    border-radius: 15px;
 `;
 
 export const DatePickerButton = styled.TouchableOpacity``;
 
 export const Sale = styled.View`
-    width: 66%;
     flex-direction: row;
-    position: relative;
-    margin-bottom: 4%;
+    width: 75%;
+    height: 64px;
+    border-radius: 8px;
+    background-color: #1c274e;
+    align-items: center;
+    margin-bottom: 16px;
 `;
 
 export const SaleData = styled.View`
-    background-color: #2c3f82;
-    height: 60px;
-    width: 97%;
-    position: absolute;
-    justify-content: center;
-    align-items: flex-start;
-    left: 5%;
-    border-radius: 20px;
+    margin-top: 1%;
+    width: 72%;
+    justify-content: space-between;
 `;
 
-export const SaleName = styled.Text`
-    margin-left: 10px;
-    font-family: Poppins-Bold;
-    font-size: 14px;
+export const SaleText = styled.Text`
+    font-family: Poppins-Regular;
     color: #ffffff;
-    margin-left: 22%;
-`;
-
-export const SaleSub = styled.Text`
-    margin-left: 10px;
-    font-family: Poppins-Bold;
-    font-size: 8.5px;
-    color: #ffffff;
-    margin-left: 22.5%;
+    font-size: 11px;
 `;
 
 export const SaleImage = styled.Image`
-    width: 58px;
-    height: 58px;
-    border-radius: 29px;
+    width: 44px;
+    height: 44px;
+    border-radius: 20px;
 `;
 
-export const SaleIcon = styled.View`
-    width: 60px;
-    height: 60px;
-    background-color: #5170e0;
-    border-radius: 30px;
+export const SaleIcon = styled.View<SaleIconProps>`
+    height: 100%;
     justify-content: center;
-    align-items: center;
-    border: 2px solid #2c3f82;
+
+    ${props =>
+        props.hasImage
+            ? css`
+                  margin-right: 12px;
+                  margin-left: 10px;
+              `
+            : null}
 `;
