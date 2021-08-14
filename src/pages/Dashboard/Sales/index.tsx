@@ -12,10 +12,11 @@ import {
     SaleIcon,
 } from './styles';
 import { ActivityIndicator, ScrollView } from 'react-native';
-import api from '@services/api';
-import DatePicker from '@components/DatePicker';
 import { Picker } from '@react-native-picker/picker';
 import { useProducts } from '@hooks/products';
+import { useRoute } from '@react-navigation/native';
+import api from '@services/api';
+import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
 
 interface IEmployee {
@@ -51,6 +52,9 @@ type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
     const { productsStatus } = useProducts();
+    const { updatedAt } = (useRoute().params as { updatedAt: Date }) || {
+        updatedAt: 0,
+    };
 
     const [hasLoadedSales, setHasLoadedSales] = useState(false);
     const [searchType, setSearchType] = useState<SearchType>('day');
@@ -90,7 +94,7 @@ const Sales: React.FC = () => {
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateOfSales, searchType]);
+    }, [dateOfSales, searchType, updatedAt]);
 
     useEffect(() => {
         if (productsStatus !== 'noChanges' && productsStatus !== 'newProduct') {
