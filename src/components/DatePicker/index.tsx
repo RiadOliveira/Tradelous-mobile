@@ -57,7 +57,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                         new Date(actualYear, actualMonth, actualDay),
                         -1,
                     )}
-                    //maximumDate={new Date(Date.now())}
+                    maximumDate={new Date(Date.now())}
                 />
 
                 <DatePickerButton onPress={confirmPicker}>

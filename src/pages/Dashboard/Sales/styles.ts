@@ -24,7 +24,7 @@ export const FilterContainer = styled.View`
     padding: 1.8px;
     margin: 10% 0;
 
-    border: 1.5px solid #374b92;
+    border: 1.5px solid #1c274e;
 `;
 
 export const Icon = styled(icon)`
@@ -35,7 +35,7 @@ export const Icon = styled(icon)`
 export const PickerView = styled.View`
     width: 45%;
     height: 42px;
-    border: 2px solid #1c274e;
+    border: 2px solid #374b92;
     border-radius: 15px;
 `;
 
