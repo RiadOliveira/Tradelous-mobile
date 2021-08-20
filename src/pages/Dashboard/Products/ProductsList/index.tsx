@@ -27,8 +27,8 @@ import formatPrice from '@utils/formatPrice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface IProduct {
-    name: string;
     id: string;
+    name: string;
     price: number;
     quantity: number;
     brand: string;

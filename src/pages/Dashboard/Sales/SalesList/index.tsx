@@ -24,7 +24,6 @@ import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface IEmployee {
-    id: string;
     name: string;
     email: string;
     avatar: string;
@@ -32,7 +31,6 @@ interface IEmployee {
 }
 
 interface IProduct {
-    id: string;
     name: string;
     price: number;
     quantity: number;

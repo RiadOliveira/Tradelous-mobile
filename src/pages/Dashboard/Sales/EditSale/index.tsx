@@ -34,14 +34,12 @@ import { useProducts } from '@hooks/products';
 import { Picker } from '@react-native-picker/picker';
 
 interface IEmployee {
-    id: string;
     name: string;
     email: string;
     avatar: string;
 }
 
 interface IProduct {
-    id: string;
     name: string;
     price: number;
     quantity: number;
@@ -72,7 +70,7 @@ const EditSale: React.FC = () => {
     const [totalValue, setTotalValue] = useState(
         formatPrice(sale.quantity * sale.product.price),
     );
-    const [sellMethod, setSellMethod] = useState('money');
+    const [sellMethod, setSellMethod] = useState(sale.method);
 
     const formRef = useRef<FormHandles>(null);
 
@@ -105,7 +103,7 @@ const EditSale: React.FC = () => {
                 });
 
                 const response = await api.put(`/sales/${sale.id}`, {
-                    productId: sale.product.id,
+                    productId: sale.productId,
                     method: sellMethod,
                     quantity: data.soldQuantity,
                 });
@@ -122,6 +120,7 @@ const EditSale: React.FC = () => {
 
                 updateProductsStatus({
                     ...sale.product,
+                    id: sale.productId,
                     quantity,
                 });
 
@@ -142,6 +141,7 @@ const EditSale: React.FC = () => {
             navigation,
             sale.quantity,
             sale.product,
+            sale.productId,
             sellMethod,
             soldQuantity,
             updateProductsStatus,
@@ -269,8 +269,8 @@ const EditSale: React.FC = () => {
                                 width: '44%',
                                 marginRight: -2,
                             }}
-                            onValueChange={itemValue =>
-                                setSellMethod(String(itemValue))
+                            onValueChange={(itemValue: 'money' | 'card') =>
+                                setSellMethod(itemValue)
                             }
                             mode="dropdown"
                         >
