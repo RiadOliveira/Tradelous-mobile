@@ -137,7 +137,11 @@ const CompanySummary: React.FC = () => {
 
                     {orderedEmployees.map(employee => (
                         <Employee key={employee.id}>
-                            <EmployeeData isAdmin={employee.isAdmin}>
+                            <EmployeeData
+                                isAdmin={employee.isAdmin}
+                                activeOpacity={0.7}
+                                disabled={!user.isAdmin || employee.isAdmin}
+                            >
                                 <EmployeeName>{employee.name}</EmployeeName>
                                 <EmployeeEmail>{employee.email}</EmployeeEmail>
                             </EmployeeData>

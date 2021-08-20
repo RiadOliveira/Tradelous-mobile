@@ -78,7 +78,7 @@ export const Employee = styled.View`
     margin-bottom: 4%;
 `;
 
-export const EmployeeData = styled.View<EmployeeProps>`
+export const EmployeeData = styled.TouchableOpacity<EmployeeProps>`
     background-color: ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
     height: 60px;
     width: 97%;

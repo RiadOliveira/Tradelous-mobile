@@ -41,7 +41,7 @@ export const PickerView = styled.View`
 
 export const DatePickerButton = styled.TouchableOpacity``;
 
-export const Sale = styled.View`
+export const Sale = styled.TouchableOpacity`
     flex-direction: row;
     width: 75%;
     height: 64px;

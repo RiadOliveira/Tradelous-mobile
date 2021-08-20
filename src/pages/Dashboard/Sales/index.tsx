@@ -18,6 +18,7 @@ import { useRoute } from '@react-navigation/native';
 import api from '@services/api';
 import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
+import { useAuth } from '@hooks/auth';
 
 interface IEmployee {
     id: string;
@@ -51,6 +52,7 @@ interface ISale {
 type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
+    const { user } = useAuth();
     const { productsStatus } = useProducts();
     const { updatedAt } = (useRoute().params as { updatedAt: Date }) || {
         updatedAt: 0,
@@ -188,7 +190,11 @@ const Sales: React.FC = () => {
                     </FilterContainer>
 
                     {sales.map((sale, index) => (
-                        <Sale key={sale.id}>
+                        <Sale
+                            key={sale.id}
+                            disabled={!user.isAdmin}
+                            activeOpacity={0.7}
+                        >
                             <SaleIcon hasImage={!!sale.product.image}>
                                 {sale.product.image ? (
                                     <SaleImage
