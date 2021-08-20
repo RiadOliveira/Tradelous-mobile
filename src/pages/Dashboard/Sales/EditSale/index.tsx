@@ -1,17 +1,23 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
     Container,
     TitleTextContainer,
     TitleText,
     SaleSectionTitle,
     SaleSectionTitleText,
-    ProductContainer,
-    ProductImageContainer,
-    ProductImage,
-    ProductData,
-    ProductText,
+    SaleSection,
+    SaleSectionImageContainer,
+    SaleSectionImage,
+    SaleSectionData,
+    SaleSectionText,
+    ProductSellContainer,
+    TotalSellPrice,
+    AuxiliarBar,
+    TotalSellPriceText,
+    PickerView,
+    PickerText,
 } from './styles';
-import { ScrollView, TextInput } from 'react-native';
+import { ScrollView } from 'react-native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { useNavigation, useRoute } from '@react-navigation/core';
@@ -24,6 +30,8 @@ import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import formatPrice from '@utils/formatPrice';
+import { useProducts } from '@hooks/products';
+import { Picker } from '@react-native-picker/picker';
 
 interface IEmployee {
     id: string;
@@ -36,6 +44,7 @@ interface IProduct {
     id: string;
     name: string;
     price: number;
+    quantity: number;
     brand: string;
     image?: string;
 }
@@ -55,46 +64,68 @@ interface ISale {
 
 const EditSale: React.FC = () => {
     const navigation = useNavigation();
-
     const { sale } = useRoute().params as { sale: ISale };
 
-    const formRef = useRef<FormHandles>(null);
-    const priceInput = useRef<TextInput>(null);
-    const brandInput = useRef<TextInput>(null);
-    const quantityInput = useRef<TextInput>(null);
+    const { updateProductsStatus } = useProducts();
 
-    const apiStaticUrl = useMemo(
-        () => `${api.defaults.baseURL}/files/productImage`,
-        [],
+    const [soldQuantity, setSoldQuantity] = useState(sale.quantity);
+    const [totalValue, setTotalValue] = useState(
+        formatPrice(sale.quantity * sale.product.price),
+    );
+    const [sellMethod, setSellMethod] = useState('money');
+
+    const formRef = useRef<FormHandles>(null);
+
+    const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
+
+    const handleQuantityChange = useCallback(
+        (value: string) => {
+            setSoldQuantity(Number(value));
+            setTotalValue(formatPrice(Number(value) * sale.product.price));
+        },
+        [sale.product.price],
     );
 
     const handleSubmit = useCallback(
-        async (data: ISale) => {
+        async (data: { soldQuantity: number }) => {
             try {
                 const schema = yup.object().shape({
-                    name: yup.string().required('Nome do produto obrigatório'),
-                    price: yup
+                    soldQuantity: yup
                         .number()
-                        .moreThan(0, 'O preço precisa ser maior que zero')
-                        .required('Preço do produto obrigatório'),
-                    brand: yup
-                        .string()
-                        .required('Marca do produto obrigatória'),
-                    quantity: yup
-                        .number()
-                        .integer('A quantidade precisa ser um valor inteiro')
-                        .min(0, 'A quantidade não pode ser negativa'),
-                    barCode: yup.string().optional(),
+                        .min(1, 'A quantidade vendida precisa ser no mínimo 1')
+                        .max(
+                            sale.quantity + sale.product.quantity,
+                            'Quantidade requisitada maior que a disponível',
+                        )
+                        .required('Quantidade vendida obrigatória'),
                 });
 
                 await schema.validate(data, {
                     abortEarly: false,
                 });
 
-                const response = await api.put(`/sales/${sale.id}`, data);
+                const response = await api.put(`/sales/${sale.id}`, {
+                    productId: sale.product.id,
+                    method: sellMethod,
+                    quantity: data.soldQuantity,
+                });
+
+                let quantity = soldQuantity;
+
+                if (soldQuantity > sale.quantity) {
+                    quantity =
+                        sale.product.quantity - (soldQuantity - sale.quantity);
+                } else if (sale.quantity > soldQuantity) {
+                    quantity =
+                        sale.product.quantity + (sale.quantity - soldQuantity);
+                }
+
+                updateProductsStatus({
+                    ...sale.product,
+                    quantity,
+                });
 
                 navigation.navigate('SalesList', {
-                    saleId: sale.id,
                     updatedAt: response.data.updatedAt,
                 });
 
@@ -106,7 +137,15 @@ const EditSale: React.FC = () => {
                 ErrorCatcher(err, formRef);
             }
         },
-        [sale.id, navigation],
+        [
+            sale.id,
+            navigation,
+            sale.quantity,
+            sale.product,
+            sellMethod,
+            soldQuantity,
+            updateProductsStatus,
+        ],
     );
 
     return (
@@ -120,78 +159,133 @@ const EditSale: React.FC = () => {
                     <TitleText>Dados da venda</TitleText>
                 </TitleTextContainer>
 
+                <SaleSectionTitle>
+                    <SaleSectionTitleText>Funcionário</SaleSectionTitleText>
+                </SaleSectionTitle>
+
+                <SaleSection>
+                    <SaleSectionImageContainer>
+                        {sale.employee.avatar ? (
+                            <SaleSectionImage
+                                source={{
+                                    uri: `${apiStaticUrl}/avatar/${sale.employee.avatar}`,
+                                }}
+                            />
+                        ) : (
+                            <Icon name="person" size={40} color="#ffffff" />
+                        )}
+                    </SaleSectionImageContainer>
+
+                    <SaleSectionData style={{ marginLeft: '1%' }}>
+                        <SaleSectionText>{sale.employee.name}</SaleSectionText>
+
+                        <SaleSectionData
+                            style={{
+                                flexDirection: 'row',
+                                width: '98%',
+                            }}
+                        >
+                            <SaleSectionText>
+                                {sale.employee.email}
+                            </SaleSectionText>
+                        </SaleSectionData>
+                    </SaleSectionData>
+                </SaleSection>
+
+                <SaleSectionTitle>
+                    <SaleSectionTitleText>Produto</SaleSectionTitleText>
+                </SaleSectionTitle>
+
+                <SaleSection>
+                    <SaleSectionImageContainer>
+                        {sale.product.image ? (
+                            <SaleSectionImage
+                                source={{
+                                    uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                }}
+                            />
+                        ) : (
+                            <Icon
+                                name="local-offer"
+                                size={40}
+                                color="#ffffff"
+                            />
+                        )}
+                    </SaleSectionImageContainer>
+
+                    <SaleSectionData style={{ marginLeft: '1%' }}>
+                        <SaleSectionText>{sale.product.name}</SaleSectionText>
+
+                        <SaleSectionData
+                            style={{
+                                flexDirection: 'row',
+                                width: '98%',
+                            }}
+                        >
+                            <SaleSectionText>
+                                {sale.product.brand}
+                            </SaleSectionText>
+
+                            <SaleSectionText>
+                                {formatPrice(sale.product.price)}
+                            </SaleSectionText>
+                        </SaleSectionData>
+                    </SaleSectionData>
+                </SaleSection>
+
                 <Form
                     ref={formRef}
-                    initialData={{
-                        ...sale,
-                        product: `${sale.product.name} - ${sale.product.brand}`,
-                    }}
                     onSubmit={handleSubmit}
                     style={{
                         alignItems: 'center',
                         width: '100%',
                     }}
                 >
-                    <SaleSectionTitle>
-                        <SaleSectionTitleText>Produto</SaleSectionTitleText>
-                    </SaleSectionTitle>
-                    <ProductContainer>
-                        <ProductImageContainer>
-                            {sale.product.image ? (
-                                <ProductImage
-                                    source={{
-                                        uri: `${apiStaticUrl}/${sale.product.image}`,
-                                    }}
-                                />
-                            ) : (
-                                <Icon
-                                    name="local-offer"
-                                    size={40}
-                                    color="#ffffff"
-                                />
-                            )}
-                        </ProductImageContainer>
+                    <ProductSellContainer>
+                        <Input
+                            keyboardType="numeric"
+                            name="soldQuantity"
+                            placeholder="Quant. vendida"
+                            icon="inbox"
+                            value={soldQuantity ? soldQuantity.toString() : ''}
+                            onChangeText={value => handleQuantityChange(value)}
+                        />
 
-                        <ProductData style={{ marginLeft: '1%' }}>
-                            <ProductText>{sale.product.name}</ProductText>
+                        <TotalSellPrice>
+                            <AuxiliarBar />
+                            <TotalSellPriceText>
+                                Preço:{'\n'}
+                                {totalValue || '0,00 R$'}
+                            </TotalSellPriceText>
+                        </TotalSellPrice>
+                    </ProductSellContainer>
 
-                            <ProductData
-                                style={{
-                                    flexDirection: 'row',
-                                    width: '98%',
-                                }}
-                            >
-                                <ProductText>{sale.product.brand}</ProductText>
-
-                                <ProductText>
-                                    {formatPrice(sale.product.price)}
-                                </ProductText>
-                            </ProductData>
-                        </ProductData>
-                    </ProductContainer>
-
-                    <Input
-                        keyboardType="numeric"
-                        name="price"
-                        ref={priceInput}
-                        placeholder="Preço (Use . para decimal)"
-                        icon="attach-money"
-                        onSubmitEditing={() => brandInput.current?.focus()}
-                        returnKeyType="next"
-                    />
-
-                    <Input
-                        autoCapitalize="words"
-                        name="brand"
-                        placeholder="Marca"
-                        icon="tag"
-                        ref={brandInput}
-                        onSubmitEditing={() => quantityInput.current?.focus()}
-                        returnKeyType="next"
-                    />
+                    <PickerView>
+                        <PickerText>Selecione o método:</PickerText>
+                        <Picker
+                            selectedValue={sellMethod}
+                            style={{
+                                height: 50,
+                                width: '44%',
+                                marginRight: -2,
+                            }}
+                            onValueChange={itemValue =>
+                                setSellMethod(String(itemValue))
+                            }
+                            mode="dropdown"
+                        >
+                            <Picker.Item
+                                key="0"
+                                label="Dinheiro"
+                                value="money"
+                            />
+                            <Picker.Item key="1" label="Cartão" value="card" />
+                        </Picker>
+                    </PickerView>
                 </Form>
 
                 <Button
+                    style={{ position: 'absolute', bottom: '5%' }}
                     biggerText
                     onPress={() => formRef.current?.submitForm()}
                 >

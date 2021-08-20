@@ -42,6 +42,7 @@ interface IProduct {
 const ProductSale: React.FC = () => {
     const product = useRoute().params as IProduct;
     const { updateProductsStatus } = useProducts();
+
     const [soldQuantity, setSoldQuantity] = useState(0);
     const [totalValue, setTotalValue] = useState('');
     const [sellMethod, setSellMethod] = useState('money');
@@ -70,8 +71,6 @@ const ProductSale: React.FC = () => {
     const handleSubmit = useCallback(
         async (data: { soldQuantity: number }) => {
             try {
-                data.soldQuantity = Number(data.soldQuantity);
-
                 const schema = yup.object().shape({
                     soldQuantity: yup
                         .number()

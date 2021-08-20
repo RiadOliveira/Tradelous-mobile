@@ -35,6 +35,7 @@ interface IProduct {
     id: string;
     name: string;
     price: number;
+    quantity: number;
     brand: string;
     image?: string;
 }
@@ -202,7 +203,7 @@ const Sales: React.FC = () => {
                         <FilterContainer>
                             <Icon
                                 name="filter-alt"
-                                size={30}
+                                size={34}
                                 color={'#374b92'}
                             />
 
@@ -287,7 +288,7 @@ const Sales: React.FC = () => {
                                     )}
                                 </SaleIcon>
 
-                                <SaleData>
+                                <SaleData style={{ marginLeft: '1%' }}>
                                     <SaleData
                                         style={{
                                             width: '100%',

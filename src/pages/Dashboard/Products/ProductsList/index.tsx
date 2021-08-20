@@ -184,7 +184,9 @@ const ProductsList: React.FC = () => {
                                     name="search"
                                     size={24}
                                     color={isSearchFilled ? '#374b92' : 'black'}
+                                    style={{ marginLeft: 10, marginRight: 10 }}
                                 />
+
                                 <SearchBar
                                     onChangeText={event => {
                                         handleChangeSearch(event);
@@ -207,6 +209,10 @@ const ProductsList: React.FC = () => {
                                         name="qr-code-scanner"
                                         size={24}
                                         color="#374b92"
+                                        style={{
+                                            marginLeft: 10,
+                                            marginRight: 10,
+                                        }}
                                     />
                                 </BarCodeButton>
                             </SearchBarContainer>
@@ -218,9 +224,7 @@ const ProductsList: React.FC = () => {
                                     }
                                     key={product.id}
                                 >
-                                    <ProductImageContainer
-                                        hasImage={!!product.image}
-                                    >
+                                    <ProductImageContainer>
                                         {product.image ? (
                                             <ProductImage
                                                 source={{
