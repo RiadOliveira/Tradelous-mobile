@@ -47,7 +47,11 @@ interface IProduct {
 
 interface ModalProps {
     actionFunction?: () => Promise<void>;
-    text?: string;
+    text?: {
+        info: string;
+        firstButton: string;
+        secondButton: string;
+    };
     visibility: boolean;
 }
 
@@ -246,7 +250,13 @@ const ProductDescription: React.FC = () => {
                 actionFunction={modalProps.actionFunction}
                 setVisibility={setModalProps}
                 isVisible={modalProps.visibility}
-                text={modalProps.text ?? ''}
+                text={
+                    modalProps.text ?? {
+                        info: '',
+                        firstButton: '',
+                        secondButton: '',
+                    }
+                }
                 iconProps={{ name: 'delete', color: '#de4343' }}
             />
 
@@ -381,8 +391,12 @@ const ProductDescription: React.FC = () => {
                                         visibility: true,
                                         actionFunction: () =>
                                             handleImageData('delete'),
-                                        text:
-                                            'Tem certeza que deseja deletar a imagem desse produto?',
+                                        text: {
+                                            info:
+                                                'Tem certeza que deseja deletar a imagem desse produto?',
+                                            firstButton: 'Sim',
+                                            secondButton: 'Não',
+                                        },
                                     })
                                 }
                             >
@@ -406,8 +420,12 @@ const ProductDescription: React.FC = () => {
                                 setModalProps({
                                     visibility: true,
                                     actionFunction: handleProductDelete,
-                                    text:
-                                        'Tem certeza que deseja deletar esse produto?',
+                                    text: {
+                                        info:
+                                            'Tem certeza que deseja deletar esse produto?',
+                                        firstButton: 'Sim',
+                                        secondButton: 'Não',
+                                    },
                                 })
                             }
                         >

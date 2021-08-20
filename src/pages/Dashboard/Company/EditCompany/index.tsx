@@ -45,7 +45,11 @@ interface ICompany {
 
 interface ModalProps {
     actionFunction?: () => Promise<void>;
-    text?: string;
+    text?: {
+        info: string;
+        firstButton: string;
+        secondButton: string;
+    };
     visibility: boolean;
 }
 
@@ -229,7 +233,13 @@ const EditCompany: React.FC = () => {
                 actionFunction={modalProps.actionFunction}
                 setVisibility={setModalProps}
                 isVisible={modalProps.visibility}
-                text={modalProps.text ?? ''}
+                text={
+                    modalProps.text ?? {
+                        info: '',
+                        firstButton: '',
+                        secondButton: '',
+                    }
+                }
                 iconProps={{ name: 'delete', color: '#de4343' }}
             />
             <ScrollView
@@ -265,8 +275,12 @@ const EditCompany: React.FC = () => {
                                     visibility: true,
                                     actionFunction: () =>
                                         handleImageData('delete'),
-                                    text:
-                                        'Tem certeza que deseja deletar a imagem da empresa?',
+                                    text: {
+                                        info:
+                                            'Tem certeza que deseja deletar a imagem da empresa?',
+                                        firstButton: 'Sim',
+                                        secondButton: 'Não',
+                                    },
                                 })
                             }
                         >

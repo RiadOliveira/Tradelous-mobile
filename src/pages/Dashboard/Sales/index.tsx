@@ -19,6 +19,7 @@ import api from '@services/api';
 import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
 import { useAuth } from '@hooks/auth';
+import Modal from '@components/Modal';
 
 interface IEmployee {
     id: string;
@@ -49,6 +50,17 @@ interface ISale {
     product: IProduct;
 }
 
+interface ModalProps {
+    actionFunction?: () => Promise<void>;
+    secondActionFunction?: () => Promise<void>;
+    text?: {
+        info: string;
+        firstButton: string;
+        secondButton: string;
+    };
+    visibility: boolean;
+}
+
 type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
@@ -64,6 +76,10 @@ const Sales: React.FC = () => {
     const [sales, setSales] = useState<ISale[]>([]);
     const [dateOfSales, setDateofSales] = useState<Date>(new Date(Date.now()));
     const [datePickerVisibility, setDatePickerVisibility] = useState(false);
+
+    const [modalProps, setModalProps] = useState<ModalProps>({
+        visibility: false,
+    });
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
@@ -130,6 +146,20 @@ const Sales: React.FC = () => {
             keyboardShouldPersistTaps="handled"
             scrollEnabled={!datePickerVisibility}
         >
+            <Modal
+                actionFunction={modalProps.actionFunction}
+                setVisibility={setModalProps}
+                isVisible={modalProps.visibility}
+                text={
+                    modalProps.text ?? {
+                        info: '',
+                        firstButton: '',
+                        secondButton: '',
+                    }
+                }
+                iconProps={{ name: 'info', color: '#1c274e' }}
+            />
+
             {!hasLoadedSales ? (
                 <ActivityIndicator
                     size={64}
@@ -194,6 +224,17 @@ const Sales: React.FC = () => {
                             key={sale.id}
                             disabled={!user.isAdmin}
                             activeOpacity={0.7}
+                            onPress={() =>
+                                setModalProps({
+                                    visibility: true,
+                                    text: {
+                                        info:
+                                            'O que deseja fazer com essa venda?',
+                                        firstButton: 'Atualizar',
+                                        secondButton: 'Deletar',
+                                    },
+                                })
+                            }
                         >
                             <SaleIcon hasImage={!!sale.product.image}>
                                 {sale.product.image ? (

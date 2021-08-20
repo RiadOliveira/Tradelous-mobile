@@ -151,7 +151,11 @@ const Profile: React.FC = () => {
                 actionFunction={() => handleImageData('delete')}
                 setVisibility={setModalProps}
                 isVisible={modalProps.visibility}
-                text="Tem certeza que deseja deletar seu avatar?"
+                text={{
+                    info: 'Tem certeza que deseja deletar seu avatar?',
+                    firstButton: 'Sim',
+                    secondButton: 'Não',
+                }}
                 iconProps={{ name: 'delete', color: '#de4343' }}
             />
 

@@ -11,12 +11,17 @@ import {
 
 interface ModalProps {
     isVisible?: boolean;
-    text: string;
+    text: {
+        info: string;
+        firstButton: string;
+        secondButton: string;
+    };
     iconProps: {
         name: string;
         color: string;
     };
     actionFunction?: () => Promise<void>;
+    secondActionFunction?: () => Promise<void>;
     setVisibility({ visibility }: { visibility: boolean }): void;
 }
 
@@ -48,21 +53,21 @@ const Modal: React.FC<ModalProps> = ({
             <ModalView>
                 <Icon name={iconProps.name} size={56} color={iconProps.color} />
 
-                <ModalText>{text}</ModalText>
+                <ModalText>{text.info}</ModalText>
 
                 <ButtonsContainer>
                     <ModalButton
                         style={{ backgroundColor: '#49b454' }}
                         onPress={() => handleResponse(true)}
                     >
-                        <ModalButtonText>Sim</ModalButtonText>
+                        <ModalButtonText>{text.firstButton}</ModalButtonText>
                     </ModalButton>
 
                     <ModalButton
                         style={{ backgroundColor: '#c93c3c' }}
                         onPress={handleResponse}
                     >
-                        <ModalButtonText>Não</ModalButtonText>
+                        <ModalButtonText>{text.secondButton}</ModalButtonText>
                     </ModalButton>
                 </ButtonsContainer>
             </ModalView>
