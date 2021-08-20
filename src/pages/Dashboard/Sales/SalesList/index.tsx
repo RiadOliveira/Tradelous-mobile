@@ -66,10 +66,10 @@ type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
     const { user } = useAuth();
-    const { productsStatus, updateProductsStatus } = useProducts();
     const { updatedAt } = (useRoute().params as { updatedAt: Date }) || {
         updatedAt: 0,
     };
+    const { productsStatus, updateProductsStatus } = useProducts();
 
     const navigation = useNavigation();
 

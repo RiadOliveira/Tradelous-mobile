@@ -86,7 +86,7 @@ const ProductSale: React.FC = () => {
                     abortEarly: false,
                 });
 
-                await api.post(`/sales`, {
+                const response = await api.post(`/sales`, {
                     method: sellMethod,
                     quantity: soldQuantity,
                     productId: product.id,
@@ -105,7 +105,7 @@ const ProductSale: React.FC = () => {
                 navigation.navigate('ProductsList');
 
                 navigation.navigate('Sales', {
-                    updatedAt: new Date(Date.now()).toDateString(),
+                    updatedAt: response.data.createdAt,
                 });
             } catch (err) {
                 ErrorCatcher(err, formRef);

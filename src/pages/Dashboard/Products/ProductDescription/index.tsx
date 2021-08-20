@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import {
     Container,
     TitleTextContainer,
@@ -57,7 +63,7 @@ interface ModalProps {
 
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
-    const { updateProductsStatus } = useProducts();
+    const { updateProductsStatus, productsStatus } = useProducts();
     const navigation = useNavigation();
 
     const [product, setProduct] = useState(useRoute().params as IProduct);
@@ -65,6 +71,17 @@ const ProductDescription: React.FC = () => {
     const [modalProps, setModalProps] = useState<ModalProps>({
         visibility: false,
     });
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            if (
+                typeof productsStatus !== 'string' &&
+                productsStatus.id === product.id
+            ) {
+                navigation.navigate('ProductsList');
+            }
+        });
+    }, [productsStatus, navigation, product.id]);
 
     const apiStaticUrl = useMemo(
         () => `${api.defaults.baseURL}/files/productImage`,
