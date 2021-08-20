@@ -13,7 +13,7 @@ import {
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useProducts } from '@hooks/products';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCallback } from 'react';
 import Toast from 'react-native-toast-message';
@@ -66,9 +66,7 @@ type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
     const { user } = useAuth();
-    const { updatedAt } = (useRoute().params as { updatedAt: Date }) || {
-        updatedAt: 0,
-    };
+
     const { productsStatus, updateProductsStatus } = useProducts();
 
     const navigation = useNavigation();
@@ -117,7 +115,24 @@ const Sales: React.FC = () => {
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateOfSales, searchType, updatedAt]);
+    }, [dateOfSales, searchType]);
+
+    useEffect(() => {
+        if (typeof productsStatus !== 'string') {
+            api.get(
+                `/sales/day/${dateOfSales.getDate()}-${
+                    dateOfSales.getMonth() + 1
+                }-${dateOfSales.getFullYear()}`,
+            ).then(response => {
+                setSales(response.data);
+
+                if (!hasLoadedSales) {
+                    setHasLoadedSales(true);
+                }
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productsStatus]);
 
     useEffect(() => {
         if (productsStatus !== 'noChanges' && productsStatus !== 'newProduct') {
