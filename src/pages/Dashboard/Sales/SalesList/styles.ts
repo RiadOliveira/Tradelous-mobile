@@ -1,5 +1,4 @@
-import styled, { css } from 'styled-components/native';
-import icon from 'react-native-vector-icons/MaterialIcons';
+import styled from 'styled-components/native';
 
 interface SaleIconProps {
     hasImage: boolean;
@@ -18,18 +17,13 @@ export const FilterContainer = styled.View`
     width: 75%;
     height: 64px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     border-radius: 5px;
     flex-direction: row;
     padding: 1.8px;
     margin: 10% 0;
 
     border: 1.5px solid #1c274e;
-`;
-
-export const Icon = styled(icon)`
-    margin-left: 12px;
-    margin-right: 12px;
 `;
 
 export const PickerView = styled.View`
@@ -73,11 +67,6 @@ export const SaleIcon = styled.View<SaleIconProps>`
     height: 100%;
     justify-content: center;
 
-    ${props =>
-        props.hasImage
-            ? css`
-                  margin-right: 12px;
-                  margin-left: 10px;
-              `
-            : null}
+    margin-right: 10px;
+    margin-left: 10px;
 `;

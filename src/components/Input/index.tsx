@@ -12,7 +12,7 @@ import { Container, Content, Icon } from './styles';
 
 interface InputProps extends TextInputProps {
     name: string;
-    icon: string;
+    icon?: string;
 }
 
 interface InputRef {
@@ -93,11 +93,14 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             isFilled={isFilled}
             isErrored={isErrored}
         >
-            <Icon
-                color={isFilled ? '#4058af' : '#000000'}
-                size={24}
-                name={icon}
-            />
+            {icon && (
+                <Icon
+                    color={isFilled ? '#4058af' : '#000000'}
+                    size={24}
+                    name={icon}
+                />
+            )}
+
             <Content
                 onFocus={handleFocus}
                 onBlur={handleBlur}

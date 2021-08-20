@@ -40,9 +40,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             onBackButtonPress={() => setVisibility(false)}
             onBackdropPress={() => setVisibility(false)}
             style={{
-                justifyContent: 'flex-start',
                 alignItems: 'center',
-                marginTop: '50%',
             }}
             animationIn="fadeIn"
             animationOut="fadeOut"

@@ -31,12 +31,15 @@ const Modal: React.FC<ModalProps> = ({
     iconProps,
     setVisibility,
     actionFunction,
+    secondActionFunction,
 }) => {
     const handleResponse = (response: boolean) => {
         setVisibility({ visibility: false });
 
         if (response && actionFunction) {
             actionFunction();
+        } else if (!response && secondActionFunction) {
+            secondActionFunction();
         }
     };
 
@@ -44,9 +47,12 @@ const Modal: React.FC<ModalProps> = ({
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={() => handleResponse(false)}
-            onBackdropPress={() => handleResponse(false)}
-            style={{ justifyContent: 'center', alignItems: 'center' }}
+            onBackButtonPress={() => setVisibility({ visibility: false })}
+            onBackdropPress={() => setVisibility({ visibility: false })}
+            style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
             animationIn="fadeIn"
             animationOut="fadeOut"
         >
@@ -65,7 +71,7 @@ const Modal: React.FC<ModalProps> = ({
 
                     <ModalButton
                         style={{ backgroundColor: '#c93c3c' }}
-                        onPress={handleResponse}
+                        onPress={() => handleResponse(false)}
                     >
                         <ModalButtonText>{text.secondButton}</ModalButtonText>
                     </ModalButton>

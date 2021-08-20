@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Container,
-    Icon,
     SearchBarContainer,
     SearchBar,
     BarCodeButton,
@@ -25,6 +24,7 @@ import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Toast from 'react-native-toast-message';
 import formatPrice from '@utils/formatPrice';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface IProduct {
     name: string;

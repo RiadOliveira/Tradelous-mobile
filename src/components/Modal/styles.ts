@@ -31,7 +31,9 @@ export const ButtonsContainer = styled.View`
 `;
 
 export const ModalButton = styled(RectButton)`
-    padding: 10px 24px;
+    min-width: 33%;
+    padding: 10px 0;
+    align-items: center;
     border-radius: 8px;
 `;
 

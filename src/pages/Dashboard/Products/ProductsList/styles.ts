@@ -1,13 +1,8 @@
-import styled, { css } from 'styled-components/native';
-import icon from 'react-native-vector-icons/MaterialIcons';
+import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
 
 interface SearchInputProps {
     isFocused: boolean;
-}
-
-interface ProductImageContainerProps {
-    hasImage: boolean;
 }
 
 interface ProductAvailabilityProps {
@@ -42,11 +37,6 @@ export const SearchBar = styled.TextInput`
     margin-top: 5px;
 `;
 
-export const Icon = styled(icon)`
-    margin-left: 12px;
-    margin-right: 12px;
-`;
-
 export const BarCodeButton = styled.TouchableOpacity`
     padding: 7px 0px;
 `;
@@ -61,17 +51,12 @@ export const ProductContainer = styled(RectButton)`
     margin-bottom: 16px;
 `;
 
-export const ProductImageContainer = styled.View<ProductImageContainerProps>`
+export const ProductImageContainer = styled.View`
     height: 100%;
     justify-content: center;
 
-    ${props =>
-        props.hasImage
-            ? css`
-                  margin-right: 10px;
-                  margin-left: 10px;
-              `
-            : null}
+    margin-right: 10px;
+    margin-left: 10px;
 `;
 
 export const ProductImage = styled.Image`

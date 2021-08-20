@@ -7,7 +7,7 @@ import { useCamera } from '@hooks/camera';
 import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
 import CompanyRoutes from './Company';
-import Sales from './Sales';
+import SalesRoutes from './Sales';
 
 const Tab = createBottomTabNavigator();
 
@@ -76,7 +76,7 @@ const Dashboard: React.FC = () => {
                             tabBarLabel: 'Vendas',
                         }}
                         name="Sales"
-                        component={Sales}
+                        component={SalesRoutes}
                     />
                     <Tab.Screen
                         options={{

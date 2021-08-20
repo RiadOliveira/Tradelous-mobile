@@ -137,38 +137,13 @@ const ProductSale: React.FC = () => {
                         width: '100%',
                     }}
                 >
-                    <Input
-                        autoCorrect={false}
-                        autoCapitalize="sentences"
-                        name="name"
-                        placeholder="Nome"
-                        icon="label-outline"
-                        editable={false}
-                    />
+                    <Input name="name" icon="label-outline" editable={false} />
 
-                    <Input
-                        keyboardType="numeric"
-                        name="price"
-                        placeholder="Preço (Use . para decimal)"
-                        icon="attach-money"
-                        editable={false}
-                    />
+                    <Input name="price" icon="attach-money" editable={false} />
 
-                    <Input
-                        autoCapitalize="words"
-                        name="brand"
-                        placeholder="Marca"
-                        icon="tag"
-                        editable={false}
-                    />
+                    <Input name="brand" icon="tag" editable={false} />
 
-                    <Input
-                        keyboardType="numeric"
-                        name="quantity"
-                        placeholder="Quant. em estoque"
-                        icon="inbox"
-                        editable={false}
-                    />
+                    <Input name="quantity" icon="inbox" editable={false} />
 
                     <ImageContainer>
                         {product.image ? (
