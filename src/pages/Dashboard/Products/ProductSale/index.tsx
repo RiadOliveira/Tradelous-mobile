@@ -102,8 +102,10 @@ const ProductSale: React.FC = () => {
                     text1: 'Venda registrada com sucesso!',
                 });
 
+                navigation.navigate('ProductsList');
+
                 navigation.navigate('Sales', {
-                    updatedAt: new Date(Date.now()),
+                    updatedAt: new Date(Date.now()).toDateString(),
                 });
             } catch (err) {
                 ErrorCatcher(err, formRef);

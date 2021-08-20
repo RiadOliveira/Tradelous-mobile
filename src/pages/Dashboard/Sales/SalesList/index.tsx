@@ -66,7 +66,7 @@ type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
     const { user } = useAuth();
-    const { productsStatus } = useProducts();
+    const { productsStatus, updateProductsStatus } = useProducts();
     const { updatedAt } = (useRoute().params as { updatedAt: Date }) || {
         updatedAt: 0,
     };
@@ -142,24 +142,36 @@ const Sales: React.FC = () => {
         [productsStatus, sales],
     );
 
-    const deleteSale = useCallback(async (saleId: string) => {
-        try {
-            await api.delete(`/sales/${saleId}`);
+    const deleteSale = useCallback(
+        async (selectedSale: ISale) => {
+            try {
+                await api.delete(`/sales/${selectedSale.id}`);
 
-            setSales(sales => sales.filter(sale => sale.id !== saleId));
+                setSales(sales =>
+                    sales.filter(sale => sale.id !== selectedSale.id),
+                );
 
-            Toast.show({
-                type: 'success',
-                text1: 'Venda deletada com sucesso!',
-            });
-        } catch (err) {
-            Toast.show({
-                type: 'error',
-                text1: 'Problema inesperado.',
-                text2: 'Ocorreu algum problema ao deletar a venda.',
-            });
-        }
-    }, []);
+                updateProductsStatus({
+                    ...selectedSale.product,
+                    id: selectedSale.productId,
+                    quantity:
+                        selectedSale.product.quantity + selectedSale.quantity,
+                });
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Venda deletada com sucesso!',
+                });
+            } catch (err) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado.',
+                    text2: 'Ocorreu algum problema ao deletar a venda.',
+                });
+            }
+        },
+        [updateProductsStatus],
+    );
 
     return (
         <>
@@ -266,7 +278,7 @@ const Sales: React.FC = () => {
                                                 sale,
                                             }),
                                         secondActionFunction: () =>
-                                            deleteSale(sale.id),
+                                            deleteSale(sale),
                                     })
                                 }
                             >
