@@ -27,10 +27,12 @@ export const FilterContainer = styled.View`
 `;
 
 export const PickerView = styled.View`
-    width: 45%;
+    width: 48%;
     height: 42px;
     border: 2px solid #374b92;
     border-radius: 15px;
+
+    justify-content: center;
 `;
 
 export const DatePickerButton = styled.TouchableOpacity``;
