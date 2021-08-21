@@ -171,7 +171,7 @@ const EditSale: React.FC = () => {
                                     }}
                                 />
                             ) : (
-                                <Icon name="person" size={40} color="#ffffff" />
+                                <Icon name="person" size={90} color="#ffffff" />
                             )}
                         </SaleSectionImageContainer>
 
@@ -195,7 +195,7 @@ const EditSale: React.FC = () => {
                             ) : (
                                 <Icon
                                     name="local-offer"
-                                    size={40}
+                                    size={90}
                                     color="#ffffff"
                                 />
                             )}
@@ -223,8 +223,8 @@ const EditSale: React.FC = () => {
                             keyboardType="numeric"
                             name="soldQuantity"
                             placeholder="Quant. vendida"
-                            style={{ marginRight: 100 }}
                             icon="inbox"
+                            style={{ width: '82%' }}
                             value={soldQuantity ? soldQuantity.toString() : ''}
                             onChangeText={value => handleQuantityChange(value)}
                         />

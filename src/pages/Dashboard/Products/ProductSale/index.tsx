@@ -168,7 +168,6 @@ const ProductSale: React.FC = () => {
                             name="soldQuantity"
                             placeholder="Quant. vendida"
                             icon="inbox"
-                            style={{ marginRight: 100 }}
                             value={soldQuantity ? soldQuantity.toString() : ''}
                             onChangeText={value => handleQuantityChange(value)}
                         />

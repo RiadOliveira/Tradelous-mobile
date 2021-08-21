@@ -3,7 +3,7 @@ import IconComponent from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
 export const ModalView = styled.View`
-    background-color: #ffffff;
+    background-color: #243266;
     width: 75%;
     height: 40%;
     border-radius: 15px;
@@ -18,6 +18,7 @@ export const Icon = styled(IconComponent)`
 export const ModalText = styled.Text`
     font-family: 'Poppins-Bold';
     text-align: center;
+    color: #fff;
     margin-top: 8%;
     width: 72%;
 `;

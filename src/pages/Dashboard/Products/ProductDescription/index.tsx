@@ -274,7 +274,7 @@ const ProductDescription: React.FC = () => {
                         secondButton: '',
                     }
                 }
-                iconProps={{ name: 'delete', color: '#de4343' }}
+                iconName="delete"
             />
 
             <ScrollView
@@ -334,7 +334,6 @@ const ProductDescription: React.FC = () => {
 
                         <ProductQuantityContainer>
                             <Input
-                                style={{ marginRight: 88 }}
                                 keyboardType="numeric"
                                 name="quantity"
                                 ref={quantityInput}

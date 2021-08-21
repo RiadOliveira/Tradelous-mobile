@@ -16,10 +16,7 @@ interface ModalProps {
         firstButton: string;
         secondButton: string;
     };
-    iconProps: {
-        name: string;
-        color: string;
-    };
+    iconName: string;
     actionFunction?: () => Promise<void>;
     secondActionFunction?: () => Promise<void>;
     setVisibility({ visibility }: { visibility: boolean }): void;
@@ -28,7 +25,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
     isVisible = false,
     text,
-    iconProps,
+    iconName,
     setVisibility,
     actionFunction,
     secondActionFunction,
@@ -57,7 +54,7 @@ const Modal: React.FC<ModalProps> = ({
             animationOut="fadeOut"
         >
             <ModalView>
-                <Icon name={iconProps.name} size={56} color={iconProps.color} />
+                <Icon name={iconName} size={56} color="#fff" />
 
                 <ModalText>{text.info}</ModalText>
 

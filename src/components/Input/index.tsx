@@ -92,6 +92,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
             isSelected={isSelected}
             isFilled={isFilled}
             isErrored={isErrored}
+            style={props.style}
         >
             {icon && (
                 <Icon

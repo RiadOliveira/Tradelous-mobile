@@ -156,7 +156,7 @@ const Profile: React.FC = () => {
                     firstButton: 'Sim',
                     secondButton: 'Não',
                 }}
-                iconProps={{ name: 'delete', color: '#de4343' }}
+                iconName="delete"
             />
 
             <ScrollView

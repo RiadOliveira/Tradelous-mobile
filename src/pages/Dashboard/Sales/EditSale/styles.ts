@@ -15,15 +15,15 @@ export const TitleTextContainer = styled.View`
 `;
 
 export const TitleText = styled.Text`
-    color: #3680e0;
+    color: #fff;
     font-family: Poppins-Bold;
     font-size: 20px;
 `;
 
 export const SaleSectionsContainer = styled.View`
     flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
+    justify-content: space-between;
+    width: 82%;
     height: 31%;
 
     margin-bottom: 16%;
@@ -31,7 +31,7 @@ export const SaleSectionsContainer = styled.View`
 
 export const SaleSection = styled.View`
     border-radius: 8px;
-    width: 38%;
+    width: 44%;
     height: 100%;
     justify-content: space-evenly;
 
@@ -107,7 +107,7 @@ export const TotalSellPriceText = styled.Text`
 
 export const PickerView = styled.View`
     background-color: #ffffff;
-    width: 75%;
+    width: 82%;
     height: 60px;
 
     align-items: center;

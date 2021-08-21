@@ -173,7 +173,7 @@ const Sales: React.FC = () => {
                         secondButton: '',
                     }
                 }
-                iconProps={{ name: 'info', color: '#1c274e' }}
+                iconName="info"
             />
 
             <DatePicker

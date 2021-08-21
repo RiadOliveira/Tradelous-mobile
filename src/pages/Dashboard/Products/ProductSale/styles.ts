@@ -16,7 +16,7 @@ export const TitleTextContainer = styled.View`
 `;
 
 export const TitleText = styled.Text`
-    color: #3680e0;
+    color: #fff;
     font-family: Poppins-Bold;
     font-size: 20px;
 `;

@@ -240,7 +240,7 @@ const EditCompany: React.FC = () => {
                         secondButton: '',
                     }
                 }
-                iconProps={{ name: 'delete', color: '#de4343' }}
+                iconName="delete"
             />
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
