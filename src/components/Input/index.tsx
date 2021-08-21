@@ -115,7 +115,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
                 ref={inputRef}
                 style={{
                     color:
-                        props.editable == undefined ?? props.editable
+                        props.editable == undefined || props.editable
                             ? '#000000'
                             : '#bababa',
                 }}

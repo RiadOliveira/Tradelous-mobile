@@ -291,7 +291,15 @@ const Sales: React.FC = () => {
                                             flexDirection: 'row',
                                         }}
                                     >
-                                        <SaleText>{sale.product.name}</SaleText>
+                                        <SaleText>
+                                            {sale.product.name.length > 18
+                                                ? `${sale.product.name.substring(
+                                                      0,
+                                                      16,
+                                                  )}...`
+                                                : sale.product.name}
+                                        </SaleText>
+
                                         <SaleText>
                                             Qntd: {sale.quantity}
                                         </SaleText>

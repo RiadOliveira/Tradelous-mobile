@@ -339,6 +339,7 @@ const ProductDescription: React.FC = () => {
                                 ref={quantityInput}
                                 placeholder="Quant. em estoque"
                                 icon="inbox"
+                                editable={user.isAdmin}
                                 returnKeyType="next"
                             />
 

@@ -175,7 +175,11 @@ const EditSale: React.FC = () => {
                             )}
                         </SaleSectionImageContainer>
 
-                        <SaleSectionText>{sale.employee.name}</SaleSectionText>
+                        <SaleSectionText>
+                            {sale.employee.name.length > 18
+                                ? `${sale.employee.name.substring(0, 18)}...`
+                                : sale.employee.name}
+                        </SaleSectionText>
 
                         <SaleSectionSubText>
                             {sale.employee.email}
@@ -201,7 +205,11 @@ const EditSale: React.FC = () => {
                             )}
                         </SaleSectionImageContainer>
 
-                        <SaleSectionText>{sale.product.name}</SaleSectionText>
+                        <SaleSectionText>
+                            {sale.product.name.length > 18
+                                ? `${sale.product.name.substring(0, 18)}...`
+                                : sale.product.name}
+                        </SaleSectionText>
                         <SaleSectionSubText>
                             {`${sale.product.brand} - ${formatPrice(
                                 sale.product.price,
