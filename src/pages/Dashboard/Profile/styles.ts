@@ -16,27 +16,22 @@ export const Container = styled.View`
 export const Header = styled.View`
     width: 100%;
     height: 8%;
-    align-items: flex-end;
+
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
-export const SignOutButton = styled(RectButton)`
+export const HeaderButton = styled.TouchableOpacity`
     background-color: #1c274e;
-    width: 70px;
-    height: 65px;
-    border-radius: 20px;
-    margin-top: -15px;
-    margin-right: -15px;
+    width: 13%;
+    height: 58px;
 
-    position: relative;
-`;
+    align-items: center;
+    justify-content: center;
 
-export const SignOutButtonText = styled.Text`
-    font-family: 'Poppins-Bold';
-    color: #ffffff;
-    font-size: 16px;
-    position: absolute;
-    bottom: 14%;
-    left: 16%;
+    border-radius: 16px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
 `;
 
 export const ImagePicker = styled.TouchableOpacity<ImagePickerProps>`

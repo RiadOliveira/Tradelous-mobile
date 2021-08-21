@@ -169,7 +169,7 @@ const ProductDescription: React.FC = () => {
                 if (!product.image) {
                     Toast.show({
                         type: 'error',
-                        text1: 'Operação indisponível',
+                        text1: 'Operação indisponível.',
                     });
                 } else {
                     try {
@@ -187,7 +187,9 @@ const ProductDescription: React.FC = () => {
                     } catch {
                         Toast.show({
                             type: 'error',
-                            text1: 'Falha na exclusão da imagem',
+                            text1: 'Problema inesperado',
+                            text2:
+                                'Ocorreu algum problema na exclusão da imagem.',
                         });
                     }
                 }
@@ -223,7 +225,7 @@ const ProductDescription: React.FC = () => {
                             } catch {
                                 Toast.show({
                                     type: 'error',
-                                    text1: 'Falha na atualização do produto',
+                                    text1: 'Falha na atualização do produto.',
                                 });
                             }
                         }
@@ -250,7 +252,8 @@ const ProductDescription: React.FC = () => {
         } catch {
             Toast.show({
                 type: 'error',
-                text1: 'Falha na exclusão do produto',
+                text1: 'Problema inesperado',
+                text2: 'Ocorreu algum problema na exclusão do produto.',
             });
         }
     }, [product.id, navigation, updateProductsStatus]);

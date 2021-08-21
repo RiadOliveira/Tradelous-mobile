@@ -3,8 +3,7 @@ import {
     Container,
     Header,
     ProfileImage,
-    SignOutButton,
-    SignOutButtonText,
+    HeaderButton,
     ImagePicker,
     ImageContainer,
     DeleteImageButton,
@@ -23,6 +22,7 @@ import * as yup from 'yup';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface IUpdateProfileData {
     name: string;
@@ -103,7 +103,7 @@ const Profile: React.FC = () => {
                 if (!selectedImage) {
                     Toast.show({
                         type: 'error',
-                        text1: 'Operação indisponível',
+                        text1: 'Operação indisponível.',
                     });
                 } else {
                     try {
@@ -112,7 +112,9 @@ const Profile: React.FC = () => {
                     } catch {
                         Toast.show({
                             type: 'error',
-                            text1: 'Falha na exclusão do avatar',
+                            text1: 'Problema inesperado',
+                            text2:
+                                'Ocorreu algum problema na exclusão do avatar.',
                         });
                     }
                 }
@@ -134,7 +136,7 @@ const Profile: React.FC = () => {
                             } catch {
                                 Toast.show({
                                     type: 'error',
-                                    text1: 'Falha na atualização do avatar',
+                                    text1: 'Falha na atualização do avatar.',
                                 });
                             }
                         }
@@ -144,6 +146,15 @@ const Profile: React.FC = () => {
         },
         [updateUsersAvatar, selectedImage],
     );
+
+    const handleCopyId = useCallback(() => {
+        Clipboard.setString(user.id);
+
+        Toast.show({
+            type: 'info',
+            text1: 'ID copiado para área de transferência.',
+        });
+    }, [user.id]);
 
     return (
         <>
@@ -166,9 +177,21 @@ const Profile: React.FC = () => {
             >
                 <Container>
                     <Header>
-                        <SignOutButton onPress={signOut}>
-                            <SignOutButtonText>Sair</SignOutButtonText>
-                        </SignOutButton>
+                        <HeaderButton
+                            style={{ borderBottomLeftRadius: 0 }}
+                            activeOpacity={0.7}
+                            onPress={handleCopyId}
+                        >
+                            <Icon name="content-copy" size={34} color="#fff" />
+                        </HeaderButton>
+
+                        <HeaderButton
+                            style={{ borderBottomRightRadius: 0 }}
+                            activeOpacity={0.7}
+                            onPress={signOut}
+                        >
+                            <Icon name="logout" size={34} color="#fff" />
+                        </HeaderButton>
                     </Header>
 
                     <ImageContainer>

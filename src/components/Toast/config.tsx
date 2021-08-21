@@ -23,6 +23,7 @@ const BaseToastCompoent: React.FC<PropsWithColor> = ({
         }}
         text1Style={{
             fontSize: text2 ? 14 : 16,
+            width: 310,
         }}
         text1={text1}
         text2Style={{

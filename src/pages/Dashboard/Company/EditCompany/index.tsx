@@ -142,7 +142,7 @@ const EditCompany: React.FC = () => {
                 if (!selectedImage) {
                     Toast.show({
                         type: 'error',
-                        text1: 'Operação indisponível',
+                        text1: 'Operação indisponível.',
                     });
                 } else {
                     try {
@@ -156,7 +156,9 @@ const EditCompany: React.FC = () => {
                     } catch {
                         Toast.show({
                             type: 'error',
-                            text1: 'Falha na exclusão da logo',
+                            text1: 'Problema inesperado',
+                            text2:
+                                'Ocorreu algum problema na exclusão da logo.',
                         });
                     }
                 }
@@ -190,7 +192,7 @@ const EditCompany: React.FC = () => {
                             } catch {
                                 Toast.show({
                                     type: 'error',
-                                    text1: 'Falha na atualização da logo',
+                                    text1: 'Falha na atualização da logo.',
                                 });
                             }
                         }

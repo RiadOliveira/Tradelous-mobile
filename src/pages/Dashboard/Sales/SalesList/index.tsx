@@ -152,7 +152,7 @@ const Sales: React.FC = () => {
                 Toast.show({
                     type: 'error',
                     text1: 'Problema inesperado.',
-                    text2: 'Ocorreu algum problema ao deletar a venda.',
+                    text2: 'Ocorreu algum problema na exclusão da venda.',
                 });
             }
         },
