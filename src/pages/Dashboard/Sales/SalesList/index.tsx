@@ -292,10 +292,10 @@ const Sales: React.FC = () => {
                                         }}
                                     >
                                         <SaleText>
-                                            {sale.product.name.length > 18
+                                            {sale.product.name.length > 16
                                                 ? `${sale.product.name.substring(
                                                       0,
-                                                      16,
+                                                      13,
                                                   )}...`
                                                 : sale.product.name}
                                         </SaleText>

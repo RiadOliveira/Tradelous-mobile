@@ -20,7 +20,7 @@ export const ModalText = styled.Text`
     text-align: center;
     color: #fff;
     margin-top: 8%;
-    width: 72%;
+    width: 76%;
 `;
 
 export const ButtonsContainer = styled.View`

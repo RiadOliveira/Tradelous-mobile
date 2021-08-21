@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
 interface EmployeeProps {
@@ -18,7 +17,7 @@ export const CompanyContainer = styled.View`
     width: 80%;
     flex-direction: row;
     align-items: center;
-    margin: 10% 0;
+    margin: 10% 0 8%;
     position: relative;
 `;
 
@@ -69,7 +68,41 @@ export const EditButton = styled(RectButton)`
     bottom: 10%;
 `;
 
-export const EditIcon = styled(Icon)``;
+export const HireButtonContainer = styled.View`
+    width: 66%;
+    flex-direction: row;
+    position: relative;
+    margin-bottom: 10%;
+`;
+
+export const HireButton = styled.TouchableOpacity`
+    background-color: #2c3f82;
+    height: 60px;
+    width: 97%;
+    position: absolute;
+    justify-content: center;
+    align-items: flex-start;
+    left: 5%;
+    border-radius: 18px;
+`;
+
+export const HireButtonText = styled.Text`
+    margin-left: 10px;
+    font-family: Poppins-SemiBold;
+    font-size: 14px;
+    color: #ffffff;
+    margin-left: 22%;
+`;
+
+export const HireButtonIcon = styled.View`
+    width: 60px;
+    height: 60px;
+    background-color: #5170e0;
+    border-radius: 30px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #2c3f82;
+`;
 
 export const Employee = styled.View`
     width: 66%;
@@ -86,12 +119,12 @@ export const EmployeeData = styled.TouchableOpacity<EmployeeProps>`
     justify-content: center;
     align-items: flex-start;
     left: 5%;
-    border-radius: 20px;
+    border-radius: 18px;
 `;
 
 export const EmployeeName = styled.Text`
     margin-left: 10px;
-    font-family: Poppins-Bold;
+    font-family: Poppins-SemiBold;
     font-size: 14px;
     color: #ffffff;
     margin-left: 22%;
@@ -99,7 +132,7 @@ export const EmployeeName = styled.Text`
 
 export const EmployeeEmail = styled.Text`
     margin-left: 10px;
-    font-family: Poppins-Bold;
+    font-family: Poppins-SemiBold;
     font-size: 8.5px;
     color: #ffffff;
     margin-left: 22.5%;

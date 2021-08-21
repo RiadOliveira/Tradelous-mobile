@@ -43,6 +43,7 @@ const Profile: React.FC = () => {
     const [modalProps, setModalProps] = useState({
         visibility: false,
     });
+
     const [selectedImage, setSelectedImage] = useState(() =>
         user.avatar
             ? `${api.defaults.baseURL}/files/avatar/${user.avatar}`
