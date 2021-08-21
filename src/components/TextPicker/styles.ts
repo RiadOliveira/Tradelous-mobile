@@ -14,7 +14,8 @@ export const TextPickerInfo = styled.Text`
     font-family: 'Poppins-Bold';
     text-align: center;
     color: #fff;
-    margin-top: 6%;
+    margin-top: 5%;
+    margin-bottom: 1%;
     width: 76%;
 `;
 

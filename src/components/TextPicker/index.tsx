@@ -38,6 +38,7 @@ const TextPicker: React.FC<TextPickerProps> = ({
 
         if (actionFunction) {
             actionFunction(inputText);
+            setInputText('');
         }
     };
 
@@ -66,10 +67,14 @@ const TextPicker: React.FC<TextPickerProps> = ({
 
                 <InputContainer>
                     <TextPickerInput
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        returnKeyType="send"
                         selectionColor="#000000"
                         placeholder="ID do funcionário"
                         value={inputText}
                         onChangeText={text => setInputText(text)}
+                        onSubmitEditing={handleResponse}
                     />
 
                     <PasteButton

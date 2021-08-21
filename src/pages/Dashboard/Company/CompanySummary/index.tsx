@@ -104,32 +104,48 @@ const CompanySummary: React.FC = () => {
 
     const handleHireEmployee = useCallback(
         async (employeeId: string): Promise<void> => {
-            const response = await api.patch<IEmployee>(
-                `/company/hire-employee/${employeeId}`,
-            );
+            try {
+                const response = await api.patch<IEmployee>(
+                    `/company/hire-employee/${employeeId}`,
+                );
 
-            setEmployees(employees => [...employees, response.data]);
+                setEmployees(employees => [...employees, response.data]);
 
-            Toast.show({
-                type: 'success',
-                text1: 'Funcionário contratado com sucesso!',
-            });
+                Toast.show({
+                    type: 'success',
+                    text1: 'Funcionário contratado com sucesso!',
+                });
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erro ao contratar funcionário',
+                    text2: 'Verifique se você inseriu o ID corretamente.',
+                });
+            }
         },
         [],
     );
 
     const handleFireEmployee = useCallback(
         async (employeeId: string): Promise<void> => {
-            await api.patch(`/company/fire-employee/${employeeId}`);
+            try {
+                await api.patch(`/company/fire-employee/${employeeId}`);
 
-            setEmployees(employees =>
-                employees.filter(employee => employee.id !== employeeId),
-            );
+                setEmployees(employees =>
+                    employees.filter(employee => employee.id !== employeeId),
+                );
 
-            Toast.show({
-                type: 'success',
-                text1: 'Funcionário demitido com sucesso!',
-            });
+                Toast.show({
+                    type: 'success',
+                    text1: 'Funcionário demitido com sucesso!',
+                });
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2: 'Ocorreu um erro ao demitir o funcionário.',
+                });
+            }
         },
         [],
     );
@@ -219,7 +235,7 @@ const CompanySummary: React.FC = () => {
                         {user.isAdmin && (
                             <HireButtonContainer>
                                 <HireButton
-                                    activeOpacity={0.7}
+                                    activeOpacity={0.8}
                                     onPress={() =>
                                         setTextPickerProps({
                                             visibility: true,
@@ -248,7 +264,7 @@ const CompanySummary: React.FC = () => {
                             <Employee key={employee.id}>
                                 <EmployeeData
                                     isAdmin={employee.isAdmin}
-                                    activeOpacity={0.7}
+                                    activeOpacity={0.8}
                                     disabled={!user.isAdmin || employee.isAdmin}
                                     onPress={() =>
                                         setModalProps({
