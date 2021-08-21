@@ -35,7 +35,7 @@ type SignInData = Pick<IUserData, 'email' | 'password'>;
 interface IAuthContextData extends IAuthProps {
     signIn(data: SignInData): Promise<void>;
     updateUser(userData: IUpdateUserData): Promise<void>;
-    updateUsersCompany(companyId: number): Promise<void>;
+    setUserCompany(companyId: number): Promise<void>;
     updateUsersAvatar(avatar: string): Promise<void>;
     signOut(): Promise<void>;
     isReady: boolean;
@@ -132,11 +132,11 @@ const AuthContext: React.FC = ({ children }) => {
         [authData.user],
     );
 
-    const updateUsersCompany = useCallback(
+    const setUserCompany = useCallback(
         async companyId => {
             await AsyncStorage.setItem(
                 '@Tradelous-user',
-                JSON.stringify({ ...authData.user, companyId }),
+                JSON.stringify({ ...authData.user, isAdmin: true, companyId }),
             );
 
             setAuthData(data => {
@@ -144,6 +144,7 @@ const AuthContext: React.FC = ({ children }) => {
                     ...data,
                     user: {
                         ...data.user,
+                        isAdmin: true,
                         companyId,
                     },
                 };
@@ -167,7 +168,7 @@ const AuthContext: React.FC = ({ children }) => {
                 signIn,
                 signOut,
                 updateUser,
-                updateUsersCompany,
+                setUserCompany,
                 updateUsersAvatar,
                 isReady,
             }}

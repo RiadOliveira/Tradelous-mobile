@@ -32,7 +32,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
-import { useNavigation } from '@react-navigation/native';
 
 interface IBrazilianState {
     nome: string;
@@ -51,13 +50,12 @@ interface IImageData {
     uri: string;
 }
 
-const SignUpCompany: React.FC = () => {
+const RegisterCompany: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
 
-    const navigation = useNavigation();
-    const { user, updateUsersCompany } = useAuth();
+    const { user, setUserCompany } = useAuth();
 
     const [selectedImage, setSelectedImage] = useState<IImageData>(
         {} as IImageData,
@@ -148,22 +146,14 @@ const SignUpCompany: React.FC = () => {
                     });
                 }
 
-                const {
-                    data: { id },
-                } = await api.post('/company/', companyData);
-
-                updateUsersCompany(id);
-
-                navigation.reset({
-                    routes: [{ name: 'Dashboard' }],
-                });
-
-                navigation.navigate('Dashboard');
+                const response = await api.post('/company/', companyData);
 
                 Toast.show({
                     type: 'success',
                     text1: 'Empresa cadastrada com sucesso!',
                 });
+
+                setUserCompany(response.data.id);
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);
@@ -196,7 +186,7 @@ const SignUpCompany: React.FC = () => {
                 });
             }
         },
-        [selectedState, user, selectedImage, navigation, updateUsersCompany],
+        [selectedState, user, selectedImage, setUserCompany],
     );
 
     return (
@@ -256,7 +246,7 @@ const SignUpCompany: React.FC = () => {
                             selectedValue={selectedState}
                             style={{
                                 height: 50,
-                                width: '30%',
+                                width: '36%',
                             }}
                             onValueChange={itemValue =>
                                 setSelectedState(String(itemValue))
@@ -306,4 +296,4 @@ const SignUpCompany: React.FC = () => {
     );
 };
 
-export default SignUpCompany;
+export default RegisterCompany;

@@ -78,7 +78,7 @@ const SignUp: React.FC = () => {
                 });
 
                 if (switchValue) {
-                    navigation.navigate('SignUpCompany');
+                    navigation.navigate('RegisterCompany');
                 } else {
                     Toast.show({
                         type: 'success',

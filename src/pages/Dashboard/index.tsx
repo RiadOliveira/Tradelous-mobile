@@ -8,6 +8,7 @@ import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
 import CompanyRoutes from './Company';
 import SalesRoutes from './Sales';
+import RegisterCompany from '../Authentication/RegisterCompany';
 
 const Tab = createBottomTabNavigator();
 
@@ -93,6 +94,23 @@ const Dashboard: React.FC = () => {
                         component={CompanyRoutes}
                     />
                 </>
+            )}
+
+            {!user.companyId && (
+                <Tab.Screen
+                    options={{
+                        tabBarIcon: ({ focused }) => (
+                            <Icon
+                                name="business"
+                                size={28}
+                                color={focused ? '#1c274e' : '#4058af'}
+                            />
+                        ),
+                        tabBarLabel: 'Registrar empresa',
+                    }}
+                    name="RegisterCompany"
+                    component={RegisterCompany}
+                />
             )}
 
             <Tab.Screen
