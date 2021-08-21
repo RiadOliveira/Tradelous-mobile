@@ -22,6 +22,7 @@ import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
 import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import getSalesOnDate from '@utils/getSalesonDate';
 
 interface IEmployee {
     name: string;
@@ -85,51 +86,21 @@ const Sales: React.FC = () => {
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        if (searchType == 'day') {
-            api.get(
-                `/sales/day/${dateOfSales.getDate()}-${
-                    dateOfSales.getMonth() + 1
-                }-${dateOfSales.getFullYear()}`,
-            ).then(response => {
-                setSales(response.data);
+        getSalesOnDate(searchType, dateOfSales).then(response => {
+            setSales(response);
 
-                if (!hasLoadedSales) {
-                    setHasLoadedSales(true);
-                }
-            });
-        } else if (searchType == 'month') {
-            api.get(
-                `/sales/month/${
-                    dateOfSales.getMonth() + 1
-                }-${dateOfSales.getFullYear()}`,
-            ).then(response => {
-                setSales(response.data);
-            });
-        } else {
-            api.get(
-                `/sales/week/${dateOfSales.getDate()}-${
-                    dateOfSales.getMonth() + 1
-                }-${dateOfSales.getFullYear()}`,
-            ).then(response => {
-                setSales(response.data);
-            });
-        }
+            if (!hasLoadedSales) {
+                setHasLoadedSales(true);
+            }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateOfSales, searchType]);
 
     useEffect(() => {
         if (typeof productsStatus !== 'string') {
-            api.get(
-                `/sales/day/${dateOfSales.getDate()}-${
-                    dateOfSales.getMonth() + 1
-                }-${dateOfSales.getFullYear()}`,
-            ).then(response => {
-                setSales(response.data);
-
-                if (!hasLoadedSales) {
-                    setHasLoadedSales(true);
-                }
-            });
+            getSalesOnDate(searchType, dateOfSales).then(response =>
+                setSales(response),
+            );
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [productsStatus]);
