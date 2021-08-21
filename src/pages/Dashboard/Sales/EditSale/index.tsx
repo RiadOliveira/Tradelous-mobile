@@ -4,11 +4,11 @@ import {
     TitleTextContainer,
     TitleText,
     SaleSectionTitle,
-    SaleSectionTitleText,
+    SaleSectionsContainer,
     SaleSection,
     SaleSectionImageContainer,
     SaleSectionImage,
-    SaleSectionData,
+    SaleSectionSubText,
     SaleSectionText,
     ProductSellContainer,
     TotalSellPrice,
@@ -159,79 +159,56 @@ const EditSale: React.FC = () => {
                     <TitleText>Dados da venda</TitleText>
                 </TitleTextContainer>
 
-                <SaleSectionTitle>
-                    <SaleSectionTitleText>Funcionário</SaleSectionTitleText>
-                </SaleSectionTitle>
+                <SaleSectionsContainer>
+                    <SaleSection>
+                        <SaleSectionTitle>Funcionário</SaleSectionTitle>
 
-                <SaleSection>
-                    <SaleSectionImageContainer>
-                        {sale.employee.avatar ? (
-                            <SaleSectionImage
-                                source={{
-                                    uri: `${apiStaticUrl}/avatar/${sale.employee.avatar}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="person" size={40} color="#ffffff" />
-                        )}
-                    </SaleSectionImageContainer>
+                        <SaleSectionImageContainer>
+                            {sale.employee.avatar ? (
+                                <SaleSectionImage
+                                    source={{
+                                        uri: `${apiStaticUrl}/avatar/${sale.employee.avatar}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon name="person" size={40} color="#ffffff" />
+                            )}
+                        </SaleSectionImageContainer>
 
-                    <SaleSectionData style={{ marginLeft: '1%' }}>
                         <SaleSectionText>{sale.employee.name}</SaleSectionText>
 
-                        <SaleSectionData
-                            style={{
-                                flexDirection: 'row',
-                                width: '98%',
-                            }}
-                        >
-                            <SaleSectionText>
-                                {sale.employee.email}
-                            </SaleSectionText>
-                        </SaleSectionData>
-                    </SaleSectionData>
-                </SaleSection>
+                        <SaleSectionSubText>
+                            {sale.employee.email}
+                        </SaleSectionSubText>
+                    </SaleSection>
 
-                <SaleSectionTitle>
-                    <SaleSectionTitleText>Produto</SaleSectionTitleText>
-                </SaleSectionTitle>
+                    <SaleSection>
+                        <SaleSectionTitle>Produto</SaleSectionTitle>
 
-                <SaleSection>
-                    <SaleSectionImageContainer>
-                        {sale.product.image ? (
-                            <SaleSectionImage
-                                source={{
-                                    uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon
-                                name="local-offer"
-                                size={40}
-                                color="#ffffff"
-                            />
-                        )}
-                    </SaleSectionImageContainer>
+                        <SaleSectionImageContainer>
+                            {sale.product.image ? (
+                                <SaleSectionImage
+                                    source={{
+                                        uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon
+                                    name="local-offer"
+                                    size={40}
+                                    color="#ffffff"
+                                />
+                            )}
+                        </SaleSectionImageContainer>
 
-                    <SaleSectionData style={{ marginLeft: '1%' }}>
                         <SaleSectionText>{sale.product.name}</SaleSectionText>
-
-                        <SaleSectionData
-                            style={{
-                                flexDirection: 'row',
-                                width: '98%',
-                            }}
-                        >
-                            <SaleSectionText>
-                                {sale.product.brand}
-                            </SaleSectionText>
-
-                            <SaleSectionText>
-                                {formatPrice(sale.product.price)}
-                            </SaleSectionText>
-                        </SaleSectionData>
-                    </SaleSectionData>
-                </SaleSection>
+                        <SaleSectionSubText>
+                            {`${sale.product.brand} - ${formatPrice(
+                                sale.product.price,
+                            )}`}
+                        </SaleSectionSubText>
+                    </SaleSection>
+                </SaleSectionsContainer>
 
                 <Form
                     ref={formRef}
@@ -246,6 +223,7 @@ const EditSale: React.FC = () => {
                             keyboardType="numeric"
                             name="soldQuantity"
                             placeholder="Quant. vendida"
+                            style={{ marginRight: 100 }}
                             icon="inbox"
                             value={soldQuantity ? soldQuantity.toString() : ''}
                             onChangeText={value => handleQuantityChange(value)}
@@ -285,7 +263,6 @@ const EditSale: React.FC = () => {
                 </Form>
 
                 <Button
-                    style={{ position: 'absolute', bottom: '5%' }}
                     biggerText
                     onPress={() => formRef.current?.submitForm()}
                 >

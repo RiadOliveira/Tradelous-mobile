@@ -3,13 +3,12 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
-    flex-direction: column;
     align-items: center;
     padding-bottom: 30px;
 `;
 
 export const TitleTextContainer = styled.View`
-    margin: 10% 0 8%;
+    margin: 10% 0;
     background-color: #1c274e;
     padding: 10px 30px;
     border-radius: 10px;
@@ -21,64 +20,62 @@ export const TitleText = styled.Text`
     font-size: 20px;
 `;
 
-export const SaleSectionTitle = styled.View`
-    align-items: flex-start;
-    width: 75%;
-    justify-content: center;
-`;
+export const SaleSectionsContainer = styled.View`
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 31%;
 
-export const SaleSectionTitleText = styled.Text`
-    font-family: 'Poppins-Bold';
-    font-size: 16px;
-    color: #ffffff;
-    background-color: #1c274e;
-
-    border-radius: 8px;
-    padding: 4px 8px 0.6px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    margin-bottom: 16%;
 `;
 
 export const SaleSection = styled.View`
-    flex-direction: row;
-    width: 75%;
-    height: 64px;
     border-radius: 8px;
+    width: 38%;
+    height: 100%;
+    justify-content: space-evenly;
+
     background-color: #1c274e;
     align-items: center;
-    margin-bottom: 16px;
+`;
 
-    border-top-left-radius: 0;
+export const SaleSectionTitle = styled.Text`
+    font-family: Poppins-Bold;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 20px;
+    margin-top: -4%;
+
+    border-bottom-width: 1px;
+    border-bottom-color: #fff;
 `;
 
 export const SaleSectionImageContainer = styled.View`
     justify-content: center;
-
-    margin-right: 10px;
-    margin-left: 10px;
 `;
 
 export const SaleSectionImage = styled.Image`
-    width: 44px;
-    height: 44px;
-    border-radius: 20px;
-`;
-
-export const SaleSectionData = styled.View`
-    margin-top: 1%;
-    width: 72%;
-    justify-content: space-between;
+    width: 90px;
+    height: 90px;
+    border-radius: 45px;
 `;
 
 export const SaleSectionText = styled.Text`
-    font-family: Poppins-Regular;
+    font-family: Poppins-SemiBold;
     color: #ffffff;
     font-size: 11px;
 `;
 
+export const SaleSectionSubText = styled.Text`
+    font-family: Poppins-SemiBold;
+    color: #ffffff;
+    font-size: 7.5px;
+
+    margin-top: -13%;
+`;
+
 export const ProductSellContainer = styled.View`
     position: relative;
-    margin-top: 8%;
 `;
 
 export const TotalSellPrice = styled.View`
@@ -112,10 +109,13 @@ export const PickerView = styled.View`
     background-color: #ffffff;
     width: 75%;
     height: 60px;
+
     align-items: center;
-    border-radius: 5px;
     flex-direction: row;
     justify-content: space-between;
+    margin-bottom: 14%;
+
+    border-radius: 5px;
     border: 1.8px solid #1c274e;
 `;
 
