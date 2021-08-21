@@ -22,7 +22,7 @@ import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
 import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import getSalesOnDate from '@utils/getSalesonDate';
+import getSalesOnDate from '@utils/getSalesOnDate';
 
 interface IEmployee {
     name: string;
