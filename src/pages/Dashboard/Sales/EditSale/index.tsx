@@ -253,7 +253,6 @@ const EditSale: React.FC = () => {
                             style={{
                                 height: 50,
                                 width: '44%',
-                                marginRight: -2,
                             }}
                             onValueChange={(itemValue: 'money' | 'card') =>
                                 setSellMethod(itemValue)

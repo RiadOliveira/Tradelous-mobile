@@ -187,8 +187,8 @@ const ProductSale: React.FC = () => {
                             selectedValue={sellMethod}
                             style={{
                                 height: 50,
-                                width: '44%',
-                                marginRight: -2,
+                                width: '48%',
+                                marginLeft: -4,
                             }}
                             onValueChange={itemValue =>
                                 setSellMethod(String(itemValue))
