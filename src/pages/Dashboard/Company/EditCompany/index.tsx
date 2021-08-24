@@ -210,7 +210,7 @@ const EditCompany: React.FC = () => {
         [selectedImage, company.id],
     );
 
-    const handleCompanyDelete = useCallback(
+    const handleDeleteCompany = useCallback(
         async (verifyPassword: string) => {
             try {
                 await api.post('/user/sessions', {
@@ -292,7 +292,7 @@ const EditCompany: React.FC = () => {
                 willUnmount={true}
                 setVisibility={setTextPickerVisibility}
                 actionFunction={(verifyPassword: string) =>
-                    handleCompanyDelete(verifyPassword)
+                    handleDeleteCompany(verifyPassword)
                 }
             />
 

@@ -236,7 +236,7 @@ const ProductDescription: React.FC = () => {
         [product.id, user.companyId, updateProductsStatus, product.image],
     );
 
-    const handleProductDelete = useCallback(async () => {
+    const handleDeleteProduct = useCallback(async () => {
         try {
             await api.delete(`/products/${product.id}`);
 
@@ -439,7 +439,7 @@ const ProductDescription: React.FC = () => {
                             onPress={() =>
                                 setModalProps({
                                     visibility: true,
-                                    actionFunction: handleProductDelete,
+                                    actionFunction: handleDeleteProduct,
                                     text: {
                                         info:
                                             'Tem certeza que deseja deletar esse produto?',

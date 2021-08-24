@@ -7,6 +7,7 @@ import {
     ImagePicker,
     ImageContainer,
     DeleteImageButton,
+    ButtonsContainer,
 } from './styles';
 import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
@@ -23,6 +24,7 @@ import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Clipboard from '@react-native-clipboard/clipboard';
+import TextPicker from '@components/TextPicker';
 
 interface IUpdateProfileData {
     name: string;
@@ -41,6 +43,12 @@ const Profile: React.FC = () => {
     const confirmPasswordInput = useRef<TextInput>(null);
 
     const [modalProps, setModalProps] = useState({
+        visibility: false,
+    });
+
+    const [textPickerVisibility, setTextPickerVisibility] = useState<{
+        visibility: boolean;
+    }>({
         visibility: false,
     });
 
@@ -157,6 +165,33 @@ const Profile: React.FC = () => {
         });
     }, [user.id]);
 
+    const handleDeleteAccount = useCallback(
+        async (verifyPassword: string) => {
+            try {
+                await api.post('/user/sessions', {
+                    email: user.email,
+                    password: verifyPassword,
+                }); //In order to verify user's password to delete account.
+
+                await api.delete('/user/');
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Conta excluída com sucesso!',
+                });
+
+                signOut();
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2: 'Ocorreu um erro ao excluir sua conta.',
+                });
+            }
+        },
+        [user.email, signOut],
+    );
+
     return (
         <>
             <Modal
@@ -169,6 +204,25 @@ const Profile: React.FC = () => {
                     secondButton: 'Não',
                 }}
                 iconName="delete"
+            />
+
+            <TextPicker
+                isVisible={textPickerVisibility.visibility}
+                text={{
+                    info: 'Insira sua senha para confirmar a exclusão',
+                    buttonText: 'Confirmar',
+                }}
+                inputProps={{
+                    hasPasteButton: false,
+                    placeholder: 'Senha',
+                    isSecureText: true,
+                }}
+                iconName="delete"
+                willUnmount={true}
+                setVisibility={setTextPickerVisibility}
+                actionFunction={(verifyPassword: string) =>
+                    handleDeleteAccount(verifyPassword)
+                }
             />
 
             <ScrollView
@@ -297,12 +351,24 @@ const Profile: React.FC = () => {
                         />
                     </Form>
 
-                    <Button
-                        biggerText
-                        onPress={() => formRef.current?.submitForm()}
-                    >
-                        Atualizar dados
-                    </Button>
+                    <ButtonsContainer>
+                        <Button
+                            biggerText
+                            onPress={() => formRef.current?.submitForm()}
+                        >
+                            Atualizar Conta
+                        </Button>
+
+                        <Button
+                            biggerText
+                            style={{ backgroundColor: '#c93c3c' }}
+                            onPress={() =>
+                                setTextPickerVisibility({ visibility: true })
+                            }
+                        >
+                            Deletar{'\n'}Conta
+                        </Button>
+                    </ButtonsContainer>
                 </Container>
             </ScrollView>
         </>

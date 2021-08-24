@@ -62,3 +62,10 @@ export const DeleteImageButton = styled(RectButton)`
     border-radius: 25px;
     padding: 2px;
 `;
+
+export const ButtonsContainer = styled.View`
+    width: 80%;
+    margin-top: 14px;
+    flex-direction: row;
+    justify-content: space-between;
+`;
