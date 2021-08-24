@@ -19,7 +19,13 @@ interface TextPickerProps {
         info: string;
         buttonText: string;
     };
+    inputProps: {
+        placeholder: string;
+        hasPasteButton: boolean;
+        isSecureText: boolean;
+    };
     iconName: string;
+    willUnmount?: boolean; //If actionFunction unmount modal's parent.
     actionFunction?: (pickedText: string) => Promise<void>;
     setVisibility({ visibility }: { visibility: boolean }): void;
 }
@@ -28,13 +34,17 @@ const TextPicker: React.FC<TextPickerProps> = ({
     isVisible = false,
     text,
     iconName,
+    inputProps,
+    willUnmount = false,
     setVisibility,
     actionFunction,
 }) => {
     const [inputText, setInputText] = useState('');
 
     const handleResponse = () => {
-        setVisibility({ visibility: false });
+        if (!willUnmount) {
+            setVisibility({ visibility: false });
+        }
 
         if (actionFunction) {
             actionFunction(inputText);
@@ -71,22 +81,25 @@ const TextPicker: React.FC<TextPickerProps> = ({
                         autoCorrect={false}
                         returnKeyType="send"
                         selectionColor="#000000"
-                        placeholder="ID do funcionário"
+                        placeholder={inputProps.placeholder}
                         value={inputText}
                         onChangeText={text => setInputText(text)}
                         onSubmitEditing={handleResponse}
+                        secureTextEntry={inputProps.isSecureText}
                     />
 
-                    <PasteButton
-                        activeOpacity={0.75}
-                        onPress={() =>
-                            Clipboard.getString().then(response =>
-                                setInputText(response),
-                            )
-                        }
-                    >
-                        <Icon name="content-paste" color="#fff" size={24} />
-                    </PasteButton>
+                    {inputProps.hasPasteButton && (
+                        <PasteButton
+                            activeOpacity={0.75}
+                            onPress={() =>
+                                Clipboard.getString().then(response =>
+                                    setInputText(response),
+                                )
+                            }
+                        >
+                            <Icon name="content-paste" color="#fff" size={24} />
+                        </PasteButton>
+                    )}
                 </InputContainer>
 
                 <ConfirmButton

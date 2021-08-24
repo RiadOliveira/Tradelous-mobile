@@ -13,6 +13,7 @@ import {
     DeleteImageButton,
     PickerView,
     PickerText,
+    ButtonsContainer,
 } from './styles';
 import { ScrollView, TextInput } from 'react-native';
 import { FormHandles } from '@unform/core';
@@ -29,6 +30,8 @@ import Input from '@components/Input';
 import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import TextPicker from '@components/TextPicker';
+import { useAuth } from '@hooks/auth';
 
 interface IBrazilianState {
     nome: string;
@@ -44,6 +47,11 @@ interface ICompany {
 }
 
 const EditCompany: React.FC = () => {
+    const {
+        user: { email },
+        setUserCompany,
+    } = useAuth();
+
     const navigation = useNavigation();
     const company = useRoute().params as ICompany;
 
@@ -56,6 +64,13 @@ const EditCompany: React.FC = () => {
     }>({
         visibility: false,
     });
+
+    const [textPickerVisibility, setTextPickerVisibility] = useState<{
+        visibility: boolean;
+    }>({
+        visibility: false,
+    });
+
     const [selectedImage, setSelectedImage] = useState<string | null>(() =>
         company.logo ? company.logo : null,
     );
@@ -195,6 +210,33 @@ const EditCompany: React.FC = () => {
         [selectedImage, company.id],
     );
 
+    const handleCompanyDelete = useCallback(
+        async (verifyPassword: string) => {
+            try {
+                await api.post('/user/sessions', {
+                    email,
+                    password: verifyPassword,
+                }); //In order to verify user's password to delete company.
+
+                await api.delete('/company');
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Empresa excluída com sucesso!',
+                });
+
+                setUserCompany(false);
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2: 'Ocorreu um erro ao excluir a empresa.',
+                });
+            }
+        },
+        [setUserCompany, email],
+    );
+
     useEffect(() => {
         navigation.addListener('blur', () => {
             const updatedCompany = JSON.stringify({
@@ -234,6 +276,26 @@ const EditCompany: React.FC = () => {
                 }}
                 iconName="delete"
             />
+
+            <TextPicker
+                isVisible={textPickerVisibility.visibility}
+                text={{
+                    info: 'Insira sua senha para confirmar a exclusão',
+                    buttonText: 'Confirmar',
+                }}
+                inputProps={{
+                    hasPasteButton: false,
+                    placeholder: 'Senha',
+                    isSecureText: true,
+                }}
+                iconName="delete"
+                willUnmount={true}
+                setVisibility={setTextPickerVisibility}
+                actionFunction={(verifyPassword: string) =>
+                    handleCompanyDelete(verifyPassword)
+                }
+            />
+
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
@@ -334,13 +396,24 @@ const EditCompany: React.FC = () => {
                         </PickerView>
                     </Form>
 
-                    <Button
-                        style={{ position: 'absolute', bottom: '5%' }}
-                        biggerText
-                        onPress={() => formRef.current?.submitForm()}
-                    >
-                        Atualizar dados
-                    </Button>
+                    <ButtonsContainer>
+                        <Button
+                            biggerText
+                            onPress={() => formRef.current?.submitForm()}
+                        >
+                            Atualizar Empresa
+                        </Button>
+
+                        <Button
+                            biggerText
+                            style={{ backgroundColor: '#c93c3c' }}
+                            onPress={() =>
+                                setTextPickerVisibility({ visibility: true })
+                            }
+                        >
+                            Deletar Empresa
+                        </Button>
+                    </ButtonsContainer>
                 </Container>
             </ScrollView>
         </>

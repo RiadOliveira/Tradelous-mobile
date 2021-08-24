@@ -52,11 +52,6 @@ interface IModalProps {
     infoText?: string;
 }
 
-interface ITextPickerProps {
-    visibility: boolean;
-    actionFunction?: (employeeId: string) => Promise<void>;
-}
-
 const CompanySummary: React.FC = () => {
     const { user, setUserCompany } = useAuth();
     const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
@@ -72,10 +67,9 @@ const CompanySummary: React.FC = () => {
         visibility: false,
     });
 
-    const [
-        textPickerProps,
-        setTextPickerVisibility,
-    ] = useState<ITextPickerProps>({
+    const [textPickerVisibility, setTextPickerVisibility] = useState<{
+        visibility: boolean;
+    }>({
         visibility: false,
     });
 
@@ -193,10 +187,15 @@ const CompanySummary: React.FC = () => {
                     handleHireEmployee(employeeId)
                 }
                 setVisibility={setTextPickerVisibility}
-                isVisible={textPickerProps.visibility}
+                isVisible={textPickerVisibility.visibility}
                 text={{
                     info: 'Insira o ID do funcionário que deseja contratar',
                     buttonText: 'Confirmar',
+                }}
+                inputProps={{
+                    hasPasteButton: true,
+                    placeholder: 'ID do funcionário',
+                    isSecureText: false,
                 }}
                 iconName="tag"
             />
