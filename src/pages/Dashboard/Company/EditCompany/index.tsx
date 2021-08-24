@@ -43,17 +43,6 @@ interface ICompany {
     logo?: string;
 }
 
-interface ModalProps {
-    visibility: boolean;
-    actionFunction?: () => Promise<void>;
-    text?: {
-        info: string;
-        firstButton: string;
-        secondButton: string;
-    };
-    iconName?: string;
-}
-
 const EditCompany: React.FC = () => {
     const navigation = useNavigation();
     const company = useRoute().params as ICompany;
@@ -62,7 +51,9 @@ const EditCompany: React.FC = () => {
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
 
-    const [modalProps, setModalProps] = useState<ModalProps>({
+    const [modalVisibility, setModalVisibility] = useState<{
+        visibility: boolean;
+    }>({
         visibility: false,
     });
     const [selectedImage, setSelectedImage] = useState<string | null>(() =>
@@ -233,16 +224,14 @@ const EditCompany: React.FC = () => {
     return (
         <>
             <Modal
-                actionFunction={modalProps.actionFunction}
-                setVisibility={setModalProps}
-                isVisible={modalProps.visibility}
-                text={
-                    modalProps.text ?? {
-                        info: '',
-                        firstButton: '',
-                        secondButton: '',
-                    }
-                }
+                actionFunction={() => handleImageData('delete')}
+                setVisibility={setModalVisibility}
+                isVisible={modalVisibility.visibility}
+                text={{
+                    info: 'Tem certeza que deseja deletar a imagem da empresa?',
+                    firstButton: 'Sim',
+                    secondButton: 'Não',
+                }}
                 iconName="delete"
             />
             <ScrollView
@@ -274,17 +263,7 @@ const EditCompany: React.FC = () => {
 
                         <DeleteImageButton
                             onPress={() =>
-                                setModalProps({
-                                    visibility: true,
-                                    actionFunction: () =>
-                                        handleImageData('delete'),
-                                    text: {
-                                        info:
-                                            'Tem certeza que deseja deletar a imagem da empresa?',
-                                        firstButton: 'Sim',
-                                        secondButton: 'Não',
-                                    },
-                                })
+                                setModalVisibility({ visibility: true })
                             }
                         >
                             <Icon name="clear" size={48} color="#e7e7e7" />

@@ -166,13 +166,11 @@ const Sales: React.FC = () => {
                 secondActionFunction={modalProps.secondActionFunction}
                 setVisibility={setModalProps}
                 isVisible={modalProps.visibility}
-                text={
-                    modalProps.text ?? {
-                        info: '',
-                        firstButton: '',
-                        secondButton: '',
-                    }
-                }
+                text={{
+                    info: 'O que deseja fazer com essa venda?',
+                    firstButton: 'Atualizar',
+                    secondButton: 'Deletar',
+                }}
                 iconName="info"
             />
 
@@ -253,12 +251,6 @@ const Sales: React.FC = () => {
                                 onPress={() =>
                                     setModalProps({
                                         visibility: true,
-                                        text: {
-                                            info:
-                                                'O que deseja fazer com essa venda?',
-                                            firstButton: 'Atualizar',
-                                            secondButton: 'Deletar',
-                                        },
                                         actionFunction: async () =>
                                             navigation.navigate('EditSale', {
                                                 sale,

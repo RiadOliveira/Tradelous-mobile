@@ -72,7 +72,10 @@ const CompanySummary: React.FC = () => {
         visibility: false,
     });
 
-    const [textPickerProps, setTextPickerProps] = useState<ITextPickerProps>({
+    const [
+        textPickerProps,
+        setTextPickerVisibility,
+    ] = useState<ITextPickerProps>({
         visibility: false,
     });
 
@@ -186,8 +189,10 @@ const CompanySummary: React.FC = () => {
             />
 
             <TextPicker
-                actionFunction={textPickerProps.actionFunction}
-                setVisibility={setTextPickerProps}
+                actionFunction={(employeeId: string) =>
+                    handleHireEmployee(employeeId)
+                }
+                setVisibility={setTextPickerVisibility}
                 isVisible={textPickerProps.visibility}
                 text={{
                     info: 'Insira o ID do funcionário que deseja contratar',
@@ -259,19 +264,12 @@ const CompanySummary: React.FC = () => {
                                 activeOpacity={0.8}
                                 onPress={() =>
                                     user.isAdmin
-                                        ? setTextPickerProps({
+                                        ? setTextPickerVisibility({
                                               visibility: true,
-                                              actionFunction: (
-                                                  employeeId: string,
-                                              ) =>
-                                                  handleHireEmployee(
-                                                      employeeId,
-                                                  ),
                                           })
                                         : setModalProps({
                                               visibility: true,
-                                              actionFunction: () =>
-                                                  handleLeaveCompany(),
+                                              actionFunction: handleLeaveCompany,
                                               infoText:
                                                   'Tem certeza que deseja abandonar essa empresa?',
                                           })
