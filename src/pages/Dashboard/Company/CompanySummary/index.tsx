@@ -8,10 +8,10 @@ import {
     CompanyName,
     CompanyAdress,
     EditButton,
-    HireButtonContainer,
-    HireButton,
-    HireButtonText,
-    HireButtonIcon,
+    ActionButtonContainer,
+    ActionButton,
+    ActionButtonText,
+    ActionButtonIcon,
     Employee,
     EmployeeData,
     EmployeeName,
@@ -49,6 +49,7 @@ interface IEmployee {
 interface IModalProps {
     visibility: boolean;
     actionFunction?: () => Promise<void>;
+    infoText?: string;
 }
 
 interface ITextPickerProps {
@@ -57,7 +58,7 @@ interface ITextPickerProps {
 }
 
 const CompanySummary: React.FC = () => {
-    const { user } = useAuth();
+    const { user, setUserCompany } = useAuth();
     const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
         updatedAt: 0,
     };
@@ -150,6 +151,25 @@ const CompanySummary: React.FC = () => {
         [],
     );
 
+    const handleLeaveCompany = useCallback(async () => {
+        try {
+            await api.patch('/user/leave-company');
+
+            Toast.show({
+                type: 'success',
+                text1: 'Sucesso na saída da empresa!',
+            });
+
+            setUserCompany(false, undefined);
+        } catch {
+            Toast.show({
+                type: 'error',
+                text1: 'Problema inesperado',
+                text2: 'Ocorreu um erro ao abandonar a empresa.',
+            });
+        }
+    }, [setUserCompany]);
+
     return (
         <>
             <Modal
@@ -157,11 +177,12 @@ const CompanySummary: React.FC = () => {
                 setVisibility={setModalProps}
                 isVisible={modalProps.visibility}
                 text={{
-                    info: 'Tem certeza que deseja demitir esse funcionário?',
+                    info: modalProps.infoText || '',
                     firstButton: 'Sim',
                     secondButton: 'Não',
                 }}
-                iconName="delete"
+                iconName={user.isAdmin ? 'delete' : 'logout'}
+                willUnmount={!user.isAdmin}
             />
 
             <TextPicker
@@ -232,33 +253,45 @@ const CompanySummary: React.FC = () => {
                             </LogoContainer>
                         </CompanyContainer>
 
-                        {user.isAdmin && (
-                            <HireButtonContainer>
-                                <HireButton
-                                    activeOpacity={0.8}
-                                    onPress={() =>
-                                        setTextPickerProps({
-                                            visibility: true,
-                                            actionFunction: (
-                                                employeeId: string,
-                                            ) => handleHireEmployee(employeeId),
-                                        })
-                                    }
-                                >
-                                    <HireButtonText>
-                                        Contratar funcionário
-                                    </HireButtonText>
-                                </HireButton>
+                        <ActionButtonContainer>
+                            <ActionButton
+                                isAdmin={user.isAdmin}
+                                activeOpacity={0.8}
+                                onPress={() =>
+                                    user.isAdmin
+                                        ? setTextPickerProps({
+                                              visibility: true,
+                                              actionFunction: (
+                                                  employeeId: string,
+                                              ) =>
+                                                  handleHireEmployee(
+                                                      employeeId,
+                                                  ),
+                                          })
+                                        : setModalProps({
+                                              visibility: true,
+                                              actionFunction: () =>
+                                                  handleLeaveCompany(),
+                                              infoText:
+                                                  'Tem certeza que deseja abandonar essa empresa?',
+                                          })
+                                }
+                            >
+                                <ActionButtonText>
+                                    {user.isAdmin
+                                        ? 'Contratar funcionário'
+                                        : 'Abandonar empresa'}
+                                </ActionButtonText>
+                            </ActionButton>
 
-                                <HireButtonIcon>
-                                    <Icon
-                                        name="person-add"
-                                        size={30}
-                                        color="#ffffff"
-                                    />
-                                </HireButtonIcon>
-                            </HireButtonContainer>
-                        )}
+                            <ActionButtonIcon isAdmin={user.isAdmin}>
+                                <Icon
+                                    name={user.isAdmin ? 'person-add' : 'clear'}
+                                    size={30}
+                                    color="#ffffff"
+                                />
+                            </ActionButtonIcon>
+                        </ActionButtonContainer>
 
                         {orderedEmployees.map(employee => (
                             <Employee key={employee.id}>
@@ -271,6 +304,8 @@ const CompanySummary: React.FC = () => {
                                             visibility: true,
                                             actionFunction: () =>
                                                 handleFireEmployee(employee.id),
+                                            infoText:
+                                                'Tem certeza que deseja demitir esse funcionário?',
                                         })
                                     }
                                 >

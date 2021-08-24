@@ -44,13 +44,14 @@ interface ICompany {
 }
 
 interface ModalProps {
+    visibility: boolean;
     actionFunction?: () => Promise<void>;
     text?: {
         info: string;
         firstButton: string;
         secondButton: string;
     };
-    visibility: boolean;
+    iconName?: string;
 }
 
 const EditCompany: React.FC = () => {

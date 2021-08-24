@@ -17,6 +17,7 @@ interface ModalProps {
         secondButton: string;
     };
     iconName: string;
+    willUnmount?: boolean; //If actionFunction unmount modal's parent.
     actionFunction?: () => Promise<void>;
     secondActionFunction?: () => Promise<void>;
     setVisibility({ visibility }: { visibility: boolean }): void;
@@ -26,12 +27,15 @@ const Modal: React.FC<ModalProps> = ({
     isVisible = false,
     text,
     iconName,
+    willUnmount = false,
     setVisibility,
     actionFunction,
     secondActionFunction,
 }) => {
     const handleResponse = (response: boolean) => {
-        setVisibility({ visibility: false });
+        if (!willUnmount || !response) {
+            setVisibility({ visibility: false });
+        }
 
         if (response && actionFunction) {
             actionFunction();

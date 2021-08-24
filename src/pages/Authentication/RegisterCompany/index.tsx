@@ -153,7 +153,7 @@ const RegisterCompany: React.FC = () => {
                     text1: 'Empresa cadastrada com sucesso!',
                 });
 
-                setUserCompany(response.data.id);
+                setUserCompany(true, response.data.id);
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
                     const validationErrors = getValidationErrors(err);

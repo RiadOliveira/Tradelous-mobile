@@ -35,7 +35,7 @@ type SignInData = Pick<IUserData, 'email' | 'password'>;
 interface IAuthContextData extends IAuthProps {
     signIn(data: SignInData): Promise<void>;
     updateUser(userData: IUpdateUserData): Promise<void>;
-    setUserCompany(companyId: number): Promise<void>;
+    setUserCompany(isAdmin: boolean, companyId?: string): Promise<void>;
     updateUsersAvatar(avatar: string): Promise<void>;
     signOut(): Promise<void>;
     isReady: boolean;
@@ -96,7 +96,7 @@ const AuthContext: React.FC = ({ children }) => {
     }, []);
 
     const updateUsersAvatar = useCallback(
-        async avatar => {
+        async (avatar: string) => {
             let data;
 
             if (avatar) {
@@ -109,7 +109,7 @@ const AuthContext: React.FC = ({ children }) => {
                 });
             }
 
-            const response = await api.patch('/user/updateAvatar', data);
+            const response = await api.patch('/user/update-avatar', data);
 
             await AsyncStorage.setItem(
                 '@Tradelous-user',
@@ -133,10 +133,10 @@ const AuthContext: React.FC = ({ children }) => {
     );
 
     const setUserCompany = useCallback(
-        async companyId => {
+        async (isAdmin: boolean, companyId?: string) => {
             await AsyncStorage.setItem(
                 '@Tradelous-user',
-                JSON.stringify({ ...authData.user, isAdmin: true, companyId }),
+                JSON.stringify({ ...authData.user, isAdmin, companyId }),
             );
 
             setAuthData(data => {
@@ -144,7 +144,7 @@ const AuthContext: React.FC = ({ children }) => {
                     ...data,
                     user: {
                         ...data.user,
-                        isAdmin: true,
+                        isAdmin,
                         companyId,
                     },
                 };

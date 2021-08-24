@@ -5,6 +5,10 @@ interface EmployeeProps {
     isAdmin: boolean;
 }
 
+interface ActionButtonProps {
+    isAdmin: boolean;
+}
+
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -68,15 +72,15 @@ export const EditButton = styled(RectButton)`
     bottom: 10%;
 `;
 
-export const HireButtonContainer = styled.View`
+export const ActionButtonContainer = styled.View`
     width: 66%;
     flex-direction: row;
     position: relative;
     margin-bottom: 10%;
 `;
 
-export const HireButton = styled.TouchableOpacity`
-    background-color: #2c3f82;
+export const ActionButton = styled.TouchableOpacity<ActionButtonProps>`
+    background-color: ${props => (props.isAdmin ? '#2c3f82' : '#942c2c')};
     height: 60px;
     width: 97%;
     position: absolute;
@@ -86,7 +90,7 @@ export const HireButton = styled.TouchableOpacity`
     border-radius: 18px;
 `;
 
-export const HireButtonText = styled.Text`
+export const ActionButtonText = styled.Text`
     margin-left: 10px;
     font-family: Poppins-SemiBold;
     font-size: 14px;
@@ -94,14 +98,14 @@ export const HireButtonText = styled.Text`
     margin-left: 22%;
 `;
 
-export const HireButtonIcon = styled.View`
+export const ActionButtonIcon = styled.View<ActionButtonProps>`
     width: 60px;
     height: 60px;
-    background-color: #5170e0;
+    background-color: ${props => (props.isAdmin ? '#5170e0' : '#de4343')};
     border-radius: 30px;
     justify-content: center;
     align-items: center;
-    border: 2px solid #2c3f82;
+    border: 2px solid ${props => (props.isAdmin ? '#2c3f82' : '#942c2c')};
 `;
 
 export const Employee = styled.View`
