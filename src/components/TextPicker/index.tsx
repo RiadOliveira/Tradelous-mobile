@@ -41,14 +41,13 @@ const TextPicker: React.FC<TextPickerProps> = ({
 }) => {
     const [inputText, setInputText] = useState('');
 
-    const handleResponse = () => {
-        if (!willUnmount) {
-            setVisibility({ visibility: false });
-        }
-
+    const handleResponse = async () => {
         if (actionFunction) {
             actionFunction(inputText);
-            setInputText('');
+
+            if (!willUnmount) {
+                setInputText('');
+            }
         }
     };
 

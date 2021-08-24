@@ -52,6 +52,17 @@ interface IModalProps {
     infoText?: string;
 }
 
+interface ITextPickerProps {
+    visibility: boolean;
+    infoText?: string;
+    actionFunction?: (value: string) => Promise<void>;
+    inputProps?: {
+        hasPasteButton: boolean;
+        placeholder: string;
+        isSecureText: boolean;
+    };
+}
+
 const CompanySummary: React.FC = () => {
     const { user, setUserCompany } = useAuth();
     const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
@@ -67,9 +78,7 @@ const CompanySummary: React.FC = () => {
         visibility: false,
     });
 
-    const [textPickerVisibility, setTextPickerVisibility] = useState<{
-        visibility: boolean;
-    }>({
+    const [textPickerProps, setTextPickerProps] = useState<ITextPickerProps>({
         visibility: false,
     });
 
@@ -108,6 +117,8 @@ const CompanySummary: React.FC = () => {
                 );
 
                 setEmployees(employees => [...employees, response.data]);
+
+                setTextPickerProps({ visibility: false });
 
                 Toast.show({
                     type: 'success',
@@ -148,24 +159,32 @@ const CompanySummary: React.FC = () => {
         [],
     );
 
-    const handleLeaveCompany = useCallback(async () => {
-        try {
-            await api.patch('/user/leave-company');
+    const handleLeaveCompany = useCallback(
+        async (verifyPassword: string) => {
+            try {
+                await api.post('/user/sessions', {
+                    email: user.email,
+                    password: verifyPassword,
+                }); //In order to verify user's password to leave company.
 
-            Toast.show({
-                type: 'success',
-                text1: 'Sucesso na saída da empresa!',
-            });
+                await api.patch('/user/leave-company');
 
-            setUserCompany(false, undefined);
-        } catch {
-            Toast.show({
-                type: 'error',
-                text1: 'Problema inesperado',
-                text2: 'Ocorreu um erro ao abandonar a empresa.',
-            });
-        }
-    }, [setUserCompany]);
+                Toast.show({
+                    type: 'success',
+                    text1: 'Sucesso na saída da empresa!',
+                });
+
+                setUserCompany(false, undefined);
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Problema inesperado',
+                    text2: 'Ocorreu um erro ao abandonar a empresa.',
+                });
+            }
+        },
+        [setUserCompany, user.email],
+    );
 
     return (
         <>
@@ -183,19 +202,19 @@ const CompanySummary: React.FC = () => {
             />
 
             <TextPicker
-                actionFunction={(employeeId: string) =>
-                    handleHireEmployee(employeeId)
-                }
-                setVisibility={setTextPickerVisibility}
-                isVisible={textPickerVisibility.visibility}
+                actionFunction={textPickerProps.actionFunction}
+                setVisibility={setTextPickerProps}
+                isVisible={textPickerProps.visibility}
                 text={{
-                    info: 'Insira o ID do funcionário que deseja contratar',
+                    info: textPickerProps.infoText || '',
                     buttonText: 'Confirmar',
                 }}
                 inputProps={{
-                    hasPasteButton: true,
-                    placeholder: 'ID do funcionário',
-                    isSecureText: false,
+                    hasPasteButton:
+                        textPickerProps.inputProps?.hasPasteButton || false,
+                    placeholder: textPickerProps.inputProps?.placeholder || '',
+                    isSecureText:
+                        textPickerProps.inputProps?.isSecureText || false,
                 }}
                 iconName="tag"
             />
@@ -263,14 +282,34 @@ const CompanySummary: React.FC = () => {
                                 activeOpacity={0.8}
                                 onPress={() =>
                                     user.isAdmin
-                                        ? setTextPickerVisibility({
+                                        ? setTextPickerProps({
                                               visibility: true,
-                                          })
-                                        : setModalProps({
-                                              visibility: true,
-                                              actionFunction: handleLeaveCompany,
+                                              actionFunction: employeeId =>
+                                                  handleHireEmployee(
+                                                      employeeId,
+                                                  ),
                                               infoText:
-                                                  'Tem certeza que deseja abandonar essa empresa?',
+                                                  'Insira o ID do funcionário que deseja contratar',
+                                              inputProps: {
+                                                  placeholder:
+                                                      'ID do funcionário',
+                                                  hasPasteButton: true,
+                                                  isSecureText: false,
+                                              },
+                                          })
+                                        : setTextPickerProps({
+                                              visibility: true,
+                                              actionFunction: verifyPassword =>
+                                                  handleLeaveCompany(
+                                                      verifyPassword,
+                                                  ),
+                                              infoText:
+                                                  'Insira sua senha para confirmar a saída',
+                                              inputProps: {
+                                                  placeholder: 'Senha',
+                                                  hasPasteButton: false,
+                                                  isSecureText: true,
+                                              },
                                           })
                                 }
                             >
