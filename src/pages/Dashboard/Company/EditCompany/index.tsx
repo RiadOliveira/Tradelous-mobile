@@ -42,7 +42,7 @@ interface ICompany {
     id: string;
     name: string;
     cnpj: string;
-    adress: string;
+    address: string;
     logo?: string;
 }
 
@@ -75,7 +75,7 @@ const EditCompany: React.FC = () => {
         company.logo ? company.logo : null,
     );
     const [selectedState, setSelectedState] = useState(
-        company.adress.split('/')[1],
+        company.address.split('/')[1],
     );
 
     const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
@@ -112,7 +112,7 @@ const EditCompany: React.FC = () => {
                         .string()
                         .required('CNPJ obrigatório')
                         .min(14, 'O tamanho mínimo do cnpj é de 14 dígitos'),
-                    adress: yup
+                    address: yup
                         .string()
                         .required('Cidade da empresa obrigatório'),
                 });
@@ -128,7 +128,7 @@ const EditCompany: React.FC = () => {
                     throw new yup.ValidationError('Formato de cnpj inválido');
                 }
 
-                companyData.adress += `/${selectedState}`;
+                companyData.address += `/${selectedState}`;
 
                 await api.put('/company/', companyData);
 
@@ -242,8 +242,8 @@ const EditCompany: React.FC = () => {
             const updatedCompany = JSON.stringify({
                 ...formRef.current?.getData(),
                 // eslint-disable-next-line react-hooks/exhaustive-deps
-                adress: `${formRef.current?.getFieldValue(
-                    'adress',
+                address: `${formRef.current?.getFieldValue(
+                    'address',
                 )}/${selectedState}`,
                 logo: selectedImage || null,
             });
@@ -251,7 +251,7 @@ const EditCompany: React.FC = () => {
             const comparsionCompany = JSON.stringify({
                 name: company.name,
                 cnpj: company.cnpj,
-                adress: company.adress,
+                address: company.address,
                 logo: company.logo,
             });
 
@@ -337,7 +337,7 @@ const EditCompany: React.FC = () => {
                         onSubmit={handleSubmit}
                         initialData={{
                             ...company,
-                            adress: company.adress.split('/')[0],
+                            address: company.address.split('/')[0],
                         }}
                     >
                         <Input
@@ -367,7 +367,7 @@ const EditCompany: React.FC = () => {
                             textContentType="addressCity"
                             autoCapitalize="words"
                             ref={cityInput}
-                            name="adress"
+                            name="address"
                             placeholder="Cidade"
                             icon="location-city"
                             returnKeyType="next"

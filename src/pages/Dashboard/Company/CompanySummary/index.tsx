@@ -34,7 +34,7 @@ interface ICompany {
     id: string;
     name: string;
     cnpj: number;
-    adress: string;
+    address: string;
     logo?: string;
 }
 
@@ -236,7 +236,7 @@ const CompanySummary: React.FC = () => {
                             <CompanyData>
                                 <CompanyName>{company.name}</CompanyName>
                                 <CompanyAdress>
-                                    {company.adress}
+                                    {company.address}
                                     {'\n'}
                                     {formattedCNPJ}
                                 </CompanyAdress>

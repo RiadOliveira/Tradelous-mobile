@@ -132,7 +132,7 @@ const RegisterCompany: React.FC = () => {
 
                 companyData.append('name', data.companyName);
                 companyData.append(
-                    'adress',
+                    'address',
                     `${data.companyCity}/${selectedState}`,
                 );
                 companyData.append('cnpj', Number(data.cnpj));
