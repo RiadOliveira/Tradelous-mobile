@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
                     text1: 'Atualização do perfil concluída!',
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [updateUser],

@@ -133,7 +133,7 @@ const EditSale: React.FC = () => {
                     text1: 'Venda atualizado com sucesso!',
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [

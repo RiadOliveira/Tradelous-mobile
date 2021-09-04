@@ -137,7 +137,7 @@ const EditCompany: React.FC = () => {
                     text1: 'Atualização da empresa concluída!',
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [selectedState],

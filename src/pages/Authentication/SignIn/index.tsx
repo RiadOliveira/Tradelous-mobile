@@ -57,7 +57,7 @@ const SignIn: React.FC = () => {
 
                 await signIn(data);
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [signIn],

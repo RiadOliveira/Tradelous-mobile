@@ -108,7 +108,7 @@ const ProductSale: React.FC = () => {
                     updatedAt: new Date(Date.now()).toISOString(),
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [product, soldQuantity, updateProductsStatus, sellMethod, navigation],

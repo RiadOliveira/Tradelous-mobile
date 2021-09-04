@@ -157,7 +157,7 @@ const ProductDescription: React.FC = () => {
                     text1: 'Produto atualizado com sucesso!',
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [product.id, barCodeValue, updateProductsStatus],

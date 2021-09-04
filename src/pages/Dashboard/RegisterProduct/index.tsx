@@ -154,7 +154,7 @@ const RegisterProduct: React.FC = () => {
                     text1: 'Produto adicionado com sucesso!',
                 });
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [selectedImage, user.companyId, barCodeValue, updateProductsStatus],

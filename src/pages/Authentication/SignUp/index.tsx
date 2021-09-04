@@ -90,7 +90,7 @@ const SignUp: React.FC = () => {
 
                 await signIn(data);
             } catch (err) {
-                ErrorCatcher(err, formRef);
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
         [navigation, switchValue, signIn],
