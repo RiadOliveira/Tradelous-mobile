@@ -2,12 +2,12 @@ import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 interface ButtonProps {
-    biggerText?: boolean;
+    smallerText?: boolean;
 }
 
 export const Container = styled(RectButton)<ButtonProps>`
     width: 150px;
-    height: ${props => (props.biggerText ? '64px' : '50px')};
+    height: ${props => (props.smallerText ? '50px' : '64px')};
     justify-content: center;
     align-items: center;
     background-color: #1c274e;

@@ -284,7 +284,6 @@ const ProductsList: React.FC = () => {
                             </NoProductsText>
 
                             <Button
-                                biggerText
                                 onPress={() =>
                                     navigation.navigate('RegisterProduct')
                                 }

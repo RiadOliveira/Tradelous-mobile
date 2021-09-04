@@ -75,7 +75,7 @@ const ForgotPassword: React.FC = () => {
                 />
             </Form>
 
-            <Button onPress={() => formRef.current?.submitForm()}>
+            <Button smallerText onPress={() => formRef.current?.submitForm()}>
                 <Text>Enviar</Text>
             </Button>
 

@@ -397,15 +397,11 @@ const EditCompany: React.FC = () => {
                     </Form>
 
                     <ButtonsContainer>
-                        <Button
-                            biggerText
-                            onPress={() => formRef.current?.submitForm()}
-                        >
+                        <Button onPress={() => formRef.current?.submitForm()}>
                             Atualizar Empresa
                         </Button>
 
                         <Button
-                            biggerText
                             style={{ backgroundColor: '#c93c3c' }}
                             onPress={() =>
                                 setTextPickerVisibility({ visibility: true })

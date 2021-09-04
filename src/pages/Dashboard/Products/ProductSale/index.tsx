@@ -205,10 +205,7 @@ const ProductSale: React.FC = () => {
                     </PickerView>
                 </Form>
 
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     Confirmar venda
                 </Button>
             </Container>

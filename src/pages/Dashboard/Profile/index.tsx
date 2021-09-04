@@ -352,15 +352,11 @@ const Profile: React.FC = () => {
                     </Form>
 
                     <ButtonsContainer>
-                        <Button
-                            biggerText
-                            onPress={() => formRef.current?.submitForm()}
-                        >
+                        <Button onPress={() => formRef.current?.submitForm()}>
                             Atualizar Conta
                         </Button>
 
                         <Button
-                            biggerText
                             style={{ backgroundColor: '#c93c3c' }}
                             onPress={() =>
                                 setTextPickerVisibility({ visibility: true })

@@ -3,7 +3,7 @@ import { RectButtonProperties } from 'react-native-gesture-handler';
 import { Container, Content } from './styles';
 
 interface ButtonProps extends RectButtonProperties {
-    biggerText?: boolean;
+    smallerText?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ children, ...props }) => {

@@ -269,10 +269,7 @@ const EditSale: React.FC = () => {
                     </PickerView>
                 </Form>
 
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     Atualizar Venda
                 </Button>
             </Container>

@@ -426,15 +426,11 @@ const ProductDescription: React.FC = () => {
                     </Form>
 
                     <ButtonsContainer>
-                        <Button
-                            biggerText
-                            onPress={() => formRef.current?.submitForm()}
-                        >
+                        <Button onPress={() => formRef.current?.submitForm()}>
                             Atualizar Produto
                         </Button>
 
                         <Button
-                            biggerText
                             style={{ backgroundColor: '#c93c3c' }}
                             onPress={() =>
                                 setModalProps({

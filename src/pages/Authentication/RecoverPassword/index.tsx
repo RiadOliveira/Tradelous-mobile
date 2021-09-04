@@ -153,7 +153,7 @@ const RecoverPassword: React.FC = () => {
                 />
             </Form>
 
-            <Button biggerText onPress={() => formRef.current?.submitForm()}>
+            <Button onPress={() => formRef.current?.submitForm()}>
                 Alterar senha
             </Button>
         </Container>

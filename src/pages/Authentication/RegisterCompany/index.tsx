@@ -285,10 +285,7 @@ const RegisterCompany: React.FC = () => {
                     </ImageContainer>
                 </Form>
 
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     <Text>Registrar{'\n'}empresa</Text>
                 </Button>
             </Container>

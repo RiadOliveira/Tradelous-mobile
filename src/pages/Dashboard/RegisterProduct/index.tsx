@@ -262,10 +262,7 @@ const RegisterProduct: React.FC = () => {
                     </ImagePicker>
                 </Form>
 
-                <Button
-                    biggerText
-                    onPress={() => formRef.current?.submitForm()}
-                >
+                <Button onPress={() => formRef.current?.submitForm()}>
                     Cadastrar Produto
                 </Button>
             </Container>

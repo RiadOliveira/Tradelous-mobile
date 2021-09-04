@@ -112,7 +112,10 @@ const SignIn: React.FC = () => {
                     <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
                 </ForgotPassword>
 
-                <Button onPress={() => formRef.current?.submitForm()}>
+                <Button
+                    smallerText
+                    onPress={() => formRef.current?.submitForm()}
+                >
                     Entrar
                 </Button>
 
