@@ -18,6 +18,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ForgotPassword: React.FC = () => {
     const navigation = useNavigation();
@@ -40,6 +41,7 @@ const ForgotPassword: React.FC = () => {
             setIsLoadingSending(true);
 
             await api.post('/user/forgot-password', data);
+            await AsyncStorage.setItem('@Tradelous-user', data.email);
 
             setIsLoadingSending(false);
 

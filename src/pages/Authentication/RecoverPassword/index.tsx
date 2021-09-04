@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Container,
     LogoImage,
@@ -20,45 +20,76 @@ import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useNavigation } from '@react-navigation/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface IRecoverPassword {
-    token: string;
-    email: string;
+    recoverToken: string;
+    confirmEmail: string;
     newPassword: string;
 }
 
 const RecoverPassword: React.FC = () => {
+    const navigation = useNavigation();
+
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const newPasswordInput = useRef<TextInput>(null);
 
     const [tokenInputText, setTokenInputText] = useState('');
 
-    const handleSubmit = useCallback(async (recoverData: IRecoverPassword) => {
-        try {
-            const schema = yup.object().shape({
-                token: yup.string().required('Token obrigatório'),
-                email: yup
-                    .string()
-                    .required('E-mail obrigatório')
-                    .email('Formato de e-mail incorreto'),
-                newPassword: yup.string().required(),
-            });
+    const [userEmail, setUserEmail] = useState('');
 
-            await schema.validate(recoverData, {
-                abortEarly: false,
-            });
+    useEffect(() => {
+        AsyncStorage.getItem('@Tradelous-user').then(response => {
+            if (response) {
+                setUserEmail(response);
+            } else {
+                navigation.goBack();
 
-            await api.post('/users/recover-password', recoverData);
+                Toast.show({
+                    type: 'info',
+                    text1: 'Token necessário para recuperação!',
+                });
+            }
+        });
+    }, [navigation]);
 
-            Toast.show({
-                type: 'success',
-                text1: 'Atualização do perfil concluída!',
-            });
-        } catch (err) {
-            ErrorCatcher(err as Error | yup.ValidationError, formRef);
-        }
-    }, []);
+    const handleSubmit = useCallback(
+        async (recoverData: IRecoverPassword) => {
+            try {
+                recoverData.recoverToken = tokenInputText;
+
+                const schema = yup.object().shape({
+                    recoverToken: yup.string().required('Token obrigatório'),
+                    confirmEmail: yup
+                        .string()
+                        .required('E-mail obrigatório')
+                        .email('Formato de e-mail incorreto'),
+                    newPassword: yup.string().required(),
+                });
+
+                await schema.validate(recoverData, {
+                    abortEarly: false,
+                });
+
+                await api.post('/user/recover-password', recoverData);
+
+                await AsyncStorage.removeItem('@Tradelous-user');
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Senha atualizada com sucesso!',
+                    text2: 'Agora só basta fazer login com sua nova senha',
+                });
+
+                navigation.navigate('SignIn');
+            } catch (err) {
+                ErrorCatcher(err as Error | yup.ValidationError, formRef);
+            }
+        },
+        [tokenInputText, navigation],
+    );
 
     return (
         <Container>
@@ -69,7 +100,7 @@ const RecoverPassword: React.FC = () => {
             <Form
                 ref={formRef}
                 onSubmit={handleSubmit}
-                //initialData={{ email }}
+                initialData={{ confirmEmail: userEmail }}
             >
                 <TokenInputContainer>
                     <TokenInput
@@ -91,7 +122,7 @@ const RecoverPassword: React.FC = () => {
                             )
                         }
                     >
-                        <Icon name="content-paste" color="#fff" size={24} />
+                        <Icon name="content-paste" color="#fff" size={30} />
                     </PasteButton>
                 </TokenInputContainer>
 
@@ -101,9 +132,10 @@ const RecoverPassword: React.FC = () => {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     ref={emailInput}
-                    name="email"
+                    name="confirmEmail"
                     placeholder="E-mail"
                     icon="mail-outline"
+                    editable={false}
                     onSubmitEditing={() => newPasswordInput.current?.focus()}
                     returnKeyType="next"
                 />

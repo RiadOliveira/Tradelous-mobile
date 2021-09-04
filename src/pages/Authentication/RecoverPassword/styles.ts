@@ -39,9 +39,13 @@ export const TokenInput = styled.TextInput`
 
 export const PasteButton = styled.TouchableOpacity`
     background-color: #1c274e;
-    padding: 6%;
+    height: 60px;
+    width: 20%;
+
     border-radius: 5px;
     margin-left: 3.1%;
+    justify-content: center;
+    align-items: center;
 
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
