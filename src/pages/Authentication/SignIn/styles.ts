@@ -24,7 +24,7 @@ export const ForgotPasswordText = styled.Text`
     color: #ffffff;
 `;
 
-export const SignUp = styled.TouchableOpacity`
+export const SignUpButton = styled.TouchableOpacity`
     position: absolute;
     bottom: 35px;
 `;

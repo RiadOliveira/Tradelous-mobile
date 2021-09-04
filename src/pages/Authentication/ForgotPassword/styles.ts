@@ -5,14 +5,23 @@ export const Container = styled.View`
     flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 `;
 
 export const LogoView = styled.View`
-    position: absolute;
+    margin: 10% 0 35%;
 `;
 
 export const LogoImage = styled.Image`
     width: 220px;
     height: 130px;
+`;
+
+export const RecoverPasswordButton = styled.TouchableOpacity`
+    position: absolute;
+    bottom: 35px;
+`;
+
+export const RecoverPasswordText = styled.Text`
+    font-family: Poppins-Regular;
+    color: #ffffff;
 `;

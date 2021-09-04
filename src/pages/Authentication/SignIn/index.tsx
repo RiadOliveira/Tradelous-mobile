@@ -5,7 +5,7 @@ import {
     LogoImage,
     ForgotPassword,
     ForgotPasswordText,
-    SignUp,
+    SignUpButton,
     SignUpText,
 } from './styles';
 
@@ -106,7 +106,7 @@ const SignIn: React.FC = () => {
                 </Form>
 
                 <ForgotPassword
-                    onPress={() => navigation.navigate('PasswordRecovery')}
+                    onPress={() => navigation.navigate('ForgotPassword')}
                     activeOpacity={0.5}
                 >
                     <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
@@ -116,14 +116,14 @@ const SignIn: React.FC = () => {
                     Entrar
                 </Button>
 
-                <SignUp
+                <SignUpButton
                     onPress={() => navigation.navigate('SignUp')}
                     activeOpacity={0.5}
                 >
                     <SignUpText>
                         Ainda não possui uma conta? Crie-a agora!
                     </SignUpText>
-                </SignUp>
+                </SignUpButton>
             </Container>
         </ScrollView>
     );
