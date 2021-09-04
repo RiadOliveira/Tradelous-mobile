@@ -13,7 +13,7 @@ import {
     NoProductsContainer,
     NoProductsText,
 } from './styles';
-import { ScrollView, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
@@ -25,6 +25,7 @@ import Button from '@components/Button';
 import Toast from 'react-native-toast-message';
 import formatPrice from '@utils/formatPrice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { FlatList } from 'react-native-gesture-handler';
 
 interface IProduct {
     id: string;
@@ -164,11 +165,7 @@ const ProductsList: React.FC = () => {
             }}
         />
     ) : (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-        >
+        <>
             {!hasLoadedProducts ? (
                 <ActivityIndicator
                     size={64}
@@ -217,61 +214,80 @@ const ProductsList: React.FC = () => {
                                 </BarCodeButton>
                             </SearchBarContainer>
 
-                            {searchedProducts.map((product, index) => (
-                                <ProductContainer
-                                    onPress={() =>
-                                        handleProductSelection(product)
-                                    }
-                                    key={product.id}
-                                >
-                                    <ProductImageContainer>
-                                        {product.image ? (
-                                            <ProductImage
-                                                source={{
-                                                    uri: `${apiStaticUrl}/${product.image}`,
-                                                }}
-                                            />
-                                        ) : (
-                                            <Icon
-                                                name="local-offer"
-                                                size={40}
-                                                color="#ffffff"
-                                            />
-                                        )}
-                                    </ProductImageContainer>
-
-                                    <ProductData style={{ marginLeft: '1%' }}>
-                                        <ProductText>
-                                            {product.name}
-                                        </ProductText>
+                            <FlatList
+                                style={{
+                                    width: '100%',
+                                    paddingTop: 10,
+                                }}
+                                contentContainerStyle={{
+                                    alignItems: 'center',
+                                    paddingBottom: '8%',
+                                }}
+                                showsVerticalScrollIndicator={false}
+                                data={searchedProducts}
+                                keyExtractor={product => product.id}
+                                renderItem={product => (
+                                    <ProductContainer
+                                        onPress={() =>
+                                            handleProductSelection(product)
+                                        }
+                                    >
+                                        <ProductImageContainer>
+                                            {product.item.image ? (
+                                                <ProductImage
+                                                    source={{
+                                                        uri: `${apiStaticUrl}/${product.item.image}`,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Icon
+                                                    name="local-offer"
+                                                    size={40}
+                                                    color="#ffffff"
+                                                />
+                                            )}
+                                        </ProductImageContainer>
 
                                         <ProductData
-                                            style={{
-                                                flexDirection: 'row',
-                                                width: '98%',
-                                            }}
+                                            style={{ marginLeft: '1%' }}
                                         >
                                             <ProductText>
-                                                {formattedPrices[index]}
+                                                {product.item.name}
                                             </ProductText>
 
-                                            <ProductText>
-                                                {product.brand}
-                                            </ProductText>
-
-                                            <ProductAvailabilityText
-                                                hasInStock={
-                                                    product.quantity > 0
-                                                }
+                                            <ProductData
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    width: '94%',
+                                                }}
                                             >
-                                                {product.quantity > 0
-                                                    ? 'Em estoque'
-                                                    : 'Em falta'}
-                                            </ProductAvailabilityText>
+                                                <ProductText>
+                                                    {
+                                                        formattedPrices[
+                                                            product.index
+                                                        ]
+                                                    }
+                                                </ProductText>
+
+                                                <ProductText>
+                                                    {product.item.brand}
+                                                </ProductText>
+
+                                                <ProductAvailabilityText
+                                                    hasInStock={
+                                                        product.item.quantity >
+                                                        0
+                                                    }
+                                                >
+                                                    {product.item.quantity > 0
+                                                        ? 'Em estoque'
+                                                        : 'Em falta'}
+                                                </ProductAvailabilityText>
+                                            </ProductData>
                                         </ProductData>
-                                    </ProductData>
-                                </ProductContainer>
-                            ))}
+                                    </ProductContainer>
+                                )}
+                            />
                         </>
                     ) : (
                         <NoProductsContainer>
@@ -294,7 +310,7 @@ const ProductsList: React.FC = () => {
                     )}
                 </Container>
             )}
-        </ScrollView>
+        </>
     );
 };
 
