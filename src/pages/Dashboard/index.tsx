@@ -1,14 +1,15 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import RegisterProduct from './RegisterProduct';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useCamera } from '@hooks/camera';
-import { useAuth } from '@hooks/auth';
 import ProductsRoutes from './Products';
 import CompanyRoutes from './Company';
 import SalesRoutes from './Sales';
 import RegisterCompany from '../Authentication/RegisterCompany';
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useCamera } from '@hooks/camera';
+import { useAuth } from '@hooks/auth';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,14 +23,12 @@ const Dashboard: React.FC = () => {
                 labelStyle: {
                     fontFamily: 'Poppins-SemiBold',
                     fontSize: 10,
-                    color: '#1c274e',
+                    color: '#000',
                 },
                 allowFontScaling: true,
                 tabStyle: {},
                 style: {
                     height: 52,
-                    borderTopColor: '#1c274e',
-                    borderTopWidth: 1.5,
                     display: isCameraVisible ? 'none' : 'flex',
                 },
             }}
