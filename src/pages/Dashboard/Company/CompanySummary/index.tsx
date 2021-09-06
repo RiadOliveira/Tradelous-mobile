@@ -327,9 +327,11 @@ const CompanySummary: React.FC = () => {
                         keyExtractor={employee => employee.id}
                         style={{
                             width: '100%',
+                            paddingTop: 10,
                         }}
                         contentContainerStyle={{
                             alignItems: 'center',
+                            paddingBottom: '8%',
                         }}
                         renderItem={employee => (
                             <Employee>
