@@ -229,7 +229,7 @@ const ProductsList: React.FC = () => {
                                 renderItem={product => (
                                     <ProductContainer
                                         onPress={() =>
-                                            handleProductSelection(product)
+                                            handleProductSelection(product.item)
                                         }
                                     >
                                         <ProductImageContainer>
