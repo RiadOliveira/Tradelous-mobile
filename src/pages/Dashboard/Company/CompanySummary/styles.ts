@@ -73,20 +73,21 @@ export const EditButton = styled(RectButton)`
 `;
 
 export const ActionButtonContainer = styled.View`
-    width: 66%;
+    width: 64%;
     flex-direction: row;
     position: relative;
     margin-bottom: 10%;
+    margin-left: 15px;
+
+    align-items: center;
 `;
 
 export const ActionButton = styled.TouchableOpacity<ActionButtonProps>`
     background-color: ${props => (props.isAdmin ? '#2c3f82' : '#942c2c')};
     height: 60px;
-    width: 97%;
-    position: absolute;
+    width: 100%;
     justify-content: center;
     align-items: flex-start;
-    left: 5%;
     border-radius: 18px;
 `;
 
@@ -106,23 +107,26 @@ export const ActionButtonIcon = styled.View<ActionButtonProps>`
     justify-content: center;
     align-items: center;
     border: 2px solid ${props => (props.isAdmin ? '#2c3f82' : '#942c2c')};
+
+    position: absolute;
+    left: -4%;
 `;
 
 export const Employee = styled.View`
-    width: 66%;
+    width: 64%;
     flex-direction: row;
     position: relative;
     margin-bottom: 4%;
+
+    margin-left: 15px;
 `;
 
 export const EmployeeData = styled.TouchableOpacity<EmployeeProps>`
     background-color: ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
     height: 60px;
-    width: 97%;
-    position: absolute;
+    width: 100%;
     justify-content: center;
     align-items: flex-start;
-    left: 5%;
     border-radius: 18px;
 `;
 
@@ -156,4 +160,7 @@ export const EmployeeIcon = styled.View<EmployeeProps>`
     justify-content: center;
     align-items: center;
     border: 2px solid ${props => (props.isAdmin ? '#1c274e' : '#2c3f82')};
+
+    position: absolute;
+    left: -4%;
 `;
