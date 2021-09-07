@@ -10,12 +10,6 @@ import {
     SaleImage,
     SaleIcon,
 } from './styles';
-import { ActivityIndicator, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useProducts } from '@hooks/products';
-import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '@hooks/auth';
-import { useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 import api from '@services/api';
 import DatePicker from '@components/DatePicker';
@@ -23,6 +17,14 @@ import formatPrice from '@utils/formatPrice';
 import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import getSalesOnDate from '@utils/getSalesOnDate';
+
+import { ActivityIndicator } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useProducts } from '@hooks/products';
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '@hooks/auth';
+import { useCallback } from 'react';
+import { FlatList } from 'react-native-gesture-handler';
 
 interface IEmployee {
     name: string;
@@ -180,72 +182,72 @@ const Sales: React.FC = () => {
                 setVisibility={setDatePickerVisibility}
             />
 
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                scrollEnabled={!datePickerVisibility && !modalProps.visibility}
-            >
-                {!hasLoadedSales ? (
-                    <ActivityIndicator
-                        size={64}
-                        color="#374b92"
-                        style={{ backgroundColor: '#49b454', flex: 1 }}
-                    />
-                ) : (
-                    <Container>
-                        <FilterContainer>
+            {!hasLoadedSales ? (
+                <ActivityIndicator
+                    size={64}
+                    color="#374b92"
+                    style={{ backgroundColor: '#49b454', flex: 1 }}
+                />
+            ) : (
+                <Container>
+                    <FilterContainer>
+                        <Icon name="filter-alt" size={34} color={'#374b92'} />
+
+                        <PickerView>
+                            <Picker
+                                selectedValue={searchType}
+                                style={{
+                                    height: '100%',
+                                    width: '100%',
+                                }}
+                                mode="dropdown"
+                                onValueChange={itemValue =>
+                                    setSearchType(itemValue as SearchType)
+                                }
+                            >
+                                <Picker.Item
+                                    key={'SearchType0'}
+                                    label={'Diário'}
+                                    value={'day'}
+                                />
+                                <Picker.Item
+                                    key={'SearchType1'}
+                                    label={'Semanal'}
+                                    value={'week'}
+                                />
+                                <Picker.Item
+                                    key={'SearchType2'}
+                                    label={'Mensal'}
+                                    value={'month'}
+                                />
+                            </Picker>
+                        </PickerView>
+
+                        <DatePickerButton
+                            activeOpacity={0.4}
+                            onPress={() => setDatePickerVisibility(true)}
+                        >
                             <Icon
-                                name="filter-alt"
-                                size={34}
+                                name="calendar-today"
+                                size={30}
                                 color={'#374b92'}
                             />
+                        </DatePickerButton>
+                    </FilterContainer>
 
-                            <PickerView>
-                                <Picker
-                                    selectedValue={searchType}
-                                    style={{
-                                        height: '100%',
-                                        width: '100%',
-                                    }}
-                                    mode="dropdown"
-                                    onValueChange={itemValue =>
-                                        setSearchType(itemValue as SearchType)
-                                    }
-                                >
-                                    <Picker.Item
-                                        key={'SearchType0'}
-                                        label={'Diário'}
-                                        value={'day'}
-                                    />
-                                    <Picker.Item
-                                        key={'SearchType1'}
-                                        label={'Semanal'}
-                                        value={'week'}
-                                    />
-                                    <Picker.Item
-                                        key={'SearchType2'}
-                                        label={'Mensal'}
-                                        value={'month'}
-                                    />
-                                </Picker>
-                            </PickerView>
-
-                            <DatePickerButton
-                                activeOpacity={0.4}
-                                onPress={() => setDatePickerVisibility(true)}
-                            >
-                                <Icon
-                                    name="calendar-today"
-                                    size={30}
-                                    color={'#374b92'}
-                                />
-                            </DatePickerButton>
-                        </FilterContainer>
-
-                        {sales.map((sale, index) => (
+                    <FlatList
+                        data={sales}
+                        keyExtractor={sale => sale.id}
+                        style={{
+                            width: '100%',
+                            paddingTop: 10,
+                        }}
+                        contentContainerStyle={{
+                            alignItems: 'center',
+                            paddingBottom: '8%',
+                        }}
+                        renderItem={({ item, index }) => (
                             <Sale
-                                key={sale.id}
                                 disabled={!user.isAdmin}
                                 activeOpacity={0.7}
                                 onPress={() =>
@@ -253,18 +255,18 @@ const Sales: React.FC = () => {
                                         visibility: true,
                                         actionFunction: async () =>
                                             navigation.navigate('EditSale', {
-                                                sale,
+                                                item,
                                             }),
                                         secondActionFunction: () =>
-                                            deleteSale(sale),
+                                            deleteSale(item),
                                     })
                                 }
                             >
-                                <SaleIcon hasImage={!!sale.product.image}>
-                                    {sale.product.image ? (
+                                <SaleIcon hasImage={!!item.product.image}>
+                                    {item.product.image ? (
                                         <SaleImage
                                             source={{
-                                                uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                                uri: `${apiStaticUrl}/productImage/${item.product.image}`,
                                             }}
                                         />
                                     ) : (
@@ -276,48 +278,47 @@ const Sales: React.FC = () => {
                                     )}
                                 </SaleIcon>
 
-                                <SaleData style={{ marginLeft: '1%' }}>
-                                    <SaleData
-                                        style={{
-                                            width: '100%',
-                                            flexDirection: 'row',
-                                        }}
-                                    >
+                                <SaleData
+                                    style={{
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    <SaleData>
                                         <SaleText>
-                                            {sale.product.name.length > 16
-                                                ? `${sale.product.name.substring(
+                                            {item.product.name.length > 16
+                                                ? `${item.product.name.substring(
                                                       0,
                                                       13,
                                                   )}...`
-                                                : sale.product.name}
+                                                : item.product.name}
                                         </SaleText>
 
                                         <SaleText>
-                                            Qntd: {sale.quantity}
+                                            Qntd: {item.quantity}
                                         </SaleText>
                                         <SaleText>
                                             {formattedProductPrices[index]}
                                         </SaleText>
                                     </SaleData>
 
-                                    <SaleData
-                                        style={{
-                                            width: '100%',
-                                            flexDirection: 'row',
-                                        }}
-                                    >
+                                    <SaleData>
                                         <SaleText>
-                                            {sale.employee.name}
+                                            {item.employee.name.length > 19
+                                                ? `${item.employee.name.substring(
+                                                      0,
+                                                      19,
+                                                  )}...`
+                                                : item.employee.name}
                                         </SaleText>
 
-                                        <SaleText>{sale.date}</SaleText>
+                                        <SaleText>{item.date}</SaleText>
                                     </SaleData>
                                 </SaleData>
                             </Sale>
-                        ))}
-                    </Container>
-                )}
-            </ScrollView>
+                        )}
+                    />
+                </Container>
+            )}
         </>
     );
 };

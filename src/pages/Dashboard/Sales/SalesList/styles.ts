@@ -9,7 +9,6 @@ export const Container = styled.View`
     flex: 1;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 30px;
 `;
 
 export const FilterContainer = styled.View`
@@ -39,7 +38,7 @@ export const DatePickerButton = styled.TouchableOpacity``;
 
 export const Sale = styled.TouchableOpacity`
     flex-direction: row;
-    width: 75%;
+    width: 58%;
     height: 64px;
     border-radius: 8px;
     background-color: #1c274e;
@@ -49,8 +48,9 @@ export const Sale = styled.TouchableOpacity`
 
 export const SaleData = styled.View`
     margin-top: 1%;
-    width: 72%;
+    flex-direction: row;
     justify-content: space-between;
+    width: 94%;
 `;
 
 export const SaleText = styled.Text`
