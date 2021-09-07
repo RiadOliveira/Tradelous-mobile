@@ -333,44 +333,35 @@ const CompanySummary: React.FC = () => {
                             alignItems: 'center',
                             paddingBottom: '8%',
                         }}
-                        renderItem={employee => (
+                        renderItem={({ item }) => (
                             <Employee>
                                 <EmployeeData
-                                    isAdmin={employee.item.isAdmin}
+                                    isAdmin={item.isAdmin}
                                     activeOpacity={0.8}
-                                    disabled={
-                                        !user.isAdmin || employee.item.isAdmin
-                                    }
+                                    disabled={!user.isAdmin || item.isAdmin}
                                     onPress={() =>
                                         setModalProps({
                                             visibility: true,
                                             actionFunction: () =>
-                                                handleFireEmployee(
-                                                    employee.item.id,
-                                                ),
+                                                handleFireEmployee(item.id),
                                             infoText:
                                                 'Tem certeza que deseja demitir esse funcionário?',
                                         })
                                     }
                                 >
                                     <EmployeeName>
-                                        {employee.item.name.length > 21
-                                            ? `${employee.item.name.substring(
-                                                  0,
-                                                  21,
-                                              )}...`
-                                            : employee.item.name}
+                                        {item.name.length > 21
+                                            ? `${item.name.substring(0, 21)}...`
+                                            : item.name}
                                     </EmployeeName>
-                                    <EmployeeEmail>
-                                        {employee.item.email}
-                                    </EmployeeEmail>
+                                    <EmployeeEmail>{item.email}</EmployeeEmail>
                                 </EmployeeData>
 
-                                <EmployeeIcon isAdmin={employee.item.isAdmin}>
-                                    {employee.item.avatar ? (
+                                <EmployeeIcon isAdmin={item.isAdmin}>
+                                    {item.avatar ? (
                                         <EmployeeImage
                                             source={{
-                                                uri: `${apiStaticUrl}/avatar/${employee.item.avatar}`,
+                                                uri: `${apiStaticUrl}/avatar/${item.avatar}`,
                                             }}
                                         />
                                     ) : (

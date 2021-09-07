@@ -226,17 +226,17 @@ const ProductsList: React.FC = () => {
                                 showsVerticalScrollIndicator={false}
                                 data={searchedProducts}
                                 keyExtractor={product => product.id}
-                                renderItem={product => (
+                                renderItem={({ item, index }) => (
                                     <ProductContainer
                                         onPress={() =>
-                                            handleProductSelection(product.item)
+                                            handleProductSelection(item)
                                         }
                                     >
                                         <ProductImageContainer>
-                                            {product.item.image ? (
+                                            {item.image ? (
                                                 <ProductImage
                                                     source={{
-                                                        uri: `${apiStaticUrl}/${product.item.image}`,
+                                                        uri: `${apiStaticUrl}/${item.image}`,
                                                     }}
                                                 />
                                             ) : (
@@ -252,7 +252,7 @@ const ProductsList: React.FC = () => {
                                             style={{ marginLeft: '1%' }}
                                         >
                                             <ProductText>
-                                                {product.item.name}
+                                                {item.name}
                                             </ProductText>
 
                                             <ProductData
@@ -262,24 +262,19 @@ const ProductsList: React.FC = () => {
                                                 }}
                                             >
                                                 <ProductText>
-                                                    {
-                                                        formattedPrices[
-                                                            product.index
-                                                        ]
-                                                    }
+                                                    {formattedPrices[index]}
                                                 </ProductText>
 
                                                 <ProductText>
-                                                    {product.item.brand}
+                                                    {item.brand}
                                                 </ProductText>
 
                                                 <ProductAvailabilityText
                                                     hasInStock={
-                                                        product.item.quantity >
-                                                        0
+                                                        item.quantity > 0
                                                     }
                                                 >
-                                                    {product.item.quantity > 0
+                                                    {item.quantity > 0
                                                         ? 'Em estoque'
                                                         : 'Em falta'}
                                                 </ProductAvailabilityText>
