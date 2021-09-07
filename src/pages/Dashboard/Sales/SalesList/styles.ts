@@ -20,13 +20,13 @@ export const FilterContainer = styled.View`
     border-radius: 5px;
     flex-direction: row;
     padding: 1.8px;
-    margin: 10% 0;
+    margin: 10% 0 6%;
 
     border: 1.5px solid #1c274e;
 `;
 
 export const PickerView = styled.View`
-    width: 48%;
+    width: 52%;
     height: 42px;
     border: 2px solid #374b92;
     border-radius: 15px;

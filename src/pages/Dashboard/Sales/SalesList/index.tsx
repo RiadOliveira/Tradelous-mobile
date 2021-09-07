@@ -196,10 +196,6 @@ const Sales: React.FC = () => {
                         <PickerView>
                             <Picker
                                 selectedValue={searchType}
-                                style={{
-                                    height: '100%',
-                                    width: '100%',
-                                }}
                                 mode="dropdown"
                                 onValueChange={itemValue =>
                                     setSearchType(itemValue as SearchType)
