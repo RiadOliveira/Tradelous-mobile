@@ -72,7 +72,7 @@ const SignUp: React.FC = () => {
                     abortEarly: false,
                 });
 
-                await api.post('/user/signUp', {
+                await api.post('/user/sign-up', {
                     ...data,
                     isAdmin: switchValue,
                 });
