@@ -178,7 +178,6 @@ const AuthContext: React.FC = ({ children }) => {
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const useAuth = () => useContext(authContext);
+const useAuth = (): IAuthContextData => useContext(authContext);
 
 export { AuthContext, useAuth };

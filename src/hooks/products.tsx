@@ -38,7 +38,6 @@ const ProductsContext: React.FC = ({ children }) => {
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const useProducts = () => useContext(productsContext);
+const useProducts = (): IProductsContext => useContext(productsContext);
 
 export { ProductsContext, useProducts };

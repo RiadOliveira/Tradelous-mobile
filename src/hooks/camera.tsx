@@ -45,7 +45,6 @@ const CameraContext: React.FC = ({ children }) => {
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const useCamera = () => useContext(cameraContext);
+const useCamera = (): ICameraContext => useContext(cameraContext);
 
 export { CameraContext, useCamera };
