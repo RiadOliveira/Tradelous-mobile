@@ -1,10 +1,4 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Container,
     LogoView,
@@ -72,20 +66,19 @@ const RegisterCompany: React.FC = () => {
             },
         ).then(response => {
             setAllStates(() =>
-                response.data.map(state => {
-                    return { nome: state.nome, sigla: state.sigla };
+                response.data.sort((a, b) => {
+                    if (a.sigla > b.sigla) {
+                        return 1;
+                    }
+                    if (b.sigla > a.sigla) {
+                        return -1;
+                    }
+
+                    return 0;
                 }),
             );
         });
     }, []);
-
-    const formattedStatesList = useMemo(
-        () =>
-            allStates.sort((a, b) =>
-                a.sigla > b.sigla ? 1 : b.sigla > a.sigla ? -1 : 0,
-            ),
-        [allStates],
-    );
 
     const handleUploadImage = useCallback(() => {
         launchImageLibrary(
@@ -247,7 +240,7 @@ const RegisterCompany: React.FC = () => {
                                 setSelectedState(String(itemValue))
                             }
                         >
-                            {formattedStatesList.map(state => (
+                            {allStates.map(state => (
                                 <Picker.Item
                                     key={state.nome}
                                     label={state.sigla}
