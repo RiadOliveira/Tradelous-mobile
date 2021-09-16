@@ -39,9 +39,9 @@ interface IBrazilianState {
 }
 
 interface ICompanyData {
-    companyName: string;
+    name: string;
     cnpj: string;
-    companyCity: string;
+    city: string;
 }
 
 interface IImageData {
@@ -108,10 +108,8 @@ const RegisterCompany: React.FC = () => {
         async (data: ICompanyData) => {
             try {
                 const schema = yup.object().shape({
-                    companyName: yup
-                        .string()
-                        .required('Nome da empresa obrigatório'),
-                    companyCity: yup
+                    name: yup.string().required('Nome da empresa obrigatório'),
+                    city: yup
                         .string()
                         .required('Cidade da empresa obrigatório'),
                     cnpj: yup
@@ -130,18 +128,15 @@ const RegisterCompany: React.FC = () => {
 
                 const companyData = new FormData();
 
-                companyData.append('name', data.companyName);
-                companyData.append(
-                    'address',
-                    `${data.companyCity}/${selectedState}`,
-                );
+                companyData.append('name', data.name);
+                companyData.append('address', `${data.city}/${selectedState}`);
                 companyData.append('cnpj', Number(data.cnpj));
                 companyData.append('adminID', user.id);
 
                 if (selectedImage.uri) {
                     companyData.append('logo', {
                         uri: selectedImage.uri,
-                        name: `${data.companyName}-${user.id}`,
+                        name: `${data.name}-${user.id}`,
                         type: selectedImage.type,
                     });
                 }
@@ -211,7 +206,7 @@ const RegisterCompany: React.FC = () => {
                         autoCorrect={false}
                         textContentType="organizationName"
                         autoCapitalize="words"
-                        name="companyName"
+                        name="name"
                         placeholder="Nome da empresa"
                         icon="business"
                         onSubmitEditing={() => cnpjInput.current?.focus()}
@@ -234,7 +229,7 @@ const RegisterCompany: React.FC = () => {
                         textContentType="addressCity"
                         autoCapitalize="words"
                         ref={cityInput}
-                        name="companyCity"
+                        name="city"
                         placeholder="Cidade"
                         icon="location-city"
                         returnKeyType="next"
