@@ -83,9 +83,14 @@ const RegisterCompany: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        api.get(
-            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
-        ).then(({ data }) => setStateCities(data));
+        if (selectedState.id) {
+            api.get(
+                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
+            ).then(({ data }) => {
+                setStateCities(data);
+                setSelectedCity(data[0]);
+            });
+        }
     }, [selectedState.id]);
 
     const handleUploadImage = useCallback(() => {
@@ -129,7 +134,7 @@ const RegisterCompany: React.FC = () => {
                 companyData.append('name', data.name);
                 companyData.append(
                     'address',
-                    `${selectedCity}/${selectedState}`,
+                    `${selectedCity.nome}/${selectedState.sigla}`,
                 );
                 companyData.append('cnpj', Number(data.cnpj));
                 companyData.append('adminID', user.id);
@@ -226,12 +231,12 @@ const RegisterCompany: React.FC = () => {
                     />
 
                     <PickerView>
-                        <PickerText>Selecione o Estado:</PickerText>
+                        <PickerText>Estado:</PickerText>
                         <Picker
                             selectedValue={selectedState}
                             style={{
                                 height: 50,
-                                width: '36%',
+                                width: '60%',
                             }}
                             onValueChange={itemValue =>
                                 setSelectedState(itemValue)
@@ -240,20 +245,20 @@ const RegisterCompany: React.FC = () => {
                             {allStates.map(state => (
                                 <Picker.Item
                                     key={state.id}
-                                    label={state.sigla}
-                                    value={state.sigla}
+                                    label={state.nome}
+                                    value={state}
                                 />
                             ))}
                         </Picker>
                     </PickerView>
 
                     <PickerView>
-                        <PickerText>Selecione a Cidade:</PickerText>
+                        <PickerText>Cidade:</PickerText>
                         <Picker
                             selectedValue={selectedCity}
                             style={{
                                 height: 50,
-                                width: '36%',
+                                width: '60%',
                             }}
                             onValueChange={itemValue =>
                                 setSelectedCity(itemValue)
@@ -263,7 +268,7 @@ const RegisterCompany: React.FC = () => {
                                 <Picker.Item
                                     key={city.id}
                                     label={city.nome}
-                                    value={city.nome}
+                                    value={city}
                                 />
                             ))}
                         </Picker>

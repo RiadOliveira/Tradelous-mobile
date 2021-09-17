@@ -10,8 +10,8 @@ export const Container = styled.View`
 `;
 
 export const LogoView = styled.View`
-    margin-top: 60px;
-    margin-bottom: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 `;
 
 export const LogoImage = styled.Image`
