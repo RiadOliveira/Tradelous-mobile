@@ -15,7 +15,7 @@ import {
     PickerText,
     ButtonsContainer,
 } from './styles';
-import { ScrollView, TextInput } from 'react-native';
+import { ActivityIndicator, ScrollView, TextInput } from 'react-native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -317,133 +317,150 @@ const EditCompany: React.FC = () => {
                 }
             />
 
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-            >
-                <Container>
-                    <ImageContainer>
-                        <ImagePicker
-                            onPress={() => handleImageData('upload')}
-                            activeOpacity={0.7}
-                            selectedImage={selectedImage || ''}
+            {!hasLoadedCities ? (
+                <ActivityIndicator
+                    size={64}
+                    color="#374b92"
+                    style={{ backgroundColor: '#49b454', flex: 1 }}
+                />
+            ) : (
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <Container>
+                        <ImageContainer>
+                            <ImagePicker
+                                onPress={() => handleImageData('upload')}
+                                activeOpacity={0.7}
+                                selectedImage={selectedImage || ''}
+                            >
+                                {selectedImage ? (
+                                    <CompanyLogo
+                                        source={{
+                                            uri: `${api.defaults.baseURL}/files/logo/${selectedImage}`,
+                                        }}
+                                    />
+                                ) : (
+                                    <Icon
+                                        name="business"
+                                        size={140}
+                                        color="#1c274e"
+                                    />
+                                )}
+                            </ImagePicker>
+
+                            <DeleteImageButton
+                                onPress={() =>
+                                    setModalVisibility({ visibility: true })
+                                }
+                            >
+                                <Icon name="clear" size={48} color="#e7e7e7" />
+                            </DeleteImageButton>
+                        </ImageContainer>
+
+                        <Form
+                            ref={formRef}
+                            onSubmit={handleSubmit}
+                            initialData={{
+                                ...company,
+                                address: company.address.split('/')[0],
+                            }}
                         >
-                            {selectedImage ? (
-                                <CompanyLogo
-                                    source={{
-                                        uri: `${api.defaults.baseURL}/files/logo/${selectedImage}`,
+                            <Input
+                                autoCorrect={false}
+                                textContentType="organizationName"
+                                autoCapitalize="words"
+                                name="name"
+                                placeholder="Nome da empresa"
+                                icon="business"
+                                onSubmitEditing={() =>
+                                    cnpjInput.current?.focus()
+                                }
+                                returnKeyType="next"
+                            />
+
+                            <Input
+                                keyboardType="numeric"
+                                ref={cnpjInput}
+                                maxLength={14}
+                                name="cnpj"
+                                placeholder="CNPJ (Somente números)"
+                                icon="location-city"
+                                onSubmitEditing={() =>
+                                    cityInput.current?.focus()
+                                }
+                                returnKeyType="next"
+                            />
+
+                            <PickerView>
+                                <PickerText>Estado:</PickerText>
+                                <Picker
+                                    selectedValue={selectedState}
+                                    style={{
+                                        height: 50,
+                                        width: '60%',
                                     }}
-                                />
-                            ) : (
-                                <Icon
-                                    name="business"
-                                    size={140}
-                                    color="#1c274e"
-                                />
-                            )}
-                        </ImagePicker>
+                                    onValueChange={itemValue => {
+                                        setSelectedState(itemValue);
+                                        setHasLoadedCities(false);
+                                    }}
+                                >
+                                    {allStates.map(state => (
+                                        <Picker.Item
+                                            key={state.id}
+                                            label={state.nome}
+                                            value={state}
+                                        />
+                                    ))}
+                                </Picker>
+                            </PickerView>
 
-                        <DeleteImageButton
-                            onPress={() =>
-                                setModalVisibility({ visibility: true })
-                            }
-                        >
-                            <Icon name="clear" size={48} color="#e7e7e7" />
-                        </DeleteImageButton>
-                    </ImageContainer>
+                            <PickerView>
+                                <PickerText>Cidade:</PickerText>
+                                <Picker
+                                    selectedValue={selectedCity}
+                                    style={{
+                                        height: 50,
+                                        width: '60%',
+                                    }}
+                                    onValueChange={itemValue =>
+                                        setSelectedCity(itemValue)
+                                    }
+                                >
+                                    {stateCities.map(city => (
+                                        <Picker.Item
+                                            key={city.id}
+                                            label={city.nome}
+                                            value={city}
+                                        />
+                                    ))}
+                                </Picker>
+                            </PickerView>
+                        </Form>
 
-                    <Form
-                        ref={formRef}
-                        onSubmit={handleSubmit}
-                        initialData={{
-                            ...company,
-                            address: company.address.split('/')[0],
-                        }}
-                    >
-                        <Input
-                            autoCorrect={false}
-                            textContentType="organizationName"
-                            autoCapitalize="words"
-                            name="name"
-                            placeholder="Nome da empresa"
-                            icon="business"
-                            onSubmitEditing={() => cnpjInput.current?.focus()}
-                            returnKeyType="next"
-                        />
+                        <ButtonsContainer>
+                            <Button
+                                onPress={() => formRef.current?.submitForm()}
+                            >
+                                Atualizar Empresa
+                            </Button>
 
-                        <Input
-                            keyboardType="numeric"
-                            ref={cnpjInput}
-                            maxLength={14}
-                            name="cnpj"
-                            placeholder="CNPJ (Somente números)"
-                            icon="location-city"
-                            onSubmitEditing={() => cityInput.current?.focus()}
-                            returnKeyType="next"
-                        />
-
-                        <PickerView>
-                            <PickerText>Estado:</PickerText>
-                            <Picker
-                                selectedValue={selectedState}
-                                style={{
-                                    height: 50,
-                                    width: '60%',
-                                }}
-                                onValueChange={itemValue =>
-                                    setSelectedState(itemValue)
+                            <Button
+                                style={{ backgroundColor: '#c93c3c' }}
+                                onPress={() =>
+                                    setTextPickerVisibility({
+                                        visibility: true,
+                                    })
                                 }
                             >
-                                {allStates.map(state => (
-                                    <Picker.Item
-                                        key={state.id}
-                                        label={state.nome}
-                                        value={state}
-                                    />
-                                ))}
-                            </Picker>
-                        </PickerView>
-
-                        <PickerView>
-                            <PickerText>Cidade:</PickerText>
-                            <Picker
-                                selectedValue={selectedCity}
-                                style={{
-                                    height: 50,
-                                    width: '60%',
-                                }}
-                                onValueChange={itemValue =>
-                                    setSelectedCity(itemValue)
-                                }
-                            >
-                                {stateCities.map(city => (
-                                    <Picker.Item
-                                        key={city.id}
-                                        label={city.nome}
-                                        value={city}
-                                    />
-                                ))}
-                            </Picker>
-                        </PickerView>
-                    </Form>
-
-                    <ButtonsContainer>
-                        <Button onPress={() => formRef.current?.submitForm()}>
-                            Atualizar Empresa
-                        </Button>
-
-                        <Button
-                            style={{ backgroundColor: '#c93c3c' }}
-                            onPress={() =>
-                                setTextPickerVisibility({ visibility: true })
-                            }
-                        >
-                            Deletar Empresa
-                        </Button>
-                    </ButtonsContainer>
-                </Container>
-            </ScrollView>
+                                Deletar Empresa
+                            </Button>
+                        </ButtonsContainer>
+                    </Container>
+                </ScrollView>
+            )}
         </>
     );
 };
