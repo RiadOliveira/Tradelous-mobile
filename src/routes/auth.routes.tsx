@@ -9,10 +9,7 @@ import RecoverPassword from '../pages/Authentication/RecoverPassword';
 const Stack = createStackNavigator();
 
 const AuthRoutes: React.FC = () => (
-    <Stack.Navigator
-        initialRouteName="RegisterCompany"
-        screenOptions={{ headerShown: false }}
-    >
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="RegisterCompany" component={RegisterCompany} />

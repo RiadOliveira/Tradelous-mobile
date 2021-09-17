@@ -34,8 +34,14 @@ import TextPicker from '@components/TextPicker';
 import { useAuth } from '@hooks/auth';
 
 interface IBrazilianState {
+    id: string;
     nome: string;
     sigla: string;
+}
+
+interface IBrazilianCity {
+    id: string;
+    nome: string;
 }
 
 interface ICompany {
@@ -64,7 +70,6 @@ const EditCompany: React.FC = () => {
     }>({
         visibility: false,
     });
-
     const [textPickerVisibility, setTextPickerVisibility] = useState<{
         visibility: boolean;
     }>({
@@ -74,34 +79,50 @@ const EditCompany: React.FC = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(() =>
         company.logo ? company.logo : null,
     );
-    const [selectedState, setSelectedState] = useState(
-        company.address.split('/')[1],
-    );
 
+    const [selectedState, setSelectedState] = useState<IBrazilianState>(
+        {} as IBrazilianState,
+    );
     const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
+
+    const [hasLoadedCities, setHasLoadedCities] = useState(false);
+
+    const [selectedCity, setSelectedCity] = useState<IBrazilianCity>(
+        {} as IBrazilianCity,
+    );
+    const [stateCities, setStateCities] = useState<IBrazilianCity[]>([]);
 
     useEffect(() => {
         api.get<IBrazilianState[]>(
-            'https://servicodados.ibge.gov.br/api/v1/localidades/estados',
+            'https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome',
             {
                 baseURL: '',
             },
-        ).then(response => {
-            setAllStates(() =>
-                response.data.map(state => {
-                    return { nome: state.nome, sigla: state.sigla };
-                }),
+        ).then(({ data }) => {
+            setAllStates(data);
+            setSelectedState(
+                data.find(
+                    value => value.sigla === company.address.split('/')[1],
+                ) || ({} as IBrazilianState),
             );
         });
-    }, []);
+    }, [company.address]);
 
-    const formattedStatesList = useMemo(
-        () =>
-            allStates.sort((a, b) =>
-                a.sigla > b.sigla ? 1 : b.sigla > a.sigla ? -1 : 0,
-            ),
-        [allStates],
-    );
+    useEffect(() => {
+        if (selectedState.id) {
+            api.get<IBrazilianCity[]>(
+                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
+            ).then(({ data }) => {
+                setStateCities(data);
+                setSelectedCity(
+                    data.find(
+                        value => value.nome === company.address.split('/')[0],
+                    ) || ({} as IBrazilianCity),
+                );
+                setHasLoadedCities(true);
+            });
+        }
+    }, [selectedState.id, company.address]);
 
     const handleSubmit = useCallback(
         async (companyData: ICompany) => {
@@ -362,34 +383,45 @@ const EditCompany: React.FC = () => {
                             returnKeyType="next"
                         />
 
-                        <Input
-                            autoCorrect={false}
-                            textContentType="addressCity"
-                            autoCapitalize="words"
-                            ref={cityInput}
-                            name="address"
-                            placeholder="Cidade"
-                            icon="location-city"
-                            returnKeyType="next"
-                        />
-
                         <PickerView>
-                            <PickerText>Selecione o Estado:</PickerText>
+                            <PickerText>Estado:</PickerText>
                             <Picker
                                 selectedValue={selectedState}
                                 style={{
                                     height: 50,
-                                    width: '35%',
+                                    width: '60%',
                                 }}
                                 onValueChange={itemValue =>
-                                    setSelectedState(String(itemValue))
+                                    setSelectedState(itemValue)
                                 }
                             >
-                                {formattedStatesList.map(state => (
+                                {allStates.map(state => (
                                     <Picker.Item
-                                        key={state.nome}
-                                        label={state.sigla}
-                                        value={state.sigla}
+                                        key={state.id}
+                                        label={state.nome}
+                                        value={state}
+                                    />
+                                ))}
+                            </Picker>
+                        </PickerView>
+
+                        <PickerView>
+                            <PickerText>Cidade:</PickerText>
+                            <Picker
+                                selectedValue={selectedCity}
+                                style={{
+                                    height: 50,
+                                    width: '60%',
+                                }}
+                                onValueChange={itemValue =>
+                                    setSelectedCity(itemValue)
+                                }
+                            >
+                                {stateCities.map(city => (
+                                    <Picker.Item
+                                        key={city.id}
+                                        label={city.nome}
+                                        value={city}
                                     />
                                 ))}
                             </Picker>

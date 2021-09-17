@@ -56,8 +56,6 @@ const RegisterCompany: React.FC = () => {
 
     const { user, setUserCompany } = useAuth();
 
-    const [hasLoadedCities, setHasLoadedCities] = useState(false);
-
     const [selectedImage, setSelectedImage] = useState<IImageData>(
         {} as IImageData,
     );
@@ -66,6 +64,8 @@ const RegisterCompany: React.FC = () => {
         {} as IBrazilianState,
     );
     const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
+
+    const [hasLoadedCities, setHasLoadedCities] = useState(false);
 
     const [selectedCity, setSelectedCity] = useState<IBrazilianCity>(
         {} as IBrazilianCity,
@@ -86,7 +86,7 @@ const RegisterCompany: React.FC = () => {
 
     useEffect(() => {
         if (selectedState.id) {
-            api.get(
+            api.get<IBrazilianCity[]>(
                 `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
             ).then(({ data }) => {
                 setStateCities(data);
