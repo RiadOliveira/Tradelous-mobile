@@ -28,14 +28,19 @@ import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
 
 interface IBrazilianState {
+    id: string;
     nome: string;
     sigla: string;
+}
+
+interface IBrazilianCity {
+    id: string;
+    nome: string;
 }
 
 interface ICompanyData {
     name: string;
     cnpj: string;
-    city: string;
 }
 
 interface IImageData {
@@ -55,30 +60,33 @@ const RegisterCompany: React.FC = () => {
         {} as IImageData,
     );
 
-    const [selectedState, setSelectedState] = useState('');
+    const [selectedState, setSelectedState] = useState<IBrazilianState>(
+        {} as IBrazilianState,
+    );
     const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
+
+    const [selectedCity, setSelectedCity] = useState<IBrazilianCity>(
+        {} as IBrazilianCity,
+    );
+    const [stateCities, setStateCities] = useState<IBrazilianCity[]>([]);
 
     useEffect(() => {
         api.get<IBrazilianState[]>(
-            'https://servicodados.ibge.gov.br/api/v1/localidades/estados',
+            'https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome',
             {
                 baseURL: '',
             },
-        ).then(response => {
-            setAllStates(() =>
-                response.data.sort((a, b) => {
-                    if (a.sigla > b.sigla) {
-                        return 1;
-                    }
-                    if (b.sigla > a.sigla) {
-                        return -1;
-                    }
-
-                    return 0;
-                }),
-            );
+        ).then(({ data }) => {
+            setAllStates(data);
+            setSelectedState(data[0]);
         });
     }, []);
+
+    useEffect(() => {
+        api.get(
+            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
+        ).then(({ data }) => setStateCities(data));
+    }, [selectedState.id]);
 
     const handleUploadImage = useCallback(() => {
         launchImageLibrary(
@@ -102,9 +110,6 @@ const RegisterCompany: React.FC = () => {
             try {
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome da empresa obrigatório'),
-                    city: yup
-                        .string()
-                        .required('Cidade da empresa obrigatório'),
                     cnpj: yup
                         .string()
                         .required('CNPJ obrigatório')
@@ -122,7 +127,10 @@ const RegisterCompany: React.FC = () => {
                 const companyData = new FormData();
 
                 companyData.append('name', data.name);
-                companyData.append('address', `${data.city}/${selectedState}`);
+                companyData.append(
+                    'address',
+                    `${selectedCity}/${selectedState}`,
+                );
                 companyData.append('cnpj', Number(data.cnpj));
                 companyData.append('adminID', user.id);
 
@@ -174,7 +182,7 @@ const RegisterCompany: React.FC = () => {
                 });
             }
         },
-        [selectedState, user, selectedImage, setUserCompany],
+        [selectedState, selectedCity, user, selectedImage, setUserCompany],
     );
 
     return (
@@ -217,17 +225,6 @@ const RegisterCompany: React.FC = () => {
                         returnKeyType="next"
                     />
 
-                    <Input
-                        autoCorrect={false}
-                        textContentType="addressCity"
-                        autoCapitalize="words"
-                        ref={cityInput}
-                        name="city"
-                        placeholder="Cidade"
-                        icon="location-city"
-                        returnKeyType="next"
-                    />
-
                     <PickerView>
                         <PickerText>Selecione o Estado:</PickerText>
                         <Picker
@@ -237,14 +234,36 @@ const RegisterCompany: React.FC = () => {
                                 width: '36%',
                             }}
                             onValueChange={itemValue =>
-                                setSelectedState(String(itemValue))
+                                setSelectedState(itemValue)
                             }
                         >
                             {allStates.map(state => (
                                 <Picker.Item
-                                    key={state.nome}
+                                    key={state.id}
                                     label={state.sigla}
                                     value={state.sigla}
+                                />
+                            ))}
+                        </Picker>
+                    </PickerView>
+
+                    <PickerView>
+                        <PickerText>Selecione a Cidade:</PickerText>
+                        <Picker
+                            selectedValue={selectedCity}
+                            style={{
+                                height: 50,
+                                width: '36%',
+                            }}
+                            onValueChange={itemValue =>
+                                setSelectedCity(itemValue)
+                            }
+                        >
+                            {stateCities.map(city => (
+                                <Picker.Item
+                                    key={city.id}
+                                    label={city.nome}
+                                    value={city.nome}
                                 />
                             ))}
                         </Picker>
