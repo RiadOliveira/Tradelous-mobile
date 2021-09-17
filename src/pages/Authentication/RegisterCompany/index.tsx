@@ -21,7 +21,7 @@ import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text } from 'react-native';
+import { TextInput, Text, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -56,6 +56,8 @@ const RegisterCompany: React.FC = () => {
 
     const { user, setUserCompany } = useAuth();
 
+    const [hasLoadedCities, setHasLoadedCities] = useState(false);
+
     const [selectedImage, setSelectedImage] = useState<IImageData>(
         {} as IImageData,
     );
@@ -89,6 +91,7 @@ const RegisterCompany: React.FC = () => {
             ).then(({ data }) => {
                 setStateCities(data);
                 setSelectedCity(data[0]);
+                setHasLoadedCities(true);
             });
         }
     }, [selectedState.id]);
@@ -190,7 +193,13 @@ const RegisterCompany: React.FC = () => {
         [selectedState, selectedCity, user, selectedImage, setUserCompany],
     );
 
-    return (
+    return !hasLoadedCities ? (
+        <ActivityIndicator
+            size={64}
+            color="#374b92"
+            style={{ backgroundColor: '#49b454', flex: 1 }}
+        />
+    ) : (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
@@ -238,9 +247,10 @@ const RegisterCompany: React.FC = () => {
                                 height: 50,
                                 width: '60%',
                             }}
-                            onValueChange={itemValue =>
-                                setSelectedState(itemValue)
-                            }
+                            onValueChange={itemValue => {
+                                setSelectedState(itemValue);
+                                setHasLoadedCities(false);
+                            }}
                         >
                             {allStates.map(state => (
                                 <Picker.Item
