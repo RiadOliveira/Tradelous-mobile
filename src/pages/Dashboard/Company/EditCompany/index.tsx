@@ -1,10 +1,4 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Container,
     CompanyLogo,
@@ -103,7 +97,7 @@ const EditCompany: React.FC = () => {
             setSelectedState(
                 data.find(
                     value => value.sigla === company.address.split('/')[1],
-                ) || ({} as IBrazilianState),
+                ) || data[0],
             );
         });
     }, [company.address]);
@@ -117,7 +111,7 @@ const EditCompany: React.FC = () => {
                 setSelectedCity(
                     data.find(
                         value => value.nome === company.address.split('/')[0],
-                    ) || ({} as IBrazilianCity),
+                    ) || data[0],
                 );
                 setHasLoadedCities(true);
             });
@@ -133,9 +127,6 @@ const EditCompany: React.FC = () => {
                         .string()
                         .required('CNPJ obrigatório')
                         .min(14, 'O tamanho mínimo do cnpj é de 14 dígitos'),
-                    address: yup
-                        .string()
-                        .required('Cidade da empresa obrigatório'),
                 });
 
                 await schema.validate(companyData, {
@@ -149,9 +140,10 @@ const EditCompany: React.FC = () => {
                     throw new yup.ValidationError('Formato de cnpj inválido');
                 }
 
-                companyData.address += `/${selectedState}`;
-
-                await api.put('/company/', companyData);
+                await api.put('/company/', {
+                    ...companyData,
+                    address: `${selectedCity.nome}/${selectedState.sigla}`,
+                });
 
                 Toast.show({
                     type: 'success',
@@ -161,7 +153,7 @@ const EditCompany: React.FC = () => {
                 ErrorCatcher(err as Error | yup.ValidationError, formRef);
             }
         },
-        [selectedState],
+        [selectedState.sigla, selectedCity.nome],
     );
 
     const handleImageData = useCallback(
