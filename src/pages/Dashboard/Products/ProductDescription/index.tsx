@@ -258,13 +258,7 @@ const ProductDescription: React.FC = () => {
         }
     }, [product.id, navigation, updateProductsStatus]);
 
-    return isCameraVisible ? (
-        <Camera
-            onBarCodeRead={event => {
-                handleBarCodeRead(event.data);
-            }}
-        />
-    ) : (
+    return (
         <>
             <Modal
                 actionFunction={modalProps.actionFunction}
@@ -279,6 +273,14 @@ const ProductDescription: React.FC = () => {
                 }
                 iconName="delete"
             />
+
+            {isCameraVisible && (
+                <Camera
+                    onBarCodeRead={event => {
+                        handleBarCodeRead(event.data);
+                    }}
+                />
+            )}
 
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}

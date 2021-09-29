@@ -9,6 +9,7 @@ export const ReturnButton = styled.TouchableOpacity`
     height: 48px;
 
     transform: rotate(90deg);
+    z-index: 2;
 `;
 
 export const FlashButton = styled.TouchableOpacity`
@@ -20,4 +21,5 @@ export const FlashButton = styled.TouchableOpacity`
     height: 48px;
 
     transform: rotate(90deg);
+    z-index: 2;
 `;

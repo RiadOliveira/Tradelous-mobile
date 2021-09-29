@@ -158,14 +158,16 @@ const ProductsList: React.FC = () => {
         [navigation],
     );
 
-    return isCameraVisible ? (
-        <Camera
-            onBarCodeRead={event => {
-                handleBarCodeRead(event.data);
-            }}
-        />
-    ) : (
+    return (
         <Container>
+            {isCameraVisible && (
+                <Camera
+                    onBarCodeRead={event => {
+                        handleBarCodeRead(event.data);
+                    }}
+                />
+            )}
+
             {!hasLoadedProducts && <LoadingIndicator />}
 
             {companyProducts.length != 0 ? (

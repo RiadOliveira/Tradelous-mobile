@@ -220,144 +220,159 @@ const CompanySummary: React.FC = () => {
                 iconName="tag"
             />
 
-            <Container>
-                {!hasLoadedCompany && <LoadingIndicator />}
+            {!hasLoadedCompany ? (
+                <LoadingIndicator />
+            ) : (
+                <Container>
+                    <CompanyContainer>
+                        <CompanyData>
+                            <CompanyName>{company.name}</CompanyName>
+                            <CompanyAdress>
+                                {company.address}
+                                {'\n'}
+                                {formattedCNPJ}
+                            </CompanyAdress>
 
-                <CompanyContainer>
-                    <CompanyData>
-                        <CompanyName>{company.name}</CompanyName>
-                        <CompanyAdress>
-                            {company.address}
-                            {'\n'}
-                            {formattedCNPJ}
-                        </CompanyAdress>
-
-                        {user.isAdmin && (
-                            <EditButton
-                                onPress={() =>
-                                    navigation.navigate('EditCompany', company)
-                                }
-                            >
-                                <Icon name="edit" color="#ffffff" size={22} />
-                            </EditButton>
-                        )}
-                    </CompanyData>
-
-                    <LogoContainer>
-                        {company.logo ? (
-                            <CompanyImage
-                                source={{
-                                    uri: `${apiStaticUrl}/logo/${company.logo}`,
-                                }}
-                            />
-                        ) : (
-                            <Icon name="business" size={60} color="#ffffff" />
-                        )}
-                    </LogoContainer>
-                </CompanyContainer>
-
-                <ActionButtonContainer>
-                    <ActionButton
-                        isAdmin={user.isAdmin}
-                        activeOpacity={0.8}
-                        onPress={() =>
-                            user.isAdmin
-                                ? setTextPickerProps({
-                                      visibility: true,
-                                      actionFunction: employeeId =>
-                                          handleHireEmployee(employeeId),
-                                      infoText:
-                                          'Insira o ID do funcionário que deseja contratar',
-                                      inputProps: {
-                                          placeholder: 'ID do funcionário',
-                                          hasPasteButton: true,
-                                          isSecureText: false,
-                                      },
-                                  })
-                                : setTextPickerProps({
-                                      visibility: true,
-                                      actionFunction: verifyPassword =>
-                                          handleLeaveCompany(verifyPassword),
-                                      infoText:
-                                          'Insira sua senha para confirmar a saída',
-                                      inputProps: {
-                                          placeholder: 'Senha',
-                                          hasPasteButton: false,
-                                          isSecureText: true,
-                                      },
-                                  })
-                        }
-                    >
-                        <ActionButtonText>
-                            {user.isAdmin
-                                ? 'Contratar funcionário'
-                                : 'Abandonar empresa'}
-                        </ActionButtonText>
-                    </ActionButton>
-
-                    <ActionButtonIcon isAdmin={user.isAdmin}>
-                        <Icon
-                            name={user.isAdmin ? 'person-add' : 'clear'}
-                            size={30}
-                            color="#ffffff"
-                        />
-                    </ActionButtonIcon>
-                </ActionButtonContainer>
-
-                <FlatList
-                    data={orderedEmployees}
-                    keyExtractor={employee => employee.id}
-                    style={{
-                        width: '100%',
-                        paddingTop: 10,
-                    }}
-                    contentContainerStyle={{
-                        alignItems: 'center',
-                        paddingBottom: '8%',
-                    }}
-                    renderItem={({ item }) => (
-                        <Employee>
-                            <EmployeeData
-                                isAdmin={item.isAdmin}
-                                activeOpacity={0.8}
-                                disabled={!user.isAdmin || item.isAdmin}
-                                onPress={() =>
-                                    setModalProps({
-                                        visibility: true,
-                                        actionFunction: () =>
-                                            handleFireEmployee(item.id),
-                                        infoText:
-                                            'Tem certeza que deseja demitir esse funcionário?',
-                                    })
-                                }
-                            >
-                                <EmployeeName>
-                                    {item.name.length > 21
-                                        ? `${item.name.substring(0, 21)}...`
-                                        : item.name}
-                                </EmployeeName>
-                                <EmployeeEmail>{item.email}</EmployeeEmail>
-                            </EmployeeData>
-
-                            <EmployeeIcon isAdmin={item.isAdmin}>
-                                {item.avatar ? (
-                                    <EmployeeImage
-                                        source={{
-                                            uri: `${apiStaticUrl}/avatar/${item.avatar}`,
-                                        }}
-                                    />
-                                ) : (
+                            {user.isAdmin && (
+                                <EditButton
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            'EditCompany',
+                                            company,
+                                        )
+                                    }
+                                >
                                     <Icon
-                                        name="person"
-                                        size={30}
+                                        name="edit"
                                         color="#ffffff"
+                                        size={22}
                                     />
-                                )}
-                            </EmployeeIcon>
-                        </Employee>
-                    )}
-                />
-            </Container>
+                                </EditButton>
+                            )}
+                        </CompanyData>
+
+                        <LogoContainer>
+                            {company.logo ? (
+                                <CompanyImage
+                                    source={{
+                                        uri: `${apiStaticUrl}/logo/${company.logo}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon
+                                    name="business"
+                                    size={60}
+                                    color="#ffffff"
+                                />
+                            )}
+                        </LogoContainer>
+                    </CompanyContainer>
+
+                    <ActionButtonContainer>
+                        <ActionButton
+                            isAdmin={user.isAdmin}
+                            activeOpacity={0.8}
+                            onPress={() =>
+                                user.isAdmin
+                                    ? setTextPickerProps({
+                                          visibility: true,
+                                          actionFunction: employeeId =>
+                                              handleHireEmployee(employeeId),
+                                          infoText:
+                                              'Insira o ID do funcionário que deseja contratar',
+                                          inputProps: {
+                                              placeholder: 'ID do funcionário',
+                                              hasPasteButton: true,
+                                              isSecureText: false,
+                                          },
+                                      })
+                                    : setTextPickerProps({
+                                          visibility: true,
+                                          actionFunction: verifyPassword =>
+                                              handleLeaveCompany(
+                                                  verifyPassword,
+                                              ),
+                                          infoText:
+                                              'Insira sua senha para confirmar a saída',
+                                          inputProps: {
+                                              placeholder: 'Senha',
+                                              hasPasteButton: false,
+                                              isSecureText: true,
+                                          },
+                                      })
+                            }
+                        >
+                            <ActionButtonText>
+                                {user.isAdmin
+                                    ? 'Contratar funcionário'
+                                    : 'Abandonar empresa'}
+                            </ActionButtonText>
+                        </ActionButton>
+
+                        <ActionButtonIcon isAdmin={user.isAdmin}>
+                            <Icon
+                                name={user.isAdmin ? 'person-add' : 'clear'}
+                                size={30}
+                                color="#ffffff"
+                            />
+                        </ActionButtonIcon>
+                    </ActionButtonContainer>
+
+                    <FlatList
+                        data={orderedEmployees}
+                        keyExtractor={employee => employee.id}
+                        style={{
+                            width: '100%',
+                            paddingTop: 10,
+                        }}
+                        contentContainerStyle={{
+                            alignItems: 'center',
+                            paddingBottom: '8%',
+                        }}
+                        renderItem={({ item }) => (
+                            <Employee>
+                                <EmployeeData
+                                    isAdmin={item.isAdmin}
+                                    activeOpacity={0.8}
+                                    disabled={!user.isAdmin || item.isAdmin}
+                                    onPress={() =>
+                                        setModalProps({
+                                            visibility: true,
+                                            actionFunction: () =>
+                                                handleFireEmployee(item.id),
+                                            infoText:
+                                                'Tem certeza que deseja demitir esse funcionário?',
+                                        })
+                                    }
+                                >
+                                    <EmployeeName>
+                                        {item.name.length > 21
+                                            ? `${item.name.substring(0, 21)}...`
+                                            : item.name}
+                                    </EmployeeName>
+                                    <EmployeeEmail>{item.email}</EmployeeEmail>
+                                </EmployeeData>
+
+                                <EmployeeIcon isAdmin={item.isAdmin}>
+                                    {item.avatar ? (
+                                        <EmployeeImage
+                                            source={{
+                                                uri: `${apiStaticUrl}/avatar/${item.avatar}`,
+                                            }}
+                                        />
+                                    ) : (
+                                        <Icon
+                                            name="person"
+                                            size={30}
+                                            color="#ffffff"
+                                        />
+                                    )}
+                                </EmployeeIcon>
+                            </Employee>
+                        )}
+                    />
+                </Container>
+            )}
         </>
     );
 };

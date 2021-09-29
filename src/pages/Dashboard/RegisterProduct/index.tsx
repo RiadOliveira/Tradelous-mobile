@@ -160,18 +160,20 @@ const RegisterProduct: React.FC = () => {
         [selectedImage, user.companyId, barCodeValue, updateProductsStatus],
     );
 
-    return isCameraVisible ? (
-        <Camera
-            onBarCodeRead={event => {
-                handleBarCodeRead(event.data);
-            }}
-        />
-    ) : (
+    return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
+            {isCameraVisible && (
+                <Camera
+                    onBarCodeRead={event => {
+                        handleBarCodeRead(event.data);
+                    }}
+                />
+            )}
+
             <Container>
                 <TitleTextContainer style={{ elevation: 10 }}>
                     <TitleText>Dados do produto</TitleText>

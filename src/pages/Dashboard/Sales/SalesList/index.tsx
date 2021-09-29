@@ -162,7 +162,9 @@ const Sales: React.FC = () => {
     );
 
     return (
-        <>
+        <Container>
+            {!hasLoadedSales && <LoadingIndicator />}
+
             <Modal
                 actionFunction={modalProps.actionFunction}
                 secondActionFunction={modalProps.secondActionFunction}
@@ -175,138 +177,130 @@ const Sales: React.FC = () => {
                 }}
                 iconName="info"
             />
+
             <DatePicker
                 isVisible={datePickerVisibility}
                 setDateFunction={setDateofSales}
                 setVisibility={setDatePickerVisibility}
             />
 
-            <Container>
-                {!hasLoadedSales && <LoadingIndicator />}
+            <FilterContainer>
+                <Icon name="filter-alt" size={34} color={'#374b92'} />
 
-                <FilterContainer>
-                    <Icon name="filter-alt" size={34} color={'#374b92'} />
-
-                    <PickerView>
-                        <Picker
-                            selectedValue={searchType}
-                            mode="dropdown"
-                            onValueChange={itemValue =>
-                                setSearchType(itemValue as SearchType)
-                            }
-                        >
-                            <Picker.Item
-                                key={'SearchType0'}
-                                label={'Diário'}
-                                value={'day'}
-                            />
-                            <Picker.Item
-                                key={'SearchType1'}
-                                label={'Semanal'}
-                                value={'week'}
-                            />
-                            <Picker.Item
-                                key={'SearchType2'}
-                                label={'Mensal'}
-                                value={'month'}
-                            />
-                        </Picker>
-                    </PickerView>
-
-                    <DatePickerButton
-                        activeOpacity={0.4}
-                        onPress={() => setDatePickerVisibility(true)}
+                <PickerView>
+                    <Picker
+                        selectedValue={searchType}
+                        mode="dropdown"
+                        onValueChange={itemValue =>
+                            setSearchType(itemValue as SearchType)
+                        }
                     >
-                        <Icon
-                            name="calendar-today"
-                            size={30}
-                            color={'#374b92'}
+                        <Picker.Item
+                            key={'SearchType0'}
+                            label={'Diário'}
+                            value={'day'}
                         />
-                    </DatePickerButton>
-                </FilterContainer>
+                        <Picker.Item
+                            key={'SearchType1'}
+                            label={'Semanal'}
+                            value={'week'}
+                        />
+                        <Picker.Item
+                            key={'SearchType2'}
+                            label={'Mensal'}
+                            value={'month'}
+                        />
+                    </Picker>
+                </PickerView>
 
-                <FlatList
-                    data={sales}
-                    keyExtractor={sale => sale.id}
-                    style={{
-                        width: '100%',
-                        paddingTop: 10,
-                    }}
-                    contentContainerStyle={{
-                        alignItems: 'center',
-                        paddingBottom: '8%',
-                    }}
-                    renderItem={({ item, index }) => (
-                        <Sale
-                            disabled={!user.isAdmin}
-                            activeOpacity={0.7}
-                            onPress={() =>
-                                setModalProps({
-                                    visibility: true,
-                                    actionFunction: async () =>
-                                        navigation.navigate('EditSale', {
-                                            item,
-                                        }),
-                                    secondActionFunction: () =>
-                                        deleteSale(item),
-                                })
-                            }
+                <DatePickerButton
+                    activeOpacity={0.4}
+                    onPress={() => setDatePickerVisibility(true)}
+                >
+                    <Icon name="calendar-today" size={30} color={'#374b92'} />
+                </DatePickerButton>
+            </FilterContainer>
+
+            <FlatList
+                data={sales}
+                keyExtractor={sale => sale.id}
+                style={{
+                    width: '100%',
+                    paddingTop: 10,
+                }}
+                contentContainerStyle={{
+                    alignItems: 'center',
+                    paddingBottom: '8%',
+                }}
+                renderItem={({ item: sale, index }) => (
+                    <Sale
+                        disabled={!user.isAdmin}
+                        activeOpacity={0.7}
+                        onPress={() =>
+                            setModalProps({
+                                visibility: true,
+                                actionFunction: async () =>
+                                    navigation.navigate('EditSale', {
+                                        sale,
+                                    }),
+                                secondActionFunction: () => deleteSale(sale),
+                            })
+                        }
+                    >
+                        <SaleIcon hasImage={!!sale.product.image}>
+                            {sale.product.image ? (
+                                <SaleImage
+                                    source={{
+                                        uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon
+                                    name="shopping-cart"
+                                    size={40}
+                                    color="#ffffff"
+                                />
+                            )}
+                        </SaleIcon>
+
+                        <SaleData
+                            style={{
+                                flexDirection: 'column',
+                            }}
                         >
-                            <SaleIcon hasImage={!!item.product.image}>
-                                {item.product.image ? (
-                                    <SaleImage
-                                        source={{
-                                            uri: `${apiStaticUrl}/productImage/${item.product.image}`,
-                                        }}
-                                    />
-                                ) : (
-                                    <Icon
-                                        name="shopping-cart"
-                                        size={40}
-                                        color="#ffffff"
-                                    />
-                                )}
-                            </SaleIcon>
+                            <SaleData>
+                                <SaleText>
+                                    {sale.product.name.length > 16
+                                        ? `${sale.product.name.substring(
+                                              0,
+                                              13,
+                                          )}...`
+                                        : sale.product.name}
+                                </SaleText>
 
-                            <SaleData
-                                style={{
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <SaleData>
-                                    <SaleText>
-                                        {item.product.name.length > 16
-                                            ? `${item.product.name.substring(
-                                                  0,
-                                                  13,
-                                              )}...`
-                                            : item.product.name}
-                                    </SaleText>
-
-                                    <SaleText>Qntd: {item.quantity}</SaleText>
-                                    <SaleText>
-                                        {formattedProductPrices[index]}
-                                    </SaleText>
-                                </SaleData>
-
-                                <SaleData>
-                                    <SaleText>
-                                        {item.employee.name.length > 19
-                                            ? `${item.employee.name.substring(
-                                                  0,
-                                                  19,
-                                              )}...`
-                                            : item.employee.name}
-                                    </SaleText>
-
-                                    <SaleText>{item.date}</SaleText>
-                                </SaleData>
+                                <SaleText>Qntd: {sale.quantity}</SaleText>
+                                <SaleText>
+                                    {formattedProductPrices[index]}
+                                </SaleText>
                             </SaleData>
-                        </Sale>
-                    )}
-                />
-            </Container>
-        </>
+
+                            <SaleData>
+                                <SaleText>
+                                    {sale.employee.name.length > 19
+                                        ? `${sale.employee.name.substring(
+                                              0,
+                                              19,
+                                          )}...`
+                                        : sale.employee.name}
+                                </SaleText>
+
+                                <SaleText>{sale.date}</SaleText>
+                            </SaleData>
+                        </SaleData>
+                    </Sale>
+                )}
+            />
+        </Container>
     );
 };
 

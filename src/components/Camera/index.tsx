@@ -17,7 +17,13 @@ const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
     return (
         <>
             <RNCamera
-                style={{ flex: 1 }}
+                style={{
+                    flex: 1,
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 1,
+                }}
                 captureAudio={false}
                 flashMode={isFlashEnabled ? 'torch' : 'off'}
                 {...props}
@@ -32,6 +38,7 @@ const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
                     width={'30%'}
                 />
             </RNCamera>
+
             <ReturnButton
                 activeOpacity={0.4}
                 onPress={() => handleCameraVisibility(false)}
