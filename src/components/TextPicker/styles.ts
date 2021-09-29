@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
 
+interface TextPickerInputProps {
+    hasPasteButton: boolean;
+}
+
 export const TextPickerView = styled.View`
     background-color: #243266;
     width: 80%;
@@ -32,10 +36,12 @@ export const InputContainer = styled.View`
     justify-content: space-between;
 `;
 
-export const TextPickerInput = styled.TextInput`
+export const TextPickerInput = styled.TextInput<TextPickerInputProps>`
     font-family: Poppins-Regular;
-    width: 72%;
+
     height: 98%;
+    width: ${({ hasPasteButton }) => (!hasPasteButton ? '90%' : '72%')};
+    text-align: ${({ hasPasteButton }) => (hasPasteButton ? 'left' : 'center')};
 
     margin-left: 5%;
 `;

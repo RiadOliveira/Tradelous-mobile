@@ -67,7 +67,7 @@ const TextPicker: React.FC<TextPickerProps> = ({
             <TextPickerView>
                 <Icon
                     name={iconName}
-                    size={90}
+                    size={80}
                     color="#fff"
                     style={{ marginTop: '4%' }}
                 />
@@ -76,6 +76,7 @@ const TextPicker: React.FC<TextPickerProps> = ({
 
                 <InputContainer>
                     <TextPickerInput
+                        hasPasteButton={inputProps.hasPasteButton}
                         autoCapitalize="none"
                         autoCorrect={false}
                         returnKeyType="send"
