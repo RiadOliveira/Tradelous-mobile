@@ -165,147 +165,138 @@ const ProductsList: React.FC = () => {
             }}
         />
     ) : (
-        <>
-            {!hasLoadedProducts ? (
+        <Container>
+            {!hasLoadedProducts && (
                 <ActivityIndicator
                     size={64}
                     color="#374b92"
-                    style={{ backgroundColor: '#49b454', flex: 1 }}
+                    style={{
+                        backgroundColor: '#49b454',
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1,
+                    }}
                 />
-            ) : (
-                <Container>
-                    {companyProducts.length != 0 ? (
-                        <>
-                            <SearchBarContainer isFocused={isSearchFocused}>
-                                <Icon
-                                    name="search"
-                                    size={24}
-                                    color={isSearchFilled ? '#374b92' : 'black'}
-                                    style={{ marginLeft: 10, marginRight: 10 }}
-                                />
-
-                                <SearchBar
-                                    onChangeText={event => {
-                                        handleChangeSearch(event);
-                                        handleProductSearch(event);
-                                    }}
-                                    onFocus={() => {
-                                        handleSearchFocus();
-                                    }}
-                                    onBlur={() => {
-                                        handleSearchFocus();
-                                    }}
-                                    placeholder="Pesquisar produto..."
-                                />
-
-                                <BarCodeButton
-                                    onPress={() => handleCameraVisibility(true)}
-                                    activeOpacity={0.4}
-                                >
-                                    <Icon
-                                        name="qr-code-scanner"
-                                        size={24}
-                                        color="#374b92"
-                                        style={{
-                                            marginLeft: 10,
-                                            marginRight: 10,
-                                        }}
-                                    />
-                                </BarCodeButton>
-                            </SearchBarContainer>
-
-                            <FlatList
-                                style={{
-                                    width: '100%',
-                                    paddingTop: 10,
-                                }}
-                                contentContainerStyle={{
-                                    alignItems: 'center',
-                                    paddingBottom: '8%',
-                                }}
-                                showsVerticalScrollIndicator={false}
-                                data={searchedProducts}
-                                keyExtractor={product => product.id}
-                                renderItem={({ item, index }) => (
-                                    <ProductContainer
-                                        onPress={() =>
-                                            handleProductSelection(item)
-                                        }
-                                    >
-                                        <ProductImageContainer>
-                                            {item.image ? (
-                                                <ProductImage
-                                                    source={{
-                                                        uri: `${apiStaticUrl}/${item.image}`,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <Icon
-                                                    name="local-offer"
-                                                    size={40}
-                                                    color="#ffffff"
-                                                />
-                                            )}
-                                        </ProductImageContainer>
-
-                                        <ProductData
-                                            style={{ marginLeft: '1%' }}
-                                        >
-                                            <ProductText>
-                                                {item.name}
-                                            </ProductText>
-
-                                            <ProductData
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    width: '94%',
-                                                }}
-                                            >
-                                                <ProductText>
-                                                    {formattedPrices[index]}
-                                                </ProductText>
-
-                                                <ProductText>
-                                                    {item.brand}
-                                                </ProductText>
-
-                                                <ProductAvailabilityText
-                                                    hasInStock={
-                                                        item.quantity > 0
-                                                    }
-                                                >
-                                                    {item.quantity > 0
-                                                        ? 'Em estoque'
-                                                        : 'Em falta'}
-                                                </ProductAvailabilityText>
-                                            </ProductData>
-                                        </ProductData>
-                                    </ProductContainer>
-                                )}
-                            />
-                        </>
-                    ) : (
-                        <NoProductsContainer>
-                            {/*Page with message for companies that not have products registered yet.*/}
-                            <Icon name="info" size={100} color="#1c274e" />
-                            <NoProductsText>
-                                Parece que sua empresa ainda não cadastrou
-                                nenhum produto, pressione o botão abaixo para
-                                começar agora!
-                            </NoProductsText>
-
-                            <Button
-                                onPress={() =>
-                                    navigation.navigate('RegisterProduct')
-                                }
-                            >
-                                Cadastrar Produto
-                            </Button>
-                        </NoProductsContainer>
-                    )}
-                </Container>
             )}
-        </>
+
+            {companyProducts.length != 0 ? (
+                <>
+                    <SearchBarContainer isFocused={isSearchFocused}>
+                        <Icon
+                            name="search"
+                            size={24}
+                            color={isSearchFilled ? '#374b92' : 'black'}
+                            style={{ marginLeft: 10, marginRight: 10 }}
+                        />
+
+                        <SearchBar
+                            onChangeText={event => {
+                                handleChangeSearch(event);
+                                handleProductSearch(event);
+                            }}
+                            onFocus={() => {
+                                handleSearchFocus();
+                            }}
+                            onBlur={() => {
+                                handleSearchFocus();
+                            }}
+                            placeholder="Pesquisar produto..."
+                        />
+
+                        <BarCodeButton
+                            onPress={() => handleCameraVisibility(true)}
+                            activeOpacity={0.4}
+                        >
+                            <Icon
+                                name="qr-code-scanner"
+                                size={24}
+                                color="#374b92"
+                                style={{
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                }}
+                            />
+                        </BarCodeButton>
+                    </SearchBarContainer>
+
+                    <FlatList
+                        style={{
+                            width: '100%',
+                            paddingTop: 10,
+                        }}
+                        contentContainerStyle={{
+                            alignItems: 'center',
+                            paddingBottom: '8%',
+                        }}
+                        showsVerticalScrollIndicator={false}
+                        data={searchedProducts}
+                        keyExtractor={product => product.id}
+                        renderItem={({ item, index }) => (
+                            <ProductContainer
+                                onPress={() => handleProductSelection(item)}
+                            >
+                                <ProductImageContainer>
+                                    {item.image ? (
+                                        <ProductImage
+                                            source={{
+                                                uri: `${apiStaticUrl}/${item.image}`,
+                                            }}
+                                        />
+                                    ) : (
+                                        <Icon
+                                            name="local-offer"
+                                            size={40}
+                                            color="#ffffff"
+                                        />
+                                    )}
+                                </ProductImageContainer>
+
+                                <ProductData style={{ marginLeft: '1%' }}>
+                                    <ProductText>{item.name}</ProductText>
+
+                                    <ProductData
+                                        style={{
+                                            flexDirection: 'row',
+                                            width: '94%',
+                                        }}
+                                    >
+                                        <ProductText>
+                                            {formattedPrices[index]}
+                                        </ProductText>
+
+                                        <ProductText>{item.brand}</ProductText>
+
+                                        <ProductAvailabilityText
+                                            hasInStock={item.quantity > 0}
+                                        >
+                                            {item.quantity > 0
+                                                ? 'Em estoque'
+                                                : 'Em falta'}
+                                        </ProductAvailabilityText>
+                                    </ProductData>
+                                </ProductData>
+                            </ProductContainer>
+                        )}
+                    />
+                </>
+            ) : (
+                <NoProductsContainer>
+                    {/*Page with message for companies that not have products registered yet.*/}
+                    <Icon name="info" size={100} color="#1c274e" />
+                    <NoProductsText>
+                        Parece que sua empresa ainda não cadastrou nenhum
+                        produto, pressione o botão abaixo para começar agora!
+                    </NoProductsText>
+
+                    <Button
+                        onPress={() => navigation.navigate('RegisterProduct')}
+                    >
+                        Cadastrar Produto
+                    </Button>
+                </NoProductsContainer>
+            )}
+        </Container>
     );
 };
 

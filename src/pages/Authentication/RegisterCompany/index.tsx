@@ -140,7 +140,6 @@ const RegisterCompany: React.FC = () => {
                     `${selectedCity.nome}/${selectedState.sigla}`,
                 );
                 companyData.append('cnpj', Number(data.cnpj));
-                companyData.append('adminID', user.id);
 
                 if (selectedImage.uri) {
                     companyData.append('logo', {
@@ -193,18 +192,26 @@ const RegisterCompany: React.FC = () => {
         [selectedState, selectedCity, user, selectedImage, setUserCompany],
     );
 
-    return !hasLoadedCities ? (
-        <ActivityIndicator
-            size={64}
-            color="#374b92"
-            style={{ backgroundColor: '#49b454', flex: 1 }}
-        />
-    ) : (
+    return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
+            {!hasLoadedCities && (
+                <ActivityIndicator
+                    size={64}
+                    color="#374b92"
+                    style={{
+                        backgroundColor: '#49b454',
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1,
+                    }}
+                />
+            )}
+
             <Container>
                 <LogoView>
                     <LogoImage source={TestLogo} />
