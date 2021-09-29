@@ -16,9 +16,10 @@ import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { Text, ActivityIndicator } from 'react-native';
+import { Text } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 const ForgotPassword: React.FC = () => {
     const navigation = useNavigation();
@@ -57,6 +58,8 @@ const ForgotPassword: React.FC = () => {
 
     return (
         <Container>
+            {isLoadingSending && <LoadingIndicator />}
+
             <LogoView>
                 <LogoImage source={TestLogo} />
             </LogoView>
@@ -87,17 +90,6 @@ const ForgotPassword: React.FC = () => {
                     Já possui o código de recuperação?
                 </RecoverPasswordText>
             </RecoverPasswordButton>
-
-            {isLoadingSending && (
-                <ActivityIndicator
-                    size={64}
-                    color="#374b92"
-                    style={{
-                        position: 'absolute',
-                        top: '40%',
-                    }}
-                />
-            )}
         </Container>
     );
 };

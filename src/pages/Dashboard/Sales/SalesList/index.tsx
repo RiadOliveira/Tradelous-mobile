@@ -18,13 +18,13 @@ import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import getSalesOnDate from '@utils/getSalesOnDate';
 
-import { ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useProducts } from '@hooks/products';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCallback } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 interface IEmployee {
     name: string;
@@ -182,19 +182,7 @@ const Sales: React.FC = () => {
             />
 
             <Container>
-                {!hasLoadedSales && (
-                    <ActivityIndicator
-                        size={64}
-                        color="#374b92"
-                        style={{
-                            backgroundColor: '#49b454',
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1,
-                        }}
-                    />
-                )}
+                {!hasLoadedSales && <LoadingIndicator />}
 
                 <FilterContainer>
                     <Icon name="filter-alt" size={34} color={'#374b92'} />

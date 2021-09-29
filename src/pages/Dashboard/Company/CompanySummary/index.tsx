@@ -19,7 +19,6 @@ import {
     EmployeeImage,
     EmployeeIcon,
 } from './styles';
-import { ActivityIndicator } from 'react-native';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import convertCNPJ from '@utils/convertCNPJ';
@@ -30,6 +29,7 @@ import { useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 import TextPicker from '@components/TextPicker';
 import { FlatList } from 'react-native-gesture-handler';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 interface ICompany {
     id: string;
@@ -221,19 +221,7 @@ const CompanySummary: React.FC = () => {
             />
 
             <Container>
-                {!hasLoadedCompany && (
-                    <ActivityIndicator
-                        size={64}
-                        color="#374b92"
-                        style={{
-                            backgroundColor: '#49b454',
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1,
-                        }}
-                    />
-                )}
+                {!hasLoadedCompany && <LoadingIndicator />}
 
                 <CompanyContainer>
                     <CompanyData>

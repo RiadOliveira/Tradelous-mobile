@@ -21,11 +21,12 @@ import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
-import { TextInput, Text, ActivityIndicator } from 'react-native';
+import { TextInput, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 interface IBrazilianState {
     id: string;
@@ -198,19 +199,7 @@ const RegisterCompany: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            {!hasLoadedCities && (
-                <ActivityIndicator
-                    size={64}
-                    color="#374b92"
-                    style={{
-                        backgroundColor: '#49b454',
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1,
-                    }}
-                />
-            )}
+            {!hasLoadedCities && <LoadingIndicator />}
 
             <Container>
                 <LogoView>

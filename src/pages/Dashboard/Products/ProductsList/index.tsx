@@ -13,7 +13,6 @@ import {
     NoProductsContainer,
     NoProductsText,
 } from './styles';
-import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
@@ -26,6 +25,7 @@ import Toast from 'react-native-toast-message';
 import formatPrice from '@utils/formatPrice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { FlatList } from 'react-native-gesture-handler';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 interface IProduct {
     id: string;
@@ -166,19 +166,7 @@ const ProductsList: React.FC = () => {
         />
     ) : (
         <Container>
-            {!hasLoadedProducts && (
-                <ActivityIndicator
-                    size={64}
-                    color="#374b92"
-                    style={{
-                        backgroundColor: '#49b454',
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 1,
-                    }}
-                />
-            )}
+            {!hasLoadedProducts && <LoadingIndicator />}
 
             {companyProducts.length != 0 ? (
                 <>

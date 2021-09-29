@@ -9,7 +9,7 @@ import {
     PickerText,
     ButtonsContainer,
 } from './styles';
-import { ActivityIndicator, ScrollView, TextInput } from 'react-native';
+import { ScrollView, TextInput } from 'react-native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -26,6 +26,7 @@ import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import TextPicker from '@components/TextPicker';
 import { useAuth } from '@hooks/auth';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 interface IBrazilianState {
     id: string;
@@ -312,19 +313,7 @@ const EditCompany: React.FC = () => {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                {!hasLoadedCities && (
-                    <ActivityIndicator
-                        size={64}
-                        color="#374b92"
-                        style={{
-                            backgroundColor: '#49b454',
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
-                            zIndex: 1,
-                        }}
-                    />
-                )}
+                {!hasLoadedCities && <LoadingIndicator />}
 
                 <Container>
                     <ImageContainer>

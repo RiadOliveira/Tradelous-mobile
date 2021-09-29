@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useAuth } from '../hooks/auth';
 import AuthRoutes from './auth.routes';
 import AppRoutes from './app.routes';
-import { ActivityIndicator } from 'react-native';
+import LoadingIndicator from '@components/LoadingIndicator';
 
 const Routes: React.FC = () => {
     const { user, isReady } = useAuth();
@@ -11,11 +11,7 @@ const Routes: React.FC = () => {
     return (
         <NavigationContainer>
             {!isReady ? (
-                <ActivityIndicator
-                    size={64}
-                    color="#374b92"
-                    style={{ backgroundColor: '#49b454', flex: 1 }}
-                />
+                <LoadingIndicator />
             ) : (
                 <>{user ? <AppRoutes /> : <AuthRoutes />}</>
             )}
