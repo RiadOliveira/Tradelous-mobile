@@ -27,6 +27,7 @@ interface IRecoverPassword {
     recoverToken: string;
     confirmEmail: string;
     newPassword: string;
+    confirmPassword: string;
 }
 
 const RecoverPassword: React.FC = () => {
@@ -35,6 +36,7 @@ const RecoverPassword: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const newPasswordInput = useRef<TextInput>(null);
+    const confirmPasswordInput = useRef<TextInput>(null);
 
     const [tokenInputText, setTokenInputText] = useState('');
 
@@ -67,7 +69,17 @@ const RecoverPassword: React.FC = () => {
                         .string()
                         .required('E-mail obrigatório')
                         .email('Formato de e-mail incorreto'),
-                    newPassword: yup.string().required(),
+                    newPassword: yup
+                        .string()
+                        .required('Senha obrigatória')
+                        .min(6, 'Senha de no mínimo 6 caracteres'),
+                    confirmPassword: yup
+                        .string()
+                        .required('Confirmação de senha obrigatória')
+                        .oneOf(
+                            [yup.ref('newPassword')],
+                            'As senhas inseridas não são iguais',
+                        ),
                 });
 
                 await schema.validate(recoverData, {
@@ -150,6 +162,20 @@ const RecoverPassword: React.FC = () => {
                     placeholder="Nova senha"
                     icon="lock-outline"
                     ref={newPasswordInput}
+                    onSubmitEditing={() =>
+                        confirmPasswordInput.current?.focus()
+                    }
+                />
+
+                <Input
+                    returnKeyType="next"
+                    autoCapitalize="none"
+                    textContentType="newPassword"
+                    secureTextEntry
+                    name="confirmPassword"
+                    placeholder="Confirmar senha"
+                    icon="lock-outline"
+                    ref={confirmPasswordInput}
                     onSubmitEditing={() => formRef.current?.submitForm()}
                 />
             </Form>

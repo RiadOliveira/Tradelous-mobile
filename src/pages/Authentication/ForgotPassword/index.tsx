@@ -45,9 +45,10 @@ const ForgotPassword: React.FC = () => {
             await AsyncStorage.setItem('@Tradelous-user', data.email);
 
             setIsLoadingSending(false);
+            formRef.current?.clearField('email');
 
             Toast.show({
-                type: 'info',
+                type: 'success',
                 text1: 'Mensagem de recuperação enviada',
                 text2: 'O e-mail com o token de recuperação foi enviado.',
             });
