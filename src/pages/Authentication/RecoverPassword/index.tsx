@@ -48,8 +48,9 @@ const RecoverPassword: React.FC = () => {
                 navigation.goBack();
 
                 Toast.show({
-                    type: 'info',
-                    text1: 'Token necessário para recuperação!',
+                    type: 'error',
+                    text1: 'Token necessário!',
+                    text2: 'Primeiro faça a requisição do token',
                 });
             }
         });
