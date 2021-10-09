@@ -92,9 +92,14 @@ const CompanySummary: React.FC = () => {
     useEffect(() => {
         api.get('/company/list-employees').then(response => {
             setEmployees(response.data);
-            setHasLoadedCompany(true);
         });
     }, [user]);
+
+    useEffect(() => {
+        if (company.id && !!employees.length) {
+            setHasLoadedCompany(true);
+        }
+    }, [company, employees]);
 
     const formattedCNPJ = useMemo(
         () => (company.cnpj ? convertCNPJ(company.cnpj) : 0),
