@@ -21,12 +21,11 @@ import Button from '@components/Button';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Input from '@components/Input';
-import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
-import TextPicker from '@components/TextPicker';
 import { useAuth } from '@hooks/auth';
 import LoadingIndicator from '@components/LoadingIndicator';
+import { useModal } from '@hooks/modal';
 
 interface IBrazilianState {
     id: string;
@@ -53,23 +52,14 @@ const EditCompany: React.FC = () => {
         setUserCompany,
     } = useAuth();
 
+    const { showModal } = useModal();
+
     const navigation = useNavigation();
     const company = useRoute().params as ICompany;
 
     const formRef = useRef<FormHandles>(null);
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
-
-    const [modalVisibility, setModalVisibility] = useState<{
-        visibility: boolean;
-    }>({
-        visibility: false,
-    });
-    const [textPickerVisibility, setTextPickerVisibility] = useState<{
-        visibility: boolean;
-    }>({
-        visibility: false,
-    });
 
     const [selectedImage, setSelectedImage] = useState<string | null>(() =>
         company.logo ? company.logo : null,
@@ -285,36 +275,6 @@ const EditCompany: React.FC = () => {
         >
             {!hasLoadedCities && <LoadingIndicator />}
 
-            <Modal
-                actionFunction={() => handleImageData('delete')}
-                setVisibility={setModalVisibility}
-                isVisible={modalVisibility.visibility}
-                text={{
-                    info: 'Tem certeza que deseja deletar a imagem da empresa?',
-                    firstButton: 'Sim',
-                    secondButton: 'Não',
-                }}
-                iconName="delete"
-            />
-            <TextPicker
-                isVisible={textPickerVisibility.visibility}
-                text={{
-                    info: 'Insira sua senha para confirmar a exclusão',
-                    buttonText: 'Confirmar',
-                }}
-                inputProps={{
-                    hasPasteButton: false,
-                    placeholder: 'Senha',
-                    isSecureText: true,
-                }}
-                iconName="delete"
-                willUnmount={true}
-                setVisibility={setTextPickerVisibility}
-                actionFunction={(verifyPassword: string) =>
-                    handleDeleteCompany(verifyPassword)
-                }
-            />
-
             <Container>
                 <ImageContainer>
                     <ImagePicker
@@ -334,7 +294,18 @@ const EditCompany: React.FC = () => {
                     </ImagePicker>
 
                     <DeleteImageButton
-                        onPress={() => setModalVisibility({ visibility: true })}
+                        onPress={() =>
+                            showModal({
+                                actionFunction: () => handleImageData('delete'),
+                                text: {
+                                    info:
+                                        'Tem certeza que deseja deletar a imagem da empresa?',
+                                    firstButton: 'Sim',
+                                    secondButton: 'Não',
+                                },
+                                iconName: 'delete',
+                            })
+                        }
                     >
                         <Icon name="clear" size={48} color="#e7e7e7" />
                     </DeleteImageButton>
@@ -424,8 +395,21 @@ const EditCompany: React.FC = () => {
                     <Button
                         style={{ backgroundColor: '#c93c3c' }}
                         onPress={() =>
-                            setTextPickerVisibility({
-                                visibility: true,
+                            showModal({
+                                text: {
+                                    info:
+                                        'Insira sua senha para confirmar a exclusão',
+                                    firstButton: 'Confirmar',
+                                },
+                                inputProps: {
+                                    hasPasteButton: false,
+                                    placeholder: 'Senha',
+                                    isSecureText: true,
+                                },
+                                iconName: 'delete',
+                                willUnmount: true,
+                                actionFunction: (verifyPassword?: string) =>
+                                    handleDeleteCompany(verifyPassword || ''),
                             })
                         }
                     >

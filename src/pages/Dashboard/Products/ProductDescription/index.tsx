@@ -53,7 +53,7 @@ interface IProduct {
 
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
-    const { showModal, hideModal } = useModal();
+    const { showModal } = useModal();
     const { updateProductsStatus, productsStatus } = useProducts();
     const navigation = useNavigation();
 
@@ -410,8 +410,6 @@ const ProductDescription: React.FC = () => {
                             onPress={() =>
                                 showModal({
                                     actionFunction: handleDeleteProduct,
-                                    secondActionFunction: async () =>
-                                        hideModal(),
                                     text: {
                                         info:
                                             'Tem certeza que deseja deletar esse produto?',

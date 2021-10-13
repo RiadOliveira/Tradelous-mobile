@@ -20,11 +20,10 @@ import Button from '@components/Button';
 import api from '@services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
-import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Clipboard from '@react-native-clipboard/clipboard';
-import TextPicker from '@components/TextPicker';
+import { useModal } from '@hooks/modal';
 
 interface IUpdateProfileData {
     name: string;
@@ -36,21 +35,13 @@ interface IUpdateProfileData {
 
 const Profile: React.FC = () => {
     const { signOut, updateUser, updateUsersAvatar, user } = useAuth();
+    const { showModal } = useModal();
+
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const oldPasswordInput = useRef<TextInput>(null);
     const newPasswordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
-
-    const [modalProps, setModalProps] = useState({
-        visibility: false,
-    });
-
-    const [textPickerVisibility, setTextPickerVisibility] = useState<{
-        visibility: boolean;
-    }>({
-        visibility: false,
-    });
 
     const [selectedImage, setSelectedImage] = useState(() =>
         user.avatar
@@ -193,181 +184,168 @@ const Profile: React.FC = () => {
     );
 
     return (
-        <>
-            <Modal
-                actionFunction={() => handleImageData('delete')}
-                setVisibility={setModalProps}
-                isVisible={modalProps.visibility}
-                text={{
-                    info: 'Tem certeza que deseja deletar seu avatar?',
-                    firstButton: 'Sim',
-                    secondButton: 'Não',
-                }}
-                iconName="delete"
-            />
-
-            <TextPicker
-                isVisible={textPickerVisibility.visibility}
-                text={{
-                    info: 'Insira sua senha para confirmar a exclusão',
-                    buttonText: 'Confirmar',
-                }}
-                inputProps={{
-                    hasPasteButton: false,
-                    placeholder: 'Senha',
-                    isSecureText: true,
-                }}
-                iconName="delete"
-                willUnmount={true}
-                setVisibility={setTextPickerVisibility}
-                actionFunction={(verifyPassword: string) =>
-                    handleDeleteAccount(verifyPassword)
-                }
-            />
-
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-            >
-                <Container>
-                    <Header>
-                        <HeaderButton
-                            style={{ borderBottomLeftRadius: 0 }}
-                            activeOpacity={0.7}
-                            onPress={handleCopyId}
-                        >
-                            <Icon name="content-copy" size={34} color="#fff" />
-                        </HeaderButton>
-
-                        <HeaderButton
-                            style={{ borderBottomRightRadius: 0 }}
-                            activeOpacity={0.7}
-                            onPress={signOut}
-                        >
-                            <Icon name="logout" size={34} color="#fff" />
-                        </HeaderButton>
-                    </Header>
-
-                    <ImageContainer>
-                        <ImagePicker
-                            onPress={() => handleImageData('upload')}
-                            activeOpacity={0.7}
-                            selectedImage={selectedImage}
-                        >
-                            {selectedImage ? (
-                                <ProfileImage
-                                    source={{
-                                        uri: selectedImage,
-                                    }}
-                                />
-                            ) : (
-                                <Icon
-                                    name="person"
-                                    size={170}
-                                    color="#1c274e"
-                                />
-                            )}
-                        </ImagePicker>
-
-                        <DeleteImageButton
-                            onPress={() => setModalProps({ visibility: true })}
-                        >
-                            <Icon name="clear" size={48} color="#e7e7e7" />
-                        </DeleteImageButton>
-                    </ImageContainer>
-
-                    <Form
-                        ref={formRef}
-                        onSubmit={handleSubmit}
-                        initialData={{ name: user.name, email: user.email }}
+        <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+        >
+            <Container>
+                <Header>
+                    <HeaderButton
+                        style={{ borderBottomLeftRadius: 0 }}
+                        activeOpacity={0.7}
+                        onPress={handleCopyId}
                     >
-                        <Input
-                            autoCorrect={false}
-                            textContentType="username"
-                            autoCapitalize="words"
-                            name="name"
-                            placeholder="Nome"
-                            icon="person-outline"
-                            onSubmitEditing={() => emailInput.current?.focus()}
-                            returnKeyType="next"
-                        />
+                        <Icon name="content-copy" size={34} color="#fff" />
+                    </HeaderButton>
 
-                        <Input
-                            autoCorrect={false}
-                            textContentType="emailAddress"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            ref={emailInput}
-                            name="email"
-                            placeholder="E-mail"
-                            icon="mail-outline"
-                            onSubmitEditing={() =>
-                                oldPasswordInput.current?.focus()
-                            }
-                            returnKeyType="next"
-                        />
+                    <HeaderButton
+                        style={{ borderBottomRightRadius: 0 }}
+                        activeOpacity={0.7}
+                        onPress={signOut}
+                    >
+                        <Icon name="logout" size={34} color="#fff" />
+                    </HeaderButton>
+                </Header>
 
-                        <Input
-                            returnKeyType="next"
-                            autoCapitalize="none"
-                            textContentType="password"
-                            secureTextEntry
-                            name="oldPassword"
-                            placeholder="Senha antiga"
-                            icon="lock-outline"
-                            ref={oldPasswordInput}
-                            onSubmitEditing={() =>
-                                newPasswordInput.current?.focus()
-                            }
-                        />
+                <ImageContainer>
+                    <ImagePicker
+                        onPress={() => handleImageData('upload')}
+                        activeOpacity={0.7}
+                        selectedImage={selectedImage}
+                    >
+                        {selectedImage ? (
+                            <ProfileImage
+                                source={{
+                                    uri: selectedImage,
+                                }}
+                            />
+                        ) : (
+                            <Icon name="person" size={170} color="#1c274e" />
+                        )}
+                    </ImagePicker>
 
-                        <Input
-                            returnKeyType="next"
-                            autoCapitalize="none"
-                            textContentType="newPassword"
-                            secureTextEntry
-                            name="newPassword"
-                            placeholder="Nova senha"
-                            icon="lock-outline"
-                            ref={newPasswordInput}
-                            onSubmitEditing={() =>
-                                confirmPasswordInput.current?.focus()
-                            }
-                        />
+                    <DeleteImageButton
+                        onPress={() =>
+                            showModal({
+                                actionFunction: () => handleImageData('delete'),
+                                text: {
+                                    info:
+                                        'Tem certeza que deseja deletar seu avatar?',
+                                    firstButton: 'Sim',
+                                    secondButton: 'Não',
+                                },
+                                iconName: 'delete',
+                            })
+                        }
+                    >
+                        <Icon name="clear" size={48} color="#e7e7e7" />
+                    </DeleteImageButton>
+                </ImageContainer>
 
-                        <Input
-                            returnKeyType="next"
-                            autoCapitalize="none"
-                            textContentType="newPassword"
-                            secureTextEntry
-                            name="confirmPassword"
-                            placeholder="Confirmar senha"
-                            icon="lock-outline"
-                            ref={confirmPasswordInput}
-                            onSubmitEditing={() =>
-                                formRef.current?.submitForm()
-                            }
-                        />
-                    </Form>
+                <Form
+                    ref={formRef}
+                    onSubmit={handleSubmit}
+                    initialData={{ name: user.name, email: user.email }}
+                >
+                    <Input
+                        autoCorrect={false}
+                        textContentType="username"
+                        autoCapitalize="words"
+                        name="name"
+                        placeholder="Nome"
+                        icon="person-outline"
+                        onSubmitEditing={() => emailInput.current?.focus()}
+                        returnKeyType="next"
+                    />
 
-                    <ButtonsContainer>
-                        <Button onPress={() => formRef.current?.submitForm()}>
-                            Atualizar Conta
-                        </Button>
+                    <Input
+                        autoCorrect={false}
+                        textContentType="emailAddress"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        ref={emailInput}
+                        name="email"
+                        placeholder="E-mail"
+                        icon="mail-outline"
+                        onSubmitEditing={() =>
+                            oldPasswordInput.current?.focus()
+                        }
+                        returnKeyType="next"
+                    />
 
-                        <Button
-                            style={{ backgroundColor: '#c93c3c' }}
-                            onPress={() =>
-                                setTextPickerVisibility({ visibility: true })
-                            }
-                        >
-                            Deletar{'\n'}Conta
-                        </Button>
-                    </ButtonsContainer>
-                </Container>
-            </ScrollView>
-        </>
+                    <Input
+                        returnKeyType="next"
+                        autoCapitalize="none"
+                        textContentType="password"
+                        secureTextEntry
+                        name="oldPassword"
+                        placeholder="Senha antiga"
+                        icon="lock-outline"
+                        ref={oldPasswordInput}
+                        onSubmitEditing={() =>
+                            newPasswordInput.current?.focus()
+                        }
+                    />
+
+                    <Input
+                        returnKeyType="next"
+                        autoCapitalize="none"
+                        textContentType="newPassword"
+                        secureTextEntry
+                        name="newPassword"
+                        placeholder="Nova senha"
+                        icon="lock-outline"
+                        ref={newPasswordInput}
+                        onSubmitEditing={() =>
+                            confirmPasswordInput.current?.focus()
+                        }
+                    />
+
+                    <Input
+                        returnKeyType="next"
+                        autoCapitalize="none"
+                        textContentType="newPassword"
+                        secureTextEntry
+                        name="confirmPassword"
+                        placeholder="Confirmar senha"
+                        icon="lock-outline"
+                        ref={confirmPasswordInput}
+                        onSubmitEditing={() => formRef.current?.submitForm()}
+                    />
+                </Form>
+
+                <ButtonsContainer>
+                    <Button onPress={() => formRef.current?.submitForm()}>
+                        Atualizar Conta
+                    </Button>
+
+                    <Button
+                        style={{ backgroundColor: '#c93c3c' }}
+                        onPress={() =>
+                            showModal({
+                                text: {
+                                    info:
+                                        'Insira sua senha para confirmar a exclusão',
+                                    firstButton: 'Confirmar',
+                                },
+                                inputProps: {
+                                    hasPasteButton: false,
+                                    placeholder: 'Senha',
+                                    isSecureText: true,
+                                },
+                                iconName: 'delete',
+                                willUnmount: true,
+                                actionFunction: (verifyPassword?: string) =>
+                                    handleDeleteAccount(verifyPassword || ''),
+                            })
+                        }
+                    >
+                        Deletar{'\n'}Conta
+                    </Button>
+                </ButtonsContainer>
+            </Container>
+        </ScrollView>
     );
 };
 
