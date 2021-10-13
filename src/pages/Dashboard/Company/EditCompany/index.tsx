@@ -407,7 +407,6 @@ const EditCompany: React.FC = () => {
                                     isSecureText: true,
                                 },
                                 iconName: 'delete',
-                                willUnmount: true,
                                 actionFunction: (verifyPassword?: string) =>
                                     handleDeleteCompany(verifyPassword || ''),
                             })

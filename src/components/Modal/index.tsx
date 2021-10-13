@@ -18,16 +18,13 @@ const Modal: React.FC = () => {
             iconName,
             secondActionFunction,
             text,
-            willUnmount,
             inputProps,
         },
         hideModal,
     } = useModal();
 
     const handleResponse = (response: boolean) => {
-        if (!willUnmount || !response) {
-            hideModal();
-        }
+        hideModal();
 
         if (response && actionFunction) {
             actionFunction();

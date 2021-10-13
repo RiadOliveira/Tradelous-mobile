@@ -10,7 +10,6 @@ interface IModalProps {
         secondButton?: string; //When is TextPicker
     };
     iconName?: string;
-    willUnmount?: boolean; //If actionFunction unmount modal's parent.
     actionFunction?: (pickedText?: string) => Promise<void>; //PickedText when is TextPicker
     secondActionFunction?: () => Promise<void>;
     inputProps?: {

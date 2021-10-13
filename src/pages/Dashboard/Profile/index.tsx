@@ -335,7 +335,6 @@ const Profile: React.FC = () => {
                                     isSecureText: true,
                                 },
                                 iconName: 'delete',
-                                willUnmount: true,
                                 actionFunction: (verifyPassword?: string) =>
                                     handleDeleteAccount(verifyPassword || ''),
                             })

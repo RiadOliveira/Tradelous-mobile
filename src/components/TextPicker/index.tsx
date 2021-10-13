@@ -16,28 +16,24 @@ import {
 
 const TextPicker: React.FC = () => {
     const {
-        modalProps: {
-            isVisible,
-            actionFunction,
-            iconName,
-            text,
-            willUnmount,
-            inputProps,
-        },
+        modalProps: { isVisible, actionFunction, iconName, text, inputProps },
         hideModal,
     } = useModal();
 
     const [inputText, setInputText] = useState('');
 
     const handleResponse = async () => {
+        hideModal();
+        setInputText('');
+
         if (actionFunction) {
             actionFunction(inputText);
-
-            if (!willUnmount) {
-                setInputText('');
-                hideModal();
-            }
         }
+    };
+
+    const handleCloseModal = () => {
+        hideModal();
+        setInputText('');
     };
 
     return (
@@ -46,8 +42,8 @@ const TextPicker: React.FC = () => {
                 <ModalContainer
                     isVisible={isVisible}
                     coverScreen={false}
-                    onBackButtonPress={hideModal}
-                    onBackdropPress={hideModal}
+                    onBackButtonPress={handleCloseModal}
+                    onBackdropPress={handleCloseModal}
                     style={{
                         justifyContent: 'center',
                         alignItems: 'center',
