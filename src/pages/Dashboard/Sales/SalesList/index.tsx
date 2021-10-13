@@ -14,7 +14,6 @@ import Toast from 'react-native-toast-message';
 import api from '@services/api';
 import DatePicker from '@components/DatePicker';
 import formatPrice from '@utils/formatPrice';
-import Modal from '@components/Modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import getSalesOnDate from '@utils/getSalesOnDate';
 
@@ -25,6 +24,7 @@ import { useAuth } from '@hooks/auth';
 import { useCallback } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import LoadingIndicator from '@components/LoadingIndicator';
+import { useModal } from '@hooks/modal';
 
 interface IEmployee {
     name: string;
@@ -54,21 +54,11 @@ interface ISale {
     product: IProduct;
 }
 
-interface ModalProps {
-    actionFunction?: () => Promise<void>;
-    secondActionFunction?: () => Promise<void>;
-    text?: {
-        info: string;
-        firstButton: string;
-        secondButton: string;
-    };
-    visibility: boolean;
-}
-
 type SearchType = 'day' | 'week' | 'month';
 
 const Sales: React.FC = () => {
     const { user } = useAuth();
+    const { showModal } = useModal();
 
     const { productsStatus, updateProductsStatus } = useProducts();
 
@@ -80,10 +70,6 @@ const Sales: React.FC = () => {
     const [sales, setSales] = useState<ISale[]>([]);
     const [dateOfSales, setDateofSales] = useState<Date>(new Date(Date.now()));
     const [datePickerVisibility, setDatePickerVisibility] = useState(false);
-
-    const [modalProps, setModalProps] = useState<ModalProps>({
-        visibility: false,
-    });
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
@@ -165,19 +151,6 @@ const Sales: React.FC = () => {
         <Container>
             {!hasLoadedSales && <LoadingIndicator />}
 
-            <Modal
-                actionFunction={modalProps.actionFunction}
-                secondActionFunction={modalProps.secondActionFunction}
-                setVisibility={setModalProps}
-                isVisible={modalProps.visibility}
-                text={{
-                    info: 'O que deseja fazer com essa venda?',
-                    firstButton: 'Atualizar',
-                    secondButton: 'Deletar',
-                }}
-                iconName="info"
-            />
-
             <DatePicker
                 isVisible={datePickerVisibility}
                 setDateFunction={setDateofSales}
@@ -237,13 +210,18 @@ const Sales: React.FC = () => {
                         disabled={!user.isAdmin}
                         activeOpacity={0.7}
                         onPress={() =>
-                            setModalProps({
-                                visibility: true,
+                            showModal({
                                 actionFunction: async () =>
                                     navigation.navigate('EditSale', {
                                         sale,
                                     }),
                                 secondActionFunction: () => deleteSale(sale),
+                                text: {
+                                    info: 'O que deseja fazer com essa venda?',
+                                    firstButton: 'Atualizar',
+                                    secondButton: 'Deletar',
+                                },
+                                iconName: 'info',
                             })
                         }
                     >
