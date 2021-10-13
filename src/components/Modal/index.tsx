@@ -1,3 +1,4 @@
+import { useModal } from '@hooks/modal';
 import React from 'react';
 import ModalContainer from 'react-native-modal';
 import {
@@ -9,31 +10,21 @@ import {
     ModalButtonText,
 } from './styles';
 
-interface ModalProps {
-    isVisible?: boolean;
-    text: {
-        info: string;
-        firstButton: string;
-        secondButton: string;
-    };
-    iconName: string;
-    willUnmount?: boolean; //If actionFunction unmount modal's parent.
-    actionFunction?: () => Promise<void>;
-    secondActionFunction?: () => Promise<void>;
-    setVisibility({ visibility }: { visibility: boolean }): void;
-}
+const Modal: React.FC = () => {
+    const {
+        modalProps: {
+            isVisible,
+            actionFunction,
+            iconName,
+            secondActionFunction,
+            setVisibility,
+            text,
+            willUnmount,
+        },
+    } = useModal();
 
-const Modal: React.FC<ModalProps> = ({
-    isVisible = false,
-    text,
-    iconName,
-    willUnmount = false,
-    setVisibility,
-    actionFunction,
-    secondActionFunction,
-}) => {
     const handleResponse = (response: boolean) => {
-        if (!willUnmount || !response) {
+        if ((!willUnmount || !response) && setVisibility) {
             setVisibility({ visibility: false });
         }
 
@@ -48,8 +39,12 @@ const Modal: React.FC<ModalProps> = ({
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={() => setVisibility({ visibility: false })}
-            onBackdropPress={() => setVisibility({ visibility: false })}
+            onBackButtonPress={() =>
+                setVisibility && setVisibility({ visibility: false })
+            }
+            onBackdropPress={() =>
+                setVisibility && setVisibility({ visibility: false })
+            }
             style={{
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -58,23 +53,23 @@ const Modal: React.FC<ModalProps> = ({
             animationOut="fadeOut"
         >
             <ModalView>
-                <Icon name={iconName} size={56} color="#fff" />
+                <Icon name={iconName || ''} size={56} color="#fff" />
 
-                <ModalText>{text.info}</ModalText>
+                <ModalText>{text?.info}</ModalText>
 
                 <ButtonsContainer>
                     <ModalButton
                         style={{ backgroundColor: '#49b454' }}
                         onPress={() => handleResponse(true)}
                     >
-                        <ModalButtonText>{text.firstButton}</ModalButtonText>
+                        <ModalButtonText>{text?.firstButton}</ModalButtonText>
                     </ModalButton>
 
                     <ModalButton
                         style={{ backgroundColor: '#c93c3c' }}
                         onPress={() => handleResponse(false)}
                     >
-                        <ModalButtonText>{text.secondButton}</ModalButtonText>
+                        <ModalButtonText>{text?.secondButton}</ModalButtonText>
                     </ModalButton>
                 </ButtonsContainer>
             </ModalView>
