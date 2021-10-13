@@ -1,9 +1,9 @@
 import React from 'react';
 import { useModal } from '@hooks/modal';
+import IconComponent from 'react-native-vector-icons/MaterialIcons';
 import ModalContainer from 'react-native-modal';
 import {
     ModalView,
-    Icon,
     ModalText,
     ButtonsContainer,
     ModalButton,
@@ -19,6 +19,7 @@ const Modal: React.FC = () => {
             secondActionFunction,
             text,
             willUnmount,
+            inputProps,
         },
         hideModal,
     } = useModal();
@@ -36,40 +37,54 @@ const Modal: React.FC = () => {
     };
 
     return (
-        <ModalContainer
-            isVisible={isVisible}
-            coverScreen={false}
-            onBackButtonPress={() => hideModal}
-            onBackdropPress={() => hideModal}
-            style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-        >
-            <ModalView>
-                {iconName && <Icon name={iconName} size={56} color="#fff" />}
+        <>
+            {!inputProps && isVisible && (
+                <ModalContainer
+                    isVisible={isVisible}
+                    coverScreen={false}
+                    onBackButtonPress={hideModal}
+                    onBackdropPress={hideModal}
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    animationIn="fadeIn"
+                    animationOut="fadeOut"
+                >
+                    <ModalView>
+                        {iconName && (
+                            <IconComponent
+                                name={iconName}
+                                size={64}
+                                color="#fff"
+                            />
+                        )}
 
-                <ModalText>{text?.info}</ModalText>
+                        <ModalText>{text?.info}</ModalText>
 
-                <ButtonsContainer>
-                    <ModalButton
-                        style={{ backgroundColor: '#49b454' }}
-                        onPress={() => handleResponse(true)}
-                    >
-                        <ModalButtonText>{text?.firstButton}</ModalButtonText>
-                    </ModalButton>
+                        <ButtonsContainer>
+                            <ModalButton
+                                style={{ backgroundColor: '#49b454' }}
+                                onPress={() => handleResponse(true)}
+                            >
+                                <ModalButtonText>
+                                    {text?.firstButton}
+                                </ModalButtonText>
+                            </ModalButton>
 
-                    <ModalButton
-                        style={{ backgroundColor: '#c93c3c' }}
-                        onPress={() => handleResponse(false)}
-                    >
-                        <ModalButtonText>{text?.secondButton}</ModalButtonText>
-                    </ModalButton>
-                </ButtonsContainer>
-            </ModalView>
-        </ModalContainer>
+                            <ModalButton
+                                style={{ backgroundColor: '#c93c3c' }}
+                                onPress={() => handleResponse(false)}
+                            >
+                                <ModalButtonText>
+                                    {text?.secondButton}
+                                </ModalButtonText>
+                            </ModalButton>
+                        </ButtonsContainer>
+                    </ModalView>
+                </ModalContainer>
+            )}
+        </>
     );
 };
 

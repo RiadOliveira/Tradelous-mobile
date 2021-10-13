@@ -8,7 +8,7 @@ interface TextPickerInputProps {
 export const TextPickerView = styled.View`
     background-color: #243266;
     width: 80%;
-    height: 50%;
+    height: 45%;
     border-radius: 15px;
 
     align-items: center;

@@ -41,66 +41,78 @@ const TextPicker: React.FC = () => {
     };
 
     return (
-        <ModalContainer
-            isVisible={isVisible}
-            coverScreen={false}
-            onBackButtonPress={hideModal}
-            onBackdropPress={hideModal}
-            style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-        >
-            <TextPickerView>
-                {iconName && (
-                    <Icon
-                        name={iconName}
-                        size={80}
-                        color="#fff"
-                        style={{ marginTop: '4%' }}
-                    />
-                )}
-
-                <TextPickerInfo>{text?.info}</TextPickerInfo>
-
-                <InputContainer>
-                    <TextPickerInput
-                        hasPasteButton={inputProps?.hasPasteButton || false}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        returnKeyType="send"
-                        selectionColor="#000000"
-                        placeholder={inputProps?.placeholder}
-                        value={inputText}
-                        onChangeText={text => setInputText(text)}
-                        onSubmitEditing={handleResponse}
-                        secureTextEntry={inputProps?.isSecureText}
-                    />
-
-                    {inputProps?.hasPasteButton && (
-                        <PasteButton
-                            activeOpacity={0.75}
-                            onPress={() =>
-                                Clipboard.getString().then(response =>
-                                    setInputText(response),
-                                )
-                            }
-                        >
-                            <Icon name="content-paste" color="#fff" size={24} />
-                        </PasteButton>
-                    )}
-                </InputContainer>
-
-                <ConfirmButton
-                    style={{ backgroundColor: '#45a84f' }}
-                    onPress={handleResponse}
+        <>
+            {inputProps && isVisible && (
+                <ModalContainer
+                    isVisible={isVisible}
+                    coverScreen={false}
+                    onBackButtonPress={hideModal}
+                    onBackdropPress={hideModal}
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                    animationIn="fadeIn"
+                    animationOut="fadeOut"
                 >
-                    <ConfirmButtonText>{text?.firstButton}</ConfirmButtonText>
-                </ConfirmButton>
-            </TextPickerView>
-        </ModalContainer>
+                    <TextPickerView>
+                        {iconName && (
+                            <Icon
+                                name={iconName}
+                                size={80}
+                                color="#fff"
+                                style={{ marginTop: '4%' }}
+                            />
+                        )}
+
+                        <TextPickerInfo>{text?.info}</TextPickerInfo>
+
+                        <InputContainer>
+                            <TextPickerInput
+                                hasPasteButton={
+                                    inputProps?.hasPasteButton || false
+                                }
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                returnKeyType="send"
+                                selectionColor="#000000"
+                                placeholder={inputProps?.placeholder}
+                                value={inputText}
+                                onChangeText={text => setInputText(text)}
+                                onSubmitEditing={handleResponse}
+                                secureTextEntry={inputProps?.isSecureText}
+                            />
+
+                            {inputProps?.hasPasteButton && (
+                                <PasteButton
+                                    activeOpacity={0.75}
+                                    onPress={() =>
+                                        Clipboard.getString().then(response =>
+                                            setInputText(response),
+                                        )
+                                    }
+                                >
+                                    <Icon
+                                        name="content-paste"
+                                        color="#fff"
+                                        size={24}
+                                    />
+                                </PasteButton>
+                            )}
+                        </InputContainer>
+
+                        <ConfirmButton
+                            style={{ backgroundColor: '#45a84f' }}
+                            onPress={handleResponse}
+                        >
+                            <ConfirmButtonText>
+                                {text?.firstButton}
+                            </ConfirmButtonText>
+                        </ConfirmButton>
+                    </TextPickerView>
+                </ModalContainer>
+            )}
+        </>
     );
 };
 

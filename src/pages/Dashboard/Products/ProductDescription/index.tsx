@@ -37,9 +37,9 @@ import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
-import Modal from '@components/Modal';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import { useModal } from '@hooks/modal';
 
 interface IProduct {
     name: string;
@@ -51,26 +51,13 @@ interface IProduct {
     image?: string;
 }
 
-interface ModalProps {
-    actionFunction?: () => Promise<void>;
-    text?: {
-        info: string;
-        firstButton: string;
-        secondButton: string;
-    };
-    visibility: boolean;
-}
-
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
+    const { showModal, hideModal } = useModal();
     const { updateProductsStatus, productsStatus } = useProducts();
     const navigation = useNavigation();
 
     const [product, setProduct] = useState(useRoute().params as IProduct);
-
-    const [modalProps, setModalProps] = useState<ModalProps>({
-        visibility: false,
-    });
 
     useEffect(() => {
         navigation.addListener('focus', () => {
@@ -260,20 +247,6 @@ const ProductDescription: React.FC = () => {
 
     return (
         <>
-            <Modal
-                actionFunction={modalProps.actionFunction}
-                setVisibility={setModalProps}
-                isVisible={modalProps.visibility}
-                text={
-                    modalProps.text ?? {
-                        info: '',
-                        firstButton: '',
-                        secondButton: '',
-                    }
-                }
-                iconName="delete"
-            />
-
             {isCameraVisible && (
                 <Camera
                     onBarCodeRead={event => {
@@ -409,8 +382,7 @@ const ProductDescription: React.FC = () => {
 
                             <DeleteImageButton
                                 onPress={() =>
-                                    setModalProps({
-                                        visibility: true,
+                                    showModal({
                                         actionFunction: () =>
                                             handleImageData('delete'),
                                         text: {
@@ -419,6 +391,7 @@ const ProductDescription: React.FC = () => {
                                             firstButton: 'Sim',
                                             secondButton: 'Não',
                                         },
+                                        iconName: 'delete',
                                     })
                                 }
                             >
@@ -435,15 +408,17 @@ const ProductDescription: React.FC = () => {
                         <Button
                             style={{ backgroundColor: '#c93c3c' }}
                             onPress={() =>
-                                setModalProps({
-                                    visibility: true,
+                                showModal({
                                     actionFunction: handleDeleteProduct,
+                                    secondActionFunction: async () =>
+                                        hideModal(),
                                     text: {
                                         info:
                                             'Tem certeza que deseja deletar esse produto?',
                                         firstButton: 'Sim',
                                         secondButton: 'Não',
                                     },
+                                    iconName: 'delete',
                                 })
                             }
                         >
