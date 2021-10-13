@@ -1,11 +1,14 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import {
+    GestureHandlerRootView,
+    RectButton,
+} from 'react-native-gesture-handler';
 
 interface TextPickerInputProps {
     hasPasteButton: boolean;
 }
 
-export const TextPickerView = styled.View`
+export const TextPickerView = styled(GestureHandlerRootView)`
     background-color: #243266;
     width: 80%;
     height: 45%;

@@ -1,5 +1,8 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import {
+    GestureHandlerRootView,
+    RectButton,
+} from 'react-native-gesture-handler';
 
 export const ModalView = styled.View`
     background-color: #243266;
@@ -19,7 +22,7 @@ export const ModalText = styled.Text`
     width: 76%;
 `;
 
-export const ButtonsContainer = styled.View`
+export const ButtonsContainer = styled(GestureHandlerRootView)`
     flex-direction: row;
     width: 100%;
 
