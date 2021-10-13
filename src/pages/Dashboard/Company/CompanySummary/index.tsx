@@ -24,12 +24,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import convertCNPJ from '@utils/convertCNPJ';
 import { useAuth } from '@hooks/auth';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Modal from '@components/Modal';
 import { useCallback } from 'react';
 import Toast from 'react-native-toast-message';
-import TextPicker from '@components/TextPicker';
 import { FlatList } from 'react-native-gesture-handler';
 import LoadingIndicator from '@components/LoadingIndicator';
+import { useModal } from '@hooks/modal';
 
 interface ICompany {
     id: string;
@@ -47,25 +46,10 @@ interface IEmployee {
     isAdmin: boolean;
 }
 
-interface IModalProps {
-    visibility: boolean;
-    actionFunction?: () => Promise<void>;
-    infoText?: string;
-}
-
-interface ITextPickerProps {
-    visibility: boolean;
-    infoText?: string;
-    actionFunction?: (value: string) => Promise<void>;
-    inputProps?: {
-        hasPasteButton: boolean;
-        placeholder: string;
-        isSecureText: boolean;
-    };
-}
-
 const CompanySummary: React.FC = () => {
     const { user, setUserCompany } = useAuth();
+    const { showModal } = useModal();
+
     const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
         updatedAt: 0,
     };
@@ -74,14 +58,6 @@ const CompanySummary: React.FC = () => {
     const [company, setCompany] = useState<ICompany>({} as ICompany);
     const [hasLoadedCompany, setHasLoadedCompany] = useState(false);
     const [employees, setEmployees] = useState<IEmployee[]>([]);
-
-    const [modalProps, setModalProps] = useState<IModalProps>({
-        visibility: false,
-    });
-
-    const [textPickerProps, setTextPickerProps] = useState<ITextPickerProps>({
-        visibility: false,
-    });
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
@@ -123,8 +99,6 @@ const CompanySummary: React.FC = () => {
                 );
 
                 setEmployees(employees => [...employees, response.data]);
-
-                setTextPickerProps({ visibility: false });
 
                 Toast.show({
                     type: 'success',
@@ -199,37 +173,6 @@ const CompanySummary: React.FC = () => {
 
     return (
         <>
-            <Modal
-                actionFunction={modalProps.actionFunction}
-                setVisibility={setModalProps}
-                isVisible={modalProps.visibility}
-                text={{
-                    info: modalProps.infoText || '',
-                    firstButton: 'Sim',
-                    secondButton: 'Não',
-                }}
-                iconName={'delete'}
-                willUnmount={!user.isAdmin}
-            />
-
-            <TextPicker
-                actionFunction={textPickerProps.actionFunction}
-                setVisibility={setTextPickerProps}
-                isVisible={textPickerProps.visibility}
-                text={{
-                    info: textPickerProps.infoText || '',
-                    buttonText: 'Confirmar',
-                }}
-                inputProps={{
-                    hasPasteButton:
-                        textPickerProps.inputProps?.hasPasteButton || false,
-                    placeholder: textPickerProps.inputProps?.placeholder || '',
-                    isSecureText:
-                        textPickerProps.inputProps?.isSecureText || false,
-                }}
-                iconName="tag"
-            />
-
             {!hasLoadedCompany ? (
                 <LoadingIndicator />
             ) : (
@@ -284,31 +227,39 @@ const CompanySummary: React.FC = () => {
                             activeOpacity={0.8}
                             onPress={() =>
                                 user.isAdmin
-                                    ? setTextPickerProps({
-                                          visibility: true,
+                                    ? showModal({
                                           actionFunction: employeeId =>
-                                              handleHireEmployee(employeeId),
-                                          infoText:
-                                              'Insira o ID do funcionário que deseja contratar',
+                                              handleHireEmployee(
+                                                  employeeId || '',
+                                              ),
+                                          text: {
+                                              info:
+                                                  'Insira o ID do funcionário que deseja contratar',
+                                              firstButton: 'Confirmar',
+                                          },
                                           inputProps: {
                                               placeholder: 'ID do funcionário',
                                               hasPasteButton: true,
                                               isSecureText: false,
                                           },
+                                          iconName: 'tag',
                                       })
-                                    : setTextPickerProps({
-                                          visibility: true,
+                                    : showModal({
                                           actionFunction: verifyPassword =>
                                               handleLeaveCompany(
-                                                  verifyPassword,
+                                                  verifyPassword || '',
                                               ),
-                                          infoText:
-                                              'Insira sua senha para confirmar a saída',
+                                          text: {
+                                              info:
+                                                  'Insira sua senha para confirmar a saída',
+                                              firstButton: 'Confirmar',
+                                          },
                                           inputProps: {
                                               placeholder: 'Senha',
                                               hasPasteButton: false,
                                               isSecureText: true,
                                           },
+                                          iconName: 'tag',
                                       })
                             }
                         >
@@ -346,20 +297,23 @@ const CompanySummary: React.FC = () => {
                                     activeOpacity={0.8}
                                     disabled={!user.isAdmin || item.isAdmin}
                                     onPress={() =>
-                                        setTextPickerProps({
-                                            visibility: true,
+                                        showModal({
                                             actionFunction: verifyPassword =>
                                                 handleFireEmployee(
-                                                    verifyPassword,
+                                                    verifyPassword || '',
                                                     item.id,
                                                 ),
-                                            infoText:
-                                                'Insira sua senha para confirmar a demissão',
+                                            text: {
+                                                info:
+                                                    'Insira sua senha para confirmar a demissão',
+                                                firstButton: 'Confirmar',
+                                            },
                                             inputProps: {
                                                 placeholder: 'Senha',
                                                 hasPasteButton: false,
                                                 isSecureText: true,
                                             },
+                                            iconName: 'tag',
                                         })
                                     }
                                 >

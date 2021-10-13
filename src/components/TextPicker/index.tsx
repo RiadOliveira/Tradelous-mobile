@@ -20,11 +20,11 @@ const TextPicker: React.FC = () => {
             isVisible,
             actionFunction,
             iconName,
-            setVisibility,
             text,
             willUnmount,
             inputProps,
         },
+        hideModal,
     } = useModal();
 
     const [inputText, setInputText] = useState('');
@@ -33,9 +33,9 @@ const TextPicker: React.FC = () => {
         if (actionFunction) {
             actionFunction(inputText);
 
-            if (!willUnmount && setVisibility) {
+            if (!willUnmount) {
                 setInputText('');
-                setVisibility({ visibility: false });
+                hideModal();
             }
         }
     };
@@ -44,12 +44,8 @@ const TextPicker: React.FC = () => {
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={() =>
-                setVisibility && setVisibility({ visibility: false })
-            }
-            onBackdropPress={() =>
-                setVisibility && setVisibility({ visibility: false })
-            }
+            onBackButtonPress={hideModal}
+            onBackdropPress={hideModal}
             style={{
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -58,12 +54,14 @@ const TextPicker: React.FC = () => {
             animationOut="fadeOut"
         >
             <TextPickerView>
-                <Icon
-                    name={iconName || ''}
-                    size={80}
-                    color="#fff"
-                    style={{ marginTop: '4%' }}
-                />
+                {iconName && (
+                    <Icon
+                        name={iconName}
+                        size={80}
+                        color="#fff"
+                        style={{ marginTop: '4%' }}
+                    />
+                )}
 
                 <TextPickerInfo>{text?.info}</TextPickerInfo>
 

@@ -13,7 +13,6 @@ interface IModalProps {
     willUnmount?: boolean; //If actionFunction unmount modal's parent.
     actionFunction?: (pickedText?: string) => Promise<void>; //PickedText when is TextPicker
     secondActionFunction?: () => Promise<void>;
-    setVisibility?({ visibility }: { visibility: boolean }): void;
     inputProps?: {
         placeholder: string;
         hasPasteButton: boolean;

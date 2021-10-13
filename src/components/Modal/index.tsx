@@ -1,5 +1,5 @@
-import { useModal } from '@hooks/modal';
 import React from 'react';
+import { useModal } from '@hooks/modal';
 import ModalContainer from 'react-native-modal';
 import {
     ModalView,
@@ -17,15 +17,15 @@ const Modal: React.FC = () => {
             actionFunction,
             iconName,
             secondActionFunction,
-            setVisibility,
             text,
             willUnmount,
         },
+        hideModal,
     } = useModal();
 
     const handleResponse = (response: boolean) => {
-        if ((!willUnmount || !response) && setVisibility) {
-            setVisibility({ visibility: false });
+        if (!willUnmount || !response) {
+            hideModal();
         }
 
         if (response && actionFunction) {
@@ -39,12 +39,8 @@ const Modal: React.FC = () => {
         <ModalContainer
             isVisible={isVisible}
             coverScreen={false}
-            onBackButtonPress={() =>
-                setVisibility && setVisibility({ visibility: false })
-            }
-            onBackdropPress={() =>
-                setVisibility && setVisibility({ visibility: false })
-            }
+            onBackButtonPress={() => hideModal}
+            onBackdropPress={() => hideModal}
             style={{
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -53,7 +49,7 @@ const Modal: React.FC = () => {
             animationOut="fadeOut"
         >
             <ModalView>
-                <Icon name={iconName || ''} size={56} color="#fff" />
+                {iconName && <Icon name={iconName} size={56} color="#fff" />}
 
                 <ModalText>{text?.info}</ModalText>
 
