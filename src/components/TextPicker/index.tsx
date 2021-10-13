@@ -47,6 +47,7 @@ const TextPicker: React.FC<TextPickerProps> = ({
 
             if (!willUnmount) {
                 setInputText('');
+                setVisibility({ visibility: false });
             }
         }
     };

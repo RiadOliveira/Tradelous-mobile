@@ -142,8 +142,13 @@ const CompanySummary: React.FC = () => {
     );
 
     const handleFireEmployee = useCallback(
-        async (employeeId: string): Promise<void> => {
+        async (verifyPassword: string, employeeId: string): Promise<void> => {
             try {
+                await api.post('/user/sessions', {
+                    email: user.email,
+                    password: verifyPassword,
+                }); //In order to verify user's password to delete company.
+
                 await api.patch(`/company/fire-employee/${employeeId}`);
 
                 setEmployees(employees =>
@@ -162,7 +167,7 @@ const CompanySummary: React.FC = () => {
                 });
             }
         },
-        [],
+        [user.email],
     );
 
     const handleLeaveCompany = useCallback(
@@ -203,7 +208,7 @@ const CompanySummary: React.FC = () => {
                     firstButton: 'Sim',
                     secondButton: 'Não',
                 }}
-                iconName={user.isAdmin ? 'delete' : 'logout'}
+                iconName={'delete'}
                 willUnmount={!user.isAdmin}
             />
 
@@ -341,12 +346,20 @@ const CompanySummary: React.FC = () => {
                                     activeOpacity={0.8}
                                     disabled={!user.isAdmin || item.isAdmin}
                                     onPress={() =>
-                                        setModalProps({
+                                        setTextPickerProps({
                                             visibility: true,
-                                            actionFunction: () =>
-                                                handleFireEmployee(item.id),
+                                            actionFunction: verifyPassword =>
+                                                handleFireEmployee(
+                                                    verifyPassword,
+                                                    item.id,
+                                                ),
                                             infoText:
-                                                'Tem certeza que deseja demitir esse funcionário?',
+                                                'Insira sua senha para confirmar a demissão',
+                                            inputProps: {
+                                                placeholder: 'Senha',
+                                                hasPasteButton: false,
+                                                isSecureText: true,
+                                            },
                                         })
                                     }
                                 >
