@@ -42,7 +42,7 @@ const TextPicker: React.FC = () => {
 
     return (
         <>
-            {inputProps && isVisible && (
+            {inputProps && (
                 <ModalContainer
                     isVisible={isVisible}
                     coverScreen={false}
