@@ -5,16 +5,11 @@ import {
     LogoImage,
     PickerView,
     PickerText,
-    ImageContainer,
-    ImagePicker,
-    DeleteImageButton,
-    ImageHighlight,
 } from './styles';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import TestLogo from '@assets/logo/test-logo.png';
 import api from '@services/api';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import getValidationErrors from '@utils/getValidationErrors';
 import Toast from 'react-native-toast-message';
 import * as yup from 'yup';
@@ -24,7 +19,6 @@ import { FormHandles } from '@unform/core';
 import { TextInput, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
-import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useAuth } from '@hooks/auth';
 import LoadingIndicator from '@components/LoadingIndicator';
 
@@ -44,22 +38,12 @@ interface ICompanyData {
     cnpj: string;
 }
 
-interface IImageData {
-    name: string;
-    type: string;
-    uri: string;
-}
-
 const RegisterCompany: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const cnpjInput = useRef<TextInput>(null);
     const cityInput = useRef<TextInput>(null);
 
-    const { user, setUserCompany } = useAuth();
-
-    const [selectedImage, setSelectedImage] = useState<IImageData>(
-        {} as IImageData,
-    );
+    const { setUserCompany } = useAuth();
 
     const [selectedState, setSelectedState] = useState<IBrazilianState>(
         {} as IBrazilianState,
@@ -97,23 +81,6 @@ const RegisterCompany: React.FC = () => {
         }
     }, [selectedState.id]);
 
-    const handleUploadImage = useCallback(() => {
-        launchImageLibrary(
-            {
-                mediaType: 'photo',
-            },
-            ({ fileName, uri, type, didCancel }) => {
-                if (!didCancel && uri && fileName && type) {
-                    setSelectedImage({
-                        name: fileName,
-                        type,
-                        uri,
-                    });
-                }
-            },
-        );
-    }, []);
-
     const handleSubmit = useCallback(
         async (data: ICompanyData) => {
             try {
@@ -133,24 +100,10 @@ const RegisterCompany: React.FC = () => {
                     throw new yup.ValidationError('Formato de cnpj inválido');
                 }
 
-                const companyData = new FormData();
-
-                companyData.append('name', data.name);
-                companyData.append(
-                    'address',
-                    `${selectedCity.nome}/${selectedState.sigla}`,
-                );
-                companyData.append('cnpj', Number(data.cnpj));
-
-                if (selectedImage.uri) {
-                    companyData.append('logo', {
-                        uri: selectedImage.uri,
-                        name: `${data.name}-${user.id}`,
-                        type: selectedImage.type,
-                    });
-                }
-
-                const response = await api.post('/company/', companyData);
+                const response = await api.post('/company/', {
+                    ...data,
+                    address: `${selectedCity.nome}/${selectedState.sigla}`,
+                });
 
                 Toast.show({
                     type: 'success',
@@ -190,7 +143,7 @@ const RegisterCompany: React.FC = () => {
                 });
             }
         },
-        [selectedState, selectedCity, user, selectedImage, setUserCompany],
+        [selectedState, selectedCity, setUserCompany],
     );
 
     return (
@@ -279,28 +232,6 @@ const RegisterCompany: React.FC = () => {
                             ))}
                         </Picker>
                     </PickerView>
-
-                    <ImageContainer>
-                        <ImagePicker
-                            onPress={handleUploadImage}
-                            activeOpacity={0.7}
-                        >
-                            {selectedImage.uri ? (
-                                <ImageHighlight
-                                    source={{
-                                        uri: selectedImage.uri,
-                                    }}
-                                />
-                            ) : (
-                                <Icon name="add" size={44} color="#1c274e" />
-                            )}
-                        </ImagePicker>
-                        <DeleteImageButton
-                            onPress={() => setSelectedImage({} as IImageData)}
-                        >
-                            <Icon name="clear" size={34} color="#e7e7e7" />
-                        </DeleteImageButton>
-                    </ImageContainer>
                 </Form>
 
                 <Button onPress={() => formRef.current?.submitForm()}>

@@ -157,7 +157,7 @@ const EditCompany: React.FC = () => {
                     });
                 } else {
                     try {
-                        await api.patch('/company/updateLogo');
+                        await api.patch('/company/update-logo');
                         setSelectedImage(null);
 
                         Toast.show({
@@ -190,7 +190,7 @@ const EditCompany: React.FC = () => {
                                 });
 
                                 const response = await api.patch(
-                                    '/company/updateLogo',
+                                    '/company/update-logo',
                                     data,
                                 );
 
