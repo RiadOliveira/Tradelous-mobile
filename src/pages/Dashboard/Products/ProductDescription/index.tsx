@@ -161,7 +161,7 @@ const ProductDescription: React.FC = () => {
                 } else {
                     try {
                         const response = await api.patch(
-                            `/products/updateImage/${product.id}`,
+                            `/products/update-image/${product.id}`,
                         );
 
                         updateProductsStatus(response.data);
@@ -197,7 +197,7 @@ const ProductDescription: React.FC = () => {
                                 });
 
                                 const response = await api.patch(
-                                    `/products/updateImage/${product.id}`,
+                                    `/products/update-image/${product.id}`,
                                     data,
                                 );
 
