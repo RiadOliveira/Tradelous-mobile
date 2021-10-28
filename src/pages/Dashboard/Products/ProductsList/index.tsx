@@ -56,14 +56,11 @@ const ProductsList: React.FC = () => {
             user.companyId &&
             (productsStatus == 'newProduct' || companyProducts.length === 0)
         ) {
-            api.get('/products').then(response => {
-                setCompanyProducts(response.data);
+            api.get('/products').then(({ data }) => {
+                setCompanyProducts(data);
                 setHasLoadedProducts(true);
             });
-        } else if (
-            productsStatus !== 'noChanges' &&
-            productsStatus !== 'newProduct'
-        ) {
+        } else if (typeof productsStatus !== 'string') {
             if (productsStatus.id.includes('deleted')) {
                 //To delete a product needs to pass deleted + product.id to productsStatus.
                 const deletedProductId = productsStatus.id.split(' ')[1]; //Gets the id.
