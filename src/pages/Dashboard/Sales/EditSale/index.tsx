@@ -193,7 +193,7 @@ const EditSale: React.FC = () => {
                             {sale.product.image ? (
                                 <SaleSectionImage
                                     source={{
-                                        uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                        uri: `${apiStaticUrl}/product-image/${sale.product.image}`,
                                     }}
                                 />
                             ) : (

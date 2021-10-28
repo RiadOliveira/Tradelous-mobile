@@ -94,7 +94,7 @@ const ProductsList: React.FC = () => {
     ]);
 
     const apiStaticUrl = useMemo(
-        () => `${api.defaults.baseURL}/files/productImage`,
+        () => `${api.defaults.baseURL}/files/product-image`,
         [],
     );
 

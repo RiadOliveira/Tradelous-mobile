@@ -51,7 +51,7 @@ const ProductSale: React.FC = () => {
     const navigation = useNavigation();
 
     const apiStaticUrl = useMemo(
-        () => `${api.defaults.baseURL}/files/productImage`,
+        () => `${api.defaults.baseURL}/files/product-image`,
         [],
     );
 

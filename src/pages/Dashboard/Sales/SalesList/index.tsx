@@ -229,7 +229,7 @@ const Sales: React.FC = () => {
                             {sale.product.image ? (
                                 <SaleImage
                                     source={{
-                                        uri: `${apiStaticUrl}/productImage/${sale.product.image}`,
+                                        uri: `${apiStaticUrl}/product-image/${sale.product.image}`,
                                     }}
                                 />
                             ) : (

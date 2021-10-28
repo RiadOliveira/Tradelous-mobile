@@ -71,7 +71,7 @@ const ProductDescription: React.FC = () => {
     }, [productsStatus, navigation, product.id]);
 
     const apiStaticUrl = useMemo(
-        () => `${api.defaults.baseURL}/files/productImage`,
+        () => `${api.defaults.baseURL}/files/product-image`,
         [],
     );
 
