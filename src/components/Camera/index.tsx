@@ -6,7 +6,7 @@ import { useCamera } from '@hooks/camera';
 import { ReturnButton, FlashButton } from './styles';
 
 const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
-    const { handleCameraVisibility } = useCamera();
+    const { hideCamera } = useCamera();
 
     const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
@@ -39,10 +39,7 @@ const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
                 />
             </RNCamera>
 
-            <ReturnButton
-                activeOpacity={0.4}
-                onPress={() => handleCameraVisibility(false)}
-            >
+            <ReturnButton activeOpacity={0.4} onPress={hideCamera}>
                 <Icon name="arrow-back" size={32} color="#ffffff" />
             </ReturnButton>
 

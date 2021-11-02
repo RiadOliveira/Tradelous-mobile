@@ -13,9 +13,6 @@ import {
     SellProductButton,
     AuxiliarBar,
     SellProductButtonText,
-    BarCodeScannerContainer,
-    BarCodeValue,
-    BarCodeButton,
     ImageContainer,
     ImagePicker,
     DeleteImageButton,
@@ -24,7 +21,6 @@ import {
 } from './styles';
 import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
-import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
@@ -32,13 +28,14 @@ import { useNavigation, useRoute } from '@react-navigation/core';
 import { useProducts } from '@hooks/products';
 
 import api from '@services/api';
-import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import BarCodeScanner from '@components/BarCodeScanner';
+import * as yup from 'yup';
+
 import { useModal } from '@hooks/modal';
 
 interface IProduct {
@@ -79,22 +76,9 @@ const ProductDescription: React.FC = () => {
     const priceInput = useRef<TextInput>(null);
     const brandInput = useRef<TextInput>(null);
     const quantityInput = useRef<TextInput>(null);
-    const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [barCodeValue, setBarCodeValue] = useState(
         product.barCode ? product.barCode : '',
-    );
-
-    const handleCameraOpening = useCallback(() => {
-        handleCameraVisibility(true);
-    }, [handleCameraVisibility]);
-
-    const handleBarCodeRead = useCallback(
-        value => {
-            setBarCodeValue(value);
-            handleCameraVisibility(false);
-        },
-        [handleCameraVisibility],
     );
 
     const handleSubmit = useCallback(
@@ -246,173 +230,117 @@ const ProductDescription: React.FC = () => {
     }, [product.id, navigation, updateProductsStatus]);
 
     return (
-        <>
-            {isCameraVisible && (
-                <Camera
-                    onBarCodeRead={event => {
-                        handleBarCodeRead(event.data);
+        <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+        >
+            <Container>
+                <TitleTextContainer style={{ elevation: 10 }}>
+                    <TitleText>Dados do produto</TitleText>
+                </TitleTextContainer>
+
+                <Form
+                    ref={formRef}
+                    initialData={{
+                        ...product,
+                        price: product.price.toString(),
+                        quantity: product.quantity.toString(),
                     }}
-                />
-            )}
+                    onSubmit={handleSubmit}
+                    style={{
+                        alignItems: 'center',
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        autoCorrect={false}
+                        autoCapitalize="sentences"
+                        name="name"
+                        placeholder="Nome"
+                        icon="label-outline"
+                        onSubmitEditing={() => priceInput.current?.focus()}
+                        returnKeyType="next"
+                    />
 
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-            >
-                <Container>
-                    <TitleTextContainer style={{ elevation: 10 }}>
-                        <TitleText>Dados do produto</TitleText>
-                    </TitleTextContainer>
+                    <Input
+                        keyboardType="numeric"
+                        name="price"
+                        ref={priceInput}
+                        placeholder="Preço (Use . para decimal)"
+                        icon="attach-money"
+                        onSubmitEditing={() => brandInput.current?.focus()}
+                        returnKeyType="next"
+                    />
 
-                    <Form
-                        ref={formRef}
-                        initialData={{
-                            ...product,
-                            price: product.price.toString(),
-                            quantity: product.quantity.toString(),
-                        }}
-                        onSubmit={handleSubmit}
-                        style={{
-                            alignItems: 'center',
-                            width: '100%',
-                        }}
-                    >
-                        <Input
-                            autoCorrect={false}
-                            autoCapitalize="sentences"
-                            name="name"
-                            placeholder="Nome"
-                            icon="label-outline"
-                            onSubmitEditing={() => priceInput.current?.focus()}
-                            returnKeyType="next"
-                        />
+                    <Input
+                        autoCapitalize="words"
+                        name="brand"
+                        placeholder="Marca"
+                        icon="tag"
+                        ref={brandInput}
+                        onSubmitEditing={() => quantityInput.current?.focus()}
+                        returnKeyType="next"
+                    />
 
+                    <ProductQuantityContainer>
                         <Input
                             keyboardType="numeric"
-                            name="price"
-                            ref={priceInput}
-                            placeholder="Preço (Use . para decimal)"
-                            icon="attach-money"
-                            onSubmitEditing={() => brandInput.current?.focus()}
+                            name="quantity"
+                            ref={quantityInput}
+                            placeholder="Quant. em estoque"
+                            icon="inbox"
+                            editable={user.isAdmin}
                             returnKeyType="next"
                         />
 
-                        <Input
-                            autoCapitalize="words"
-                            name="brand"
-                            placeholder="Marca"
-                            icon="tag"
-                            ref={brandInput}
-                            onSubmitEditing={() =>
-                                quantityInput.current?.focus()
-                            }
-                            returnKeyType="next"
-                        />
+                        <SellProductButton
+                            onPress={() => {
+                                Toast.show({
+                                    type: 'info',
+                                    text1: 'Venda quase concluída',
+                                    text2:
+                                        'Insira a quantidade e o método para finalizá-la.',
+                                });
+                                navigation.navigate('ProductSale', product);
+                            }}
+                        >
+                            <AuxiliarBar />
+                            <SellProductButtonText>
+                                Vender
+                            </SellProductButtonText>
+                        </SellProductButton>
+                    </ProductQuantityContainer>
 
-                        <ProductQuantityContainer>
-                            <Input
-                                keyboardType="numeric"
-                                name="quantity"
-                                ref={quantityInput}
-                                placeholder="Quant. em estoque"
-                                icon="inbox"
-                                editable={user.isAdmin}
-                                returnKeyType="next"
-                            />
+                    <BarCodeScanner
+                        barCodeValue={barCodeValue}
+                        actionFunction={data => setBarCodeValue(data)}
+                    />
 
-                            <SellProductButton
-                                onPress={() => {
-                                    Toast.show({
-                                        type: 'info',
-                                        text1: 'Venda quase concluída',
-                                        text2:
-                                            'Insira a quantidade e o método para finalizá-la.',
-                                    });
-                                    navigation.navigate('ProductSale', product);
-                                }}
-                            >
-                                <AuxiliarBar />
-                                <SellProductButtonText>
-                                    Vender
-                                </SellProductButtonText>
-                            </SellProductButton>
-                        </ProductQuantityContainer>
+                    <ImageContainer>
+                        <ImagePicker
+                            onPress={() => handleImageData('upload')}
+                            activeOpacity={0.7}
+                        >
+                            {product.image ? (
+                                <ImageHighlight
+                                    source={{
+                                        uri: `${apiStaticUrl}/${product.image}`,
+                                    }}
+                                />
+                            ) : (
+                                <Icon name="add" size={44} color="#1c274e" />
+                            )}
+                        </ImagePicker>
 
-                        <BarCodeScannerContainer>
-                            <Icon
-                                name="qr-code"
-                                size={24}
-                                style={{ position: 'absolute', left: 12 }}
-                                color={barCodeValue ? '#374b92' : 'black'}
-                            />
-                            <BarCodeValue>
-                                {barCodeValue
-                                    ? barCodeValue
-                                    : 'Sem código inserido'}
-                            </BarCodeValue>
-
-                            <BarCodeButton
-                                onPress={handleCameraOpening}
-                                activeOpacity={0.4}
-                            >
-                                <Icon name="qr-code-scanner" size={24} />
-                            </BarCodeButton>
-                        </BarCodeScannerContainer>
-
-                        <ImageContainer>
-                            <ImagePicker
-                                onPress={() => handleImageData('upload')}
-                                activeOpacity={0.7}
-                            >
-                                {product.image ? (
-                                    <ImageHighlight
-                                        source={{
-                                            uri: `${apiStaticUrl}/${product.image}`,
-                                        }}
-                                    />
-                                ) : (
-                                    <Icon
-                                        name="add"
-                                        size={44}
-                                        color="#1c274e"
-                                    />
-                                )}
-                            </ImagePicker>
-
-                            <DeleteImageButton
-                                onPress={() =>
-                                    showModal({
-                                        actionFunction: () =>
-                                            handleImageData('delete'),
-                                        text: {
-                                            info:
-                                                'Tem certeza que deseja deletar a imagem desse produto?',
-                                            firstButton: 'Sim',
-                                            secondButton: 'Não',
-                                        },
-                                        iconName: 'delete',
-                                    })
-                                }
-                            >
-                                <Icon name="clear" size={34} color="#e7e7e7" />
-                            </DeleteImageButton>
-                        </ImageContainer>
-                    </Form>
-
-                    <ButtonsContainer>
-                        <Button onPress={() => formRef.current?.submitForm()}>
-                            Atualizar Produto
-                        </Button>
-
-                        <Button
-                            style={{ backgroundColor: '#c93c3c' }}
+                        <DeleteImageButton
                             onPress={() =>
                                 showModal({
-                                    actionFunction: handleDeleteProduct,
+                                    actionFunction: () =>
+                                        handleImageData('delete'),
                                     text: {
                                         info:
-                                            'Tem certeza que deseja deletar esse produto?',
+                                            'Tem certeza que deseja deletar a imagem desse produto?',
                                         firstButton: 'Sim',
                                         secondButton: 'Não',
                                     },
@@ -420,12 +348,36 @@ const ProductDescription: React.FC = () => {
                                 })
                             }
                         >
-                            Deletar Produto
-                        </Button>
-                    </ButtonsContainer>
-                </Container>
-            </ScrollView>
-        </>
+                            <Icon name="clear" size={34} color="#e7e7e7" />
+                        </DeleteImageButton>
+                    </ImageContainer>
+                </Form>
+
+                <ButtonsContainer>
+                    <Button onPress={() => formRef.current?.submitForm()}>
+                        Atualizar Produto
+                    </Button>
+
+                    <Button
+                        style={{ backgroundColor: '#c93c3c' }}
+                        onPress={() =>
+                            showModal({
+                                actionFunction: handleDeleteProduct,
+                                text: {
+                                    info:
+                                        'Tem certeza que deseja deletar esse produto?',
+                                    firstButton: 'Sim',
+                                    secondButton: 'Não',
+                                },
+                                iconName: 'delete',
+                            })
+                        }
+                    >
+                        Deletar Produto
+                    </Button>
+                </ButtonsContainer>
+            </Container>
+        </ScrollView>
     );
 };
 

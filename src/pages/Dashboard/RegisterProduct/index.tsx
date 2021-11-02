@@ -5,26 +5,22 @@ import {
     TitleText,
     ImagePicker,
     ImageHighlight,
-    BarCodeScannerContainer,
-    BarCodeValue,
-    BarCodeButton,
 } from './styles';
 import { ScrollView, TextInput } from 'react-native';
 import { useAuth } from '@hooks/auth';
-import { useCamera } from '@hooks/camera';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useProducts } from '@hooks/products';
 
 import api from '@services/api';
-import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import BarCodeScanner from '@components/BarCodeScanner';
 
 interface IProduct {
     name: string;
@@ -49,27 +45,10 @@ const RegisterProduct: React.FC = () => {
     const priceInput = useRef<TextInput>(null);
     const brandInput = useRef<TextInput>(null);
     const quantityInput = useRef<TextInput>(null);
-    const { isCameraVisible, handleCameraVisibility } = useCamera();
 
     const [barCodeValue, setBarCodeValue] = useState('');
     const [selectedImage, setSelectedImage] = useState<IImageData>(
         {} as IImageData,
-    );
-    const [temporaryInputValues, setTemporaryInputValues] = useState(
-        {} as IProduct,
-    );
-
-    const handleCameraOpening = useCallback(() => {
-        setTemporaryInputValues(formRef.current?.getData() as IProduct);
-        handleCameraVisibility(true);
-    }, [handleCameraVisibility]);
-
-    const handleBarCodeRead = useCallback(
-        value => {
-            setBarCodeValue(value);
-            handleCameraVisibility(false);
-        },
-        [handleCameraVisibility],
     );
 
     const handleUploadImage = useCallback(() => {
@@ -145,7 +124,6 @@ const RegisterProduct: React.FC = () => {
                 formRef.current?.reset();
                 setSelectedImage({} as IImageData);
                 setBarCodeValue('');
-                setTemporaryInputValues({} as IProduct);
 
                 updateProductsStatus('newProduct');
 
@@ -166,14 +144,6 @@ const RegisterProduct: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
         >
-            {isCameraVisible && (
-                <Camera
-                    onBarCodeRead={event => {
-                        handleBarCodeRead(event.data);
-                    }}
-                />
-            )}
-
             <Container>
                 <TitleTextContainer style={{ elevation: 10 }}>
                     <TitleText>Dados do produto</TitleText>
@@ -181,7 +151,6 @@ const RegisterProduct: React.FC = () => {
 
                 <Form
                     ref={formRef}
-                    initialData={temporaryInputValues}
                     onSubmit={handleSubmit}
                     style={{
                         alignItems: 'center',
@@ -227,26 +196,10 @@ const RegisterProduct: React.FC = () => {
                         returnKeyType="next"
                     />
 
-                    <BarCodeScannerContainer>
-                        <Icon
-                            name="qr-code"
-                            size={24}
-                            style={{ position: 'absolute', left: 12 }}
-                            color={barCodeValue ? '#374b92' : 'black'}
-                        />
-                        <BarCodeValue>
-                            {barCodeValue
-                                ? barCodeValue
-                                : 'Sem código inserido'}
-                        </BarCodeValue>
-
-                        <BarCodeButton
-                            onPress={handleCameraOpening}
-                            activeOpacity={0.4}
-                        >
-                            <Icon name="qr-code-scanner" size={24} />
-                        </BarCodeButton>
-                    </BarCodeScannerContainer>
+                    <BarCodeScanner
+                        barCodeValue={barCodeValue}
+                        actionFunction={data => setBarCodeValue(data)}
+                    />
 
                     <ImagePicker
                         onPress={handleUploadImage}

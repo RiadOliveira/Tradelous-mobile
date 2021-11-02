@@ -19,7 +19,6 @@ import { useCamera } from '@hooks/camera';
 import { useProducts } from '@hooks/products';
 
 import api from '@services/api';
-import Camera from '@components/Camera';
 import Button from '@components/Button';
 import Toast from 'react-native-toast-message';
 import formatPrice from '@utils/formatPrice';
@@ -42,7 +41,7 @@ const ProductsList: React.FC = () => {
     const { productsStatus, updateProductsStatus } = useProducts();
 
     const navigation = useNavigation();
-    const { isCameraVisible, handleCameraVisibility } = useCamera();
+    const { showCamera, setBarCodeReadFunction } = useCamera();
 
     const [companyProducts, setCompanyProducts] = useState<IProduct[]>([]);
     const [hasLoadedProducts, setHasLoadedProducts] = useState(false);
@@ -131,8 +130,6 @@ const ProductsList: React.FC = () => {
                 product => product.barCode == barCode,
             );
 
-            handleCameraVisibility(false);
-
             if (findedProductIndex == -1) {
                 Toast.show({
                     type: 'error',
@@ -147,7 +144,7 @@ const ProductsList: React.FC = () => {
                 );
             }
         },
-        [companyProducts, handleCameraVisibility, navigation],
+        [companyProducts, navigation],
     );
 
     const handleProductSelection = useCallback(
@@ -157,14 +154,6 @@ const ProductsList: React.FC = () => {
 
     return (
         <Container>
-            {isCameraVisible && (
-                <Camera
-                    onBarCodeRead={event => {
-                        handleBarCodeRead(event.data);
-                    }}
-                />
-            )}
-
             {!hasLoadedProducts && <LoadingIndicator />}
 
             {companyProducts.length != 0 ? (
@@ -192,7 +181,10 @@ const ProductsList: React.FC = () => {
                         />
 
                         <BarCodeButton
-                            onPress={() => handleCameraVisibility(true)}
+                            onPress={() => {
+                                showCamera();
+                                setBarCodeReadFunction(handleBarCodeRead);
+                            }}
                             activeOpacity={0.4}
                         >
                             <Icon
