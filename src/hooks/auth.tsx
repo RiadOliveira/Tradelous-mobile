@@ -48,6 +48,13 @@ const AuthContext: React.FC = ({ children }) => {
     const [authData, setAuthData] = useState<IAuthProps>({} as IAuthProps);
     const [isReady, setIsReady] = useState(false);
 
+    const signOut = useCallback(async () => {
+        await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
+        api.defaults.headers.authorization = undefined;
+
+        setAuthData({} as IAuthProps);
+    }, []);
+
     useEffect(() => {
         async function fetchStorage() {
             const [user, token] = await AsyncStorage.multiGet([
@@ -61,12 +68,20 @@ const AuthContext: React.FC = ({ children }) => {
                     token: token[1],
                 });
 
+                api.interceptors.response.use(response => {
+                    if (response.status === 401) {
+                        signOut();
+                    }
+
+                    return response;
+                });
+
                 api.defaults.headers.authorization = `Bearer ${token[1]}`;
             }
         }
 
         fetchStorage().then(() => setIsReady(true));
-    }, []);
+    }, [signOut]);
 
     const signIn = useCallback(async (data: SignInData) => {
         const response = await api.post<IAuthProps>('/user/sessions', data);
@@ -153,13 +168,6 @@ const AuthContext: React.FC = ({ children }) => {
         },
         [authData.user],
     );
-
-    const signOut = useCallback(async () => {
-        await AsyncStorage.multiRemove(['@Tradelous-user', '@Tradelous-token']);
-        api.defaults.headers.authorization = undefined;
-
-        setAuthData({} as IAuthProps);
-    }, []);
 
     return (
         <authContext.Provider
