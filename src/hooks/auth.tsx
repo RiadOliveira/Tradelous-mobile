@@ -68,13 +68,16 @@ const AuthContext: React.FC = ({ children }) => {
                     token: token[1],
                 });
 
-                api.interceptors.response.use(response => {
-                    if (response.status === 401) {
-                        signOut();
-                    }
+                api.interceptors.response.use(
+                    response => response,
+                    error => {
+                        if (error.response && error.response.status === 401) {
+                            return new Promise(() => signOut());
+                        }
 
-                    return response;
-                });
+                        throw error;
+                    },
+                );
 
                 api.defaults.headers.authorization = `Bearer ${token[1]}`;
             }
