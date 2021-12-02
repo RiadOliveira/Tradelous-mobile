@@ -25,7 +25,7 @@ import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 
 import api from '@services/api';
 import Button from '@components/Button';
@@ -37,16 +37,6 @@ import BarCodeScanner from '@components/BarCodeScanner';
 import * as yup from 'yup';
 
 import { useModal } from '@hooks/modal';
-
-interface IProduct {
-    name: string;
-    id: string;
-    price: number;
-    quantity: number;
-    brand: string;
-    barCode?: string;
-    image?: string;
-}
 
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();

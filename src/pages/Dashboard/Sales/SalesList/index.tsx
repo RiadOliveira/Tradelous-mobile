@@ -10,35 +10,27 @@ import {
     SaleImage,
     SaleIcon,
 } from './styles';
-import Toast from 'react-native-toast-message';
-import api from '@services/api';
-import DatePicker from '@components/DatePicker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import getSalesOnDate from '@utils/getSalesOnDate';
-
 import { Picker } from '@react-native-picker/picker';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCallback } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
+import { useModal } from '@hooks/modal';
+import { format } from 'date-fns';
+
+import Toast from 'react-native-toast-message';
+import api from '@services/api';
+import DatePicker from '@components/DatePicker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import LoadingIndicator from '@components/LoadingIndicator';
 import formatPrice from '@utils/formatPrice';
-import { useModal } from '@hooks/modal';
 
 interface IEmployee {
     name: string;
     email: string;
     avatar: string;
     isAdmin: boolean;
-}
-
-interface IProduct {
-    name: string;
-    price: number;
-    quantity: number;
-    brand: string;
-    image?: string;
 }
 
 interface ISale {
@@ -68,30 +60,32 @@ const Sales: React.FC = () => {
     const [searchType, setSearchType] = useState<SearchType>('day');
 
     const [sales, setSales] = useState<ISale[]>([]);
-    const [dateOfSales, setDateofSales] = useState<Date>(new Date(Date.now()));
+    const [dateOfSales, setDateofSales] = useState<string>(
+        format(new Date(Date.now()), 'dd-MM-yyyy'),
+    );
     const [datePickerVisibility, setDatePickerVisibility] = useState(false);
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        getSalesOnDate(searchType, dateOfSales).then(response => {
-            setSales(response);
+        api.get<ISale[]>(`/sales/${searchType}/${dateOfSales}`).then(
+            ({ data }) => {
+                setSales(data);
 
-            if (!hasLoadedSales) {
-                setHasLoadedSales(true);
-            }
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateOfSales, searchType]);
+                if (!hasLoadedSales) {
+                    setHasLoadedSales(true);
+                }
+            },
+        );
+    }, [dateOfSales, hasLoadedSales, searchType]);
 
     useEffect(() => {
         if (typeof productsStatus !== 'string') {
-            getSalesOnDate(searchType, dateOfSales).then(response =>
-                setSales(response),
-            );
+            api.get<ISale[]>(
+                `/sales/${searchType}/${dateOfSales}`,
+            ).then(({ data }) => setSales(data));
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [productsStatus]);
+    }, [dateOfSales, productsStatus, searchType]);
 
     useEffect(() => {
         if (productsStatus !== 'noChanges' && productsStatus !== 'newProduct') {

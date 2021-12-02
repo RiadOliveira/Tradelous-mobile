@@ -41,3 +41,4 @@ const ProductsContext: React.FC = ({ children }) => {
 const useProducts = (): IProductsContext => useContext(productsContext);
 
 export { ProductsContext, useProducts };
+export type { IProduct };

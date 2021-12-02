@@ -11,7 +11,7 @@ import { useAuth } from '@hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { launchImageLibrary } from 'react-native-image-picker/src';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 
 import api from '@services/api';
 import Button from '@components/Button';
@@ -21,15 +21,6 @@ import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import BarCodeScanner from '@components/BarCodeScanner';
-
-interface IProduct {
-    name: string;
-    price: number;
-    quantity: number;
-    brand: string;
-    barCode?: string;
-    image?: string;
-}
 
 interface IImageData {
     name: string;

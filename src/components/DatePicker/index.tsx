@@ -1,5 +1,5 @@
 import React from 'react';
-import { addYears } from 'date-fns';
+import { addYears, format } from 'date-fns';
 import ModalContainer from 'react-native-modal';
 import DatePickerComponent from 'react-native-date-picker';
 
@@ -14,7 +14,7 @@ import { useCallback } from 'react';
 interface DatePickerProps {
     isVisible?: boolean;
     setVisibility(visibility: boolean): void;
-    setDateFunction(date: Date): void;
+    setDateFunction(date: string): void;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
@@ -29,7 +29,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const actualYear = new Date(Date.now()).getFullYear();
 
     const confirmPicker = useCallback(() => {
-        setDateFunction(dateValue);
+        setDateFunction(format(dateValue, 'dd-MM-yyyy'));
         setVisibility(false);
     }, [dateValue, setDateFunction, setVisibility]);
 

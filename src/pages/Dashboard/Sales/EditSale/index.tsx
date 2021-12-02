@@ -30,21 +30,13 @@ import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import formatPrice from '@utils/formatPrice';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 import { Picker } from '@react-native-picker/picker';
 
 interface IEmployee {
     name: string;
     email: string;
     avatar: string;
-}
-
-interface IProduct {
-    name: string;
-    price: number;
-    quantity: number;
-    brand: string;
-    image?: string;
 }
 
 interface ISale {

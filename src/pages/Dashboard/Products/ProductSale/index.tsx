@@ -23,21 +23,12 @@ import {
 } from './styles';
 import { ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { useCallback } from 'react';
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
-
-interface IProduct {
-    name: string;
-    id: string;
-    price: number;
-    brand: string;
-    quantity: number;
-    image?: string;
-}
 
 const ProductSale: React.FC = () => {
     const product = useRoute().params as IProduct;

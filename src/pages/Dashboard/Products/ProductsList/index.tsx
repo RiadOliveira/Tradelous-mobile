@@ -16,7 +16,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
 import { useCamera } from '@hooks/camera';
-import { useProducts } from '@hooks/products';
+import { IProduct, useProducts } from '@hooks/products';
 
 import api from '@services/api';
 import Button from '@components/Button';
@@ -25,16 +25,6 @@ import formatPrice from '@utils/formatPrice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { FlatList } from 'react-native-gesture-handler';
 import LoadingIndicator from '@components/LoadingIndicator';
-
-interface IProduct {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-    brand: string;
-    barCode?: string;
-    image?: string;
-}
 
 const ProductsList: React.FC = () => {
     const { user } = useAuth();
