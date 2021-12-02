@@ -110,12 +110,16 @@ const EditSale: React.FC = () => {
 
                 let quantity = soldQuantity;
 
-                if (soldQuantity > sale.quantity) {
-                    quantity =
-                        sale.product.quantity - (soldQuantity - sale.quantity);
-                } else if (sale.quantity > soldQuantity) {
-                    quantity =
-                        sale.product.quantity + (sale.quantity - soldQuantity);
+                if (sale.quantity !== soldQuantity) {
+                    const quantityDifference = Math.abs(
+                        sale.quantity - soldQuantity,
+                    );
+                    quantity = sale.product.quantity;
+
+                    quantity +=
+                        sale.quantity > soldQuantity
+                            ? quantityDifference
+                            : -quantityDifference;
                 }
 
                 updateProductsStatus({

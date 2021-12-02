@@ -45,7 +45,9 @@ const getSalesOnDate = async (
 
         case 'month': {
             const response = await api.get<ISale[]>(
-                `/sales/month/${date.getMonth() + 1}-${date.getFullYear()}`,
+                `/sales/month/${date.getDate()}-${
+                    date.getMonth() + 1
+                }-${date.getFullYear()}`,
             );
 
             return response.data;

@@ -13,7 +13,6 @@ import {
 import Toast from 'react-native-toast-message';
 import api from '@services/api';
 import DatePicker from '@components/DatePicker';
-import formatPrice from '@utils/formatPrice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import getSalesOnDate from '@utils/getSalesOnDate';
 
@@ -24,6 +23,7 @@ import { useAuth } from '@hooks/auth';
 import { useCallback } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import LoadingIndicator from '@components/LoadingIndicator';
+import formatPrice from '@utils/formatPrice';
 import { useModal } from '@hooks/modal';
 
 interface IEmployee {
@@ -109,12 +109,6 @@ const Sales: React.FC = () => {
             );
         }
     }, [productsStatus]);
-
-    const formattedProductPrices = useMemo(
-        () => sales.map(sale => formatPrice(sale.product.price)),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [productsStatus, sales],
-    );
 
     const deleteSale = useCallback(
         async (selectedSale: ISale) => {
@@ -205,7 +199,7 @@ const Sales: React.FC = () => {
                     alignItems: 'center',
                     paddingBottom: '8%',
                 }}
-                renderItem={({ item: sale, index }) => (
+                renderItem={({ item: sale }) => (
                     <Sale
                         disabled={!user.isAdmin}
                         activeOpacity={0.7}
@@ -256,9 +250,8 @@ const Sales: React.FC = () => {
                                         : sale.product.name}
                                 </SaleText>
 
-                                <SaleText>Qntd: {sale.quantity}</SaleText>
                                 <SaleText>
-                                    {formattedProductPrices[index]}
+                                    {formatPrice(sale.totalPrice)}
                                 </SaleText>
                             </SaleData>
 
