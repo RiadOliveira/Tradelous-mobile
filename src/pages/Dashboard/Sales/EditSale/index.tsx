@@ -62,7 +62,7 @@ const EditSale: React.FC = () => {
     const [totalValue, setTotalValue] = useState(
         formatPrice(sale.quantity * sale.product.price),
     );
-    const [sellMethod, setSellMethod] = useState(sale.method);
+    const [paymentMethod, setpaymentMethod] = useState(sale.method);
 
     const formRef = useRef<FormHandles>(null);
 
@@ -95,8 +95,7 @@ const EditSale: React.FC = () => {
                 });
 
                 const response = await api.put(`/sales/${sale.id}`, {
-                    productId: sale.productId,
-                    method: sellMethod,
+                    method: paymentMethod,
                     quantity: data.soldQuantity,
                 });
 
@@ -138,7 +137,7 @@ const EditSale: React.FC = () => {
             sale.quantity,
             sale.product,
             sale.productId,
-            sellMethod,
+            paymentMethod,
             soldQuantity,
             updateProductsStatus,
         ],
@@ -245,13 +244,13 @@ const EditSale: React.FC = () => {
                     <PickerView>
                         <PickerText>Selecione o método:</PickerText>
                         <Picker
-                            selectedValue={sellMethod}
+                            selectedValue={paymentMethod}
                             style={{
                                 height: 50,
                                 width: '44%',
                             }}
                             onValueChange={(itemValue: 'money' | 'card') =>
-                                setSellMethod(itemValue)
+                                setpaymentMethod(itemValue)
                             }
                             mode="dropdown"
                         >
