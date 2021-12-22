@@ -83,29 +83,64 @@ const EditCompany: React.FC = () => {
             {
                 baseURL: '',
             },
-        ).then(({ data }) => {
-            setAllStates(data);
-            setSelectedState(
-                data.find(
-                    value => value.sigla === company.address.split('/')[1],
-                ) || data[0],
-            );
-        });
+        )
+            .then(({ data }) => {
+                setAllStates(data);
+                setSelectedState(
+                    data.find(
+                        value => value.sigla === company.address.split('/')[1],
+                    ) || data[0],
+                );
+            })
+            .catch(() => {
+                const state = company.address.split('/')[1];
+
+                setAllStates([
+                    {
+                        id: '0',
+                        nome: state,
+                        sigla: state,
+                    },
+                ]);
+
+                setSelectedState({
+                    id: '0',
+                    nome: state,
+                    sigla: state,
+                });
+            });
     }, [company.address]);
 
     useEffect(() => {
         if (selectedState.id) {
             api.get<IBrazilianCity[]>(
                 `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState.id}/municipios?orderBy=nome`,
-            ).then(({ data }) => {
-                setStateCities(data);
-                setSelectedCity(
-                    data.find(
-                        value => value.nome === company.address.split('/')[0],
-                    ) || data[0],
-                );
-                setHasLoadedCities(true);
-            });
+            )
+                .then(({ data }) => {
+                    setStateCities(data);
+                    setSelectedCity(
+                        data.find(
+                            value =>
+                                value.nome === company.address.split('/')[0],
+                        ) || data[0],
+                    );
+                    setHasLoadedCities(true);
+                })
+                .catch(() => {
+                    const city = company.address.split('/')[0];
+
+                    setStateCities([
+                        {
+                            id: '0',
+                            nome: city,
+                        },
+                    ]);
+
+                    setSelectedCity({
+                        id: '0',
+                        nome: city,
+                    });
+                });
         }
     }, [selectedState.id, company.address]);
 
