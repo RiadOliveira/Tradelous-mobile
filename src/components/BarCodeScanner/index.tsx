@@ -1,16 +1,23 @@
 import React, { useCallback } from 'react';
-import { Container, BarCodeButton, BarCodeValue } from './styles';
+import {
+    Container,
+    BarCodeButton,
+    BarCodeValueButton,
+    BarCodeValue,
+} from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useCamera } from '@hooks/camera';
 
 interface ScannerProps {
     barCodeValue: string;
     actionFunction: (data: string) => void;
+    deleteFunction: () => void;
 }
 
 const BarCodeScanner: React.FC<ScannerProps> = ({
     barCodeValue,
     actionFunction,
+    deleteFunction,
 }) => {
     const { showCamera, setBarCodeReadFunction } = useCamera();
 
@@ -18,6 +25,8 @@ const BarCodeScanner: React.FC<ScannerProps> = ({
         showCamera();
         setBarCodeReadFunction(actionFunction);
     }, [actionFunction, setBarCodeReadFunction, showCamera]);
+
+    const handleDeleteBarCode = () => barCodeValue && deleteFunction();
 
     return (
         <Container>
@@ -28,9 +37,11 @@ const BarCodeScanner: React.FC<ScannerProps> = ({
                 color={barCodeValue ? '#374b92' : 'black'}
             />
 
-            <BarCodeValue>
-                {barCodeValue ? barCodeValue : 'Sem código inserido'}
-            </BarCodeValue>
+            <BarCodeValueButton onPress={handleDeleteBarCode}>
+                <BarCodeValue>
+                    {barCodeValue ? barCodeValue : 'Sem código inserido'}
+                </BarCodeValue>
+            </BarCodeValueButton>
 
             <BarCodeButton onPress={handleButtonPress} activeOpacity={0.4}>
                 <Icon name="qr-code-scanner" size={24} color="#374b92" />

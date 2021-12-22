@@ -14,14 +14,17 @@ export const Container = styled.View`
     position: relative;
 `;
 
-export const BarCodeValue = styled.Text`
-    font-family: Poppins-Regular;
-    font-size: 13px;
-    color: #8e8e8e;
+export const BarCodeValueButton = styled.TouchableOpacity`
     margin-top: 1%;
 
     max-width: 68%;
     text-align: center;
+`;
+
+export const BarCodeValue = styled.Text`
+    font-family: Poppins-Regular;
+    font-size: 13px;
+    color: #8e8e8e;
 `;
 
 export const BarCodeButton = styled.TouchableOpacity`

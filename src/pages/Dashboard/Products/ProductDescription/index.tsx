@@ -41,6 +41,7 @@ import { useModal } from '@hooks/modal';
 const ProductDescription: React.FC = () => {
     const { user } = useAuth();
     const { showModal } = useModal();
+
     const { updateProductsStatus, productsStatus } = useProducts();
     const navigation = useNavigation();
 
@@ -219,6 +220,25 @@ const ProductDescription: React.FC = () => {
         }
     }, [product.id, navigation, updateProductsStatus]);
 
+    const handleDeleteBarCode = useCallback(async () => {
+        const { id, name, price, brand, quantity } = product;
+
+        const { data } = await api.put(`/products/${id}`, {
+            name,
+            price,
+            brand,
+            quantity,
+        });
+
+        setBarCodeValue('');
+        updateProductsStatus(data);
+
+        Toast.show({
+            type: 'success',
+            text1: 'Código excluído com sucesso!',
+        });
+    }, [product, updateProductsStatus]);
+
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -305,6 +325,18 @@ const ProductDescription: React.FC = () => {
                     <BarCodeScanner
                         barCodeValue={barCodeValue}
                         actionFunction={data => setBarCodeValue(data)}
+                        deleteFunction={() =>
+                            showModal({
+                                actionFunction: () => handleDeleteBarCode(),
+                                text: {
+                                    info:
+                                        'Tem certeza que deseja deletar o código do produto?',
+                                    firstButton: 'Sim',
+                                    secondButton: 'Não',
+                                },
+                                iconName: 'delete',
+                            })
+                        }
                     />
 
                     <ImageContainer>

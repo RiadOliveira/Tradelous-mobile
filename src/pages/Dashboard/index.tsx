@@ -8,14 +8,12 @@ import SalesRoutes from './Sales';
 import RegisterCompany from '../Authentication/RegisterCompany';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useCamera } from '@hooks/camera';
 import { useAuth } from '@hooks/auth';
 
 const Tab = createBottomTabNavigator();
 
 const Dashboard: React.FC = () => {
     const { user } = useAuth();
-    const { isCameraVisible } = useCamera();
 
     return (
         <Tab.Navigator
@@ -29,7 +27,6 @@ const Dashboard: React.FC = () => {
                 tabStyle: {},
                 style: {
                     height: 52,
-                    display: isCameraVisible ? 'none' : 'flex',
                 },
             }}
         >

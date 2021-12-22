@@ -21,6 +21,7 @@ import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import BarCodeScanner from '@components/BarCodeScanner';
+import { useModal } from '@hooks/modal';
 
 interface IImageData {
     name: string;
@@ -30,6 +31,7 @@ interface IImageData {
 
 const RegisterProduct: React.FC = () => {
     const { user } = useAuth();
+    const { showModal } = useModal();
     const { updateProductsStatus } = useProducts();
 
     const formRef = useRef<FormHandles>(null);
@@ -190,6 +192,18 @@ const RegisterProduct: React.FC = () => {
                     <BarCodeScanner
                         barCodeValue={barCodeValue}
                         actionFunction={data => setBarCodeValue(data)}
+                        deleteFunction={() =>
+                            showModal({
+                                actionFunction: async () => setBarCodeValue(''),
+                                text: {
+                                    info:
+                                        'Tem certeza que deseja deletar o código do produto?',
+                                    firstButton: 'Sim',
+                                    secondButton: 'Não',
+                                },
+                                iconName: 'delete',
+                            })
+                        }
                     />
 
                     <ImagePicker
