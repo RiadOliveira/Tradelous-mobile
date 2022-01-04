@@ -159,7 +159,7 @@ const CompanySummary: React.FC = () => {
                     text1: 'Sucesso na saída da empresa!',
                 });
 
-                setUserCompany(false, undefined);
+                setUserCompany(false);
             } catch {
                 Toast.show({
                     type: 'error',

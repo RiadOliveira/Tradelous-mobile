@@ -17,7 +17,6 @@ import * as yup from 'yup';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { TextInput, Text } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { useAuth } from '@hooks/auth';
 import LoadingIndicator from '@components/LoadingIndicator';
@@ -147,98 +146,93 @@ const RegisterCompany: React.FC = () => {
     );
 
     return (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-        >
+        <Container>
             {!hasLoadedCities && <LoadingIndicator />}
 
-            <Container>
-                <LogoView>
-                    <LogoImage source={TestLogo} />
-                </LogoView>
+            <LogoView>
+                <LogoImage source={TestLogo} />
+            </LogoView>
 
-                <Form
-                    style={{
-                        alignItems: 'center',
-                    }}
-                    ref={formRef}
-                    onSubmit={handleSubmit}
-                >
-                    <Input
-                        autoCorrect={false}
-                        textContentType="organizationName"
-                        autoCapitalize="words"
-                        name="name"
-                        placeholder="Nome da empresa"
-                        icon="business"
-                        onSubmitEditing={() => cnpjInput.current?.focus()}
-                        returnKeyType="next"
-                    />
+            <Form
+                style={{
+                    alignItems: 'center',
+                }}
+                ref={formRef}
+                onSubmit={handleSubmit}
+            >
+                <Input
+                    autoCorrect={false}
+                    textContentType="organizationName"
+                    autoCapitalize="words"
+                    name="name"
+                    placeholder="Nome da empresa"
+                    icon="business"
+                    onSubmitEditing={() => cnpjInput.current?.focus()}
+                    returnKeyType="next"
+                />
 
-                    <Input
-                        keyboardType="numeric"
-                        ref={cnpjInput}
-                        maxLength={14}
-                        name="cnpj"
-                        placeholder="CNPJ (Somente números)"
-                        icon="location-city"
-                        onSubmitEditing={() => cityInput.current?.focus()}
-                        returnKeyType="next"
-                    />
+                <Input
+                    keyboardType="numeric"
+                    ref={cnpjInput}
+                    maxLength={14}
+                    name="cnpj"
+                    placeholder="CNPJ (Somente números)"
+                    icon="location-city"
+                    onSubmitEditing={() => cityInput.current?.focus()}
+                    returnKeyType="next"
+                />
 
-                    <PickerView>
-                        <PickerText>Estado:</PickerText>
-                        <Picker
-                            selectedValue={selectedState}
-                            style={{
-                                height: 50,
-                                width: '60%',
-                            }}
-                            onValueChange={itemValue => {
-                                setSelectedState(itemValue);
-                                setHasLoadedCities(false);
-                            }}
-                        >
-                            {allStates.map(state => (
-                                <Picker.Item
-                                    key={state.id}
-                                    label={state.nome}
-                                    value={state}
-                                />
-                            ))}
-                        </Picker>
-                    </PickerView>
+                <PickerView>
+                    <PickerText>Estado:</PickerText>
+                    <Picker
+                        selectedValue={selectedState}
+                        style={{
+                            height: 50,
+                            width: '60%',
+                        }}
+                        onValueChange={itemValue => {
+                            setSelectedState(itemValue);
+                            setHasLoadedCities(false);
+                        }}
+                    >
+                        {allStates.map(state => (
+                            <Picker.Item
+                                key={state.id}
+                                label={state.nome}
+                                value={state}
+                            />
+                        ))}
+                    </Picker>
+                </PickerView>
 
-                    <PickerView>
-                        <PickerText>Cidade:</PickerText>
-                        <Picker
-                            selectedValue={selectedCity}
-                            style={{
-                                height: 50,
-                                width: '60%',
-                            }}
-                            onValueChange={itemValue =>
-                                setSelectedCity(itemValue)
-                            }
-                        >
-                            {stateCities.map(city => (
-                                <Picker.Item
-                                    key={city.id}
-                                    label={city.nome}
-                                    value={city}
-                                />
-                            ))}
-                        </Picker>
-                    </PickerView>
-                </Form>
+                <PickerView>
+                    <PickerText>Cidade:</PickerText>
+                    <Picker
+                        selectedValue={selectedCity}
+                        style={{
+                            height: 50,
+                            width: '60%',
+                        }}
+                        onValueChange={itemValue => setSelectedCity(itemValue)}
+                    >
+                        {stateCities.map(city => (
+                            <Picker.Item
+                                key={city.id}
+                                label={city.nome}
+                                value={city}
+                            />
+                        ))}
+                    </Picker>
+                </PickerView>
+            </Form>
 
-                <Button onPress={() => formRef.current?.submitForm()}>
-                    <Text>Registrar{'\n'}empresa</Text>
-                </Button>
-            </Container>
-        </ScrollView>
+            <Button
+                style={{ marginTop: 25 }}
+                onPress={() => formRef.current?.submitForm()}
+            >
+                <Text>Registrar{'\n'}empresa</Text>
+            </Button>
+        </Container>
     );
 };
 

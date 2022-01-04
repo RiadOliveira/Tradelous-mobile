@@ -5,10 +5,6 @@ interface SearchInputProps {
     isFocused: boolean;
 }
 
-interface ProductAvailabilityProps {
-    hasInStock: boolean;
-}
-
 export const Container = styled.View`
     background-color: #49b454;
     flex: 1;
@@ -74,14 +70,6 @@ export const ProductText = styled.Text`
     font-family: Poppins-Regular;
     color: #ffffff;
     font-size: 11px;
-`;
-
-export const ProductAvailabilityText = styled.Text<ProductAvailabilityProps>`
-    font-family: Poppins-Regular;
-    color: #ffffff;
-    font-size: 11px;
-
-    color: ${props => (props.hasInStock ? '#68e043' : '#eb2a2a')};
 `;
 
 export const NoProductsContainer = styled.View`

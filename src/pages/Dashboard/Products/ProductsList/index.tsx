@@ -9,7 +9,6 @@ import {
     ProductImage,
     ProductData,
     ProductText,
-    ProductAvailabilityText,
     NoProductsContainer,
     NoProductsText,
 } from './styles';
@@ -230,19 +229,11 @@ const ProductsList: React.FC = () => {
                                             width: '94%',
                                         }}
                                     >
+                                        <ProductText>{item.brand}</ProductText>
+
                                         <ProductText>
                                             {formattedPrices[index]}
                                         </ProductText>
-
-                                        <ProductText>{item.brand}</ProductText>
-
-                                        <ProductAvailabilityText
-                                            hasInStock={item.quantity > 0}
-                                        >
-                                            {item.quantity > 0
-                                                ? 'Em estoque'
-                                                : 'Em falta'}
-                                        </ProductAvailabilityText>
                                     </ProductData>
                                 </ProductData>
                             </ProductContainer>

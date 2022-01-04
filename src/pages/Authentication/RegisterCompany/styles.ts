@@ -5,12 +5,10 @@ export const Container = styled.View`
     flex: 1;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 30px;
 `;
 
 export const LogoView = styled.View`
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin: 50px 0;
 `;
 
 export const LogoImage = styled.Image`
