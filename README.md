@@ -96,12 +96,12 @@ Tools used on this project:
 
 <h2 id="features">:gear: Features</h2>
 
-- [Admin] Can hire (Using their IDs, which the user can access on profile's screen) and fire employees of/from the company.
-- User's register which can be admin or employee of a company.
-- Company's register (When a user creates an account as admin or when he already has an account, but isn't associated to any company).
+- User's register, update and delete. The user can be admin or employee of a company.
+- Company's register, update and delete (After user's account has been created).
+- [Admin] Can hire (Using their IDs, which the user can access on profile's screen) and fire employees from the company.
 - Product's register, update and delete (By an employee or the admin of the company).
   - It's possible to read a barcode from products, using device's camera, and associate this code to the product saved on the app, being possible to use it on products' search afterwards.
-- Sale's system to register product's sales, determining product's quantity and saving it on the current date.
+- System to register product's sales (on current date), determining product's sold quantity and sale's payment method (money or card).
 - Search system to find products (By name) and sales (By date, being possible to choose the type of the search, that can be: day, week and month. Starting on the selected date, example: if the user choose January 10 and type month, will find all sales between January 10 and February 10). </br></br>
 
 <h2 id="screenshots">:camera: Screen Shots</h2>
