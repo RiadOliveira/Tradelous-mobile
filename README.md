@@ -45,7 +45,7 @@ Tools used on this project:
 <ul>
   <li id="prerequisites"><h3>Prerequisites</h3></li>
   
-  Before you start, it will be necessary to install those tools on your machine: [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/). Also, you will need the backend of this app installed and running on your machine, which is explained how to do on this repository: [Tradelous Backend](https://github.com/RiadOliveira/Tradelous-backend).
+  Before you start, it will be necessary to install those tools on your machine: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) and the SDK of [Android](https://developer.android.com/studio) or [IOS](https://developer.apple.com/xcode/), depending in which enviroment you will run the application. Also, you will need the backend of this app installed and running on your machine, which is explained how to do on this repository: [Tradelous Backend](https://github.com/RiadOliveira/Tradelous-backend).
   
   <li id="running"><h3>Running the app</h3></li>
   
@@ -66,23 +66,28 @@ Tools used on this project:
     # Generate app's build
       # If you have an emulator, simply run one of the commands below, if haven't, connect your device to your machine
       # using a USB cable, and then run:
-          # Android
-              $ npm run android
-              or
-              $ yarn android
-          # IOS
-              $ npm run ios
-              or
-              $ yarn ios
     
-    # Extra step (Running on mobile device)
-      # After install the app on your device, shake it to appear the dev's options, and then go to settings, there you
-      # will need to set the debug server host and port (Put the IP of your machine and the PORT 8081).
-
+      # Android
+      $ npm run android
+      or
+      $ yarn android
+    
+      # IOS
+      $ npm run ios
+      or
+      $ yarn ios
+    
     # Run the app (With backend running on background)
     $ npm start
     or
     $ yarn start
+    
+    # Extra step (Running on mobile device and using wi-fi)
+      # You can use the app with your device connected to your machine using USB, but there's also a way to use it
+      # through wifi, doing this: after install the app on your device, shake it to appear the dev's options, and 
+      # then go to settings, there you will need to set the debug server host and port (Put the IP of your machine 
+      # and the PORT 8081), and then, just need to restart the debug server on your machine that the device's app 
+      # will detect and update.
   ```
 </ul>
 
