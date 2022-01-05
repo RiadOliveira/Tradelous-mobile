@@ -59,13 +59,14 @@ Tools used on this project:
     $ yarn
     
     # Fill enviroment variables
-      # In first place, remove the .example part of .env.example file, there's only one variable, which is API (Backend) URL,
-      # if you will run the app on a device's emulator, you can let .env unchanged, using localhost as URL, but, if you will
-      # run on your mobile device, it's necessary to change that variable to the URL where server is running. 
+      # In first place, remove the .example part of .env.example file, there's only one variable, which is 
+      # API (Backend) URL, if you will run the app on a device's emulator, you can let .env unchanged, using 
+      # localhost as URL, but, if you will run on your mobile device, it's necessary to change that variable 
+      # to the URL where server is running. 
     
     # Generate app's build
-      # If you have an emulator, simply run one of the commands below, if haven't, connect your device to your machine
-      # using a USB cable, and then run:
+      # If you have an emulator, simply run one of the commands below, if haven't, connect your device to 
+      # your machine using a USB cable, and then run:
     
       # Android
       $ npm run android
@@ -83,11 +84,11 @@ Tools used on this project:
     $ yarn start
     
     # Extra step (Running on mobile device and using wi-fi)
-      # You can use the app with your device connected to your machine using USB, but there's also a way to use it
-      # through wifi, doing this: after install the app on your device, shake it to appear the dev's options, and 
-      # then go to settings, there you will need to set the debug server host and port (Put the IP of your machine 
-      # and the PORT 8081), and then, just need to restart the debug server on your machine that the device's app 
-      # will detect and update.
+      # You can use the app with your device connected to your machine using USB, but there's also a way to use 
+      # it through wifi, doing this: after install the app on your device, shake it to appear the dev's options, 
+      # and then go to settings, there you will need to set the debug server host and port (Put the IP of your 
+      # machine and the PORT 8081), and then, just need to restart the debug server on your machine that the 
+      # device's app will detect and update.
   ```
 </ul>
 
