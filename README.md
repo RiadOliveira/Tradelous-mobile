@@ -29,6 +29,7 @@ Contents
         * [Profile](#profile)
         * [Products](#products)
         * [Sales](#sales)
+   * [:memo: License](#license)
    * [:man: Author](#author)
 <!--te-->
 </br>
@@ -168,6 +169,11 @@ Tools used on this project:
 
     - **Selection**
     <img src="https://user-images.githubusercontent.com/69125013/148205240-11dcf21e-4fec-4a11-b75d-bcb594c09473.jpg" width="300"/>
+
+</br>
+
+<h2 id="license">:memo: License</h2>
+This project is MIT Licensed. See <a href="https://github.com/RiadOliveira/Tradelous-frontend-mobile/blob/main/LICENSE">LICENSE</a> file for more details.
 
 </br>
 
