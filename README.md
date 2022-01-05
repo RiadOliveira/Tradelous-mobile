@@ -51,6 +51,9 @@ Tools used on this project:
   ```bash
     # Clone this repository
     $ git clone https://github.com/RiadOliveira/Tradelous-frontend-mobile.git
+    
+    # Access project's folder
+    $ cd Tradelous-frontend-mobile
 
     # Install the dependecies
     $ npm install
