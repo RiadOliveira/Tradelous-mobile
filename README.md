@@ -45,7 +45,7 @@ Tools used on this project:
 <ul>
   <li id="prerequisites"><h3>Prerequisites</h3></li>
   
-  Before you start, it will be necessary to install those tools on your machine: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) and the SDK of [Android](https://developer.android.com/studio) or [IOS](https://developer.apple.com/xcode/), depending in which enviroment you will run the application. Also, you will need the backend of this app installed and running on your machine, which is explained how to do on this repository: [Tradelous Backend](https://github.com/RiadOliveira/Tradelous-backend).
+  Before you start, it will be necessary to install those tools on your machine: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) and the SDK of [Android](https://developer.android.com/studio) or [IOS](https://developer.apple.com/xcode/), depending on which enviroment you will run the application. Also, you will need the backend of this app installed and running on your machine, which is explained how to do on this repository: [Tradelous Backend](https://github.com/RiadOliveira/Tradelous-backend).
   
   <li id="running"><h3>Running the app</h3></li>
   
