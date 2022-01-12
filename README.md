@@ -51,10 +51,10 @@ Tools used on this project:
   
   ```bash
     # Clone this repository
-    $ git clone https://github.com/RiadOliveira/Tradelous-frontend-mobile.git
+    $ git clone https://github.com/RiadOliveira/Tradelous-mobile.git
     
     # Access project's folder
-    $ cd Tradelous-frontend-mobile
+    $ cd Tradelous-mobile
 
     # Install the dependecies
     $ npm install
