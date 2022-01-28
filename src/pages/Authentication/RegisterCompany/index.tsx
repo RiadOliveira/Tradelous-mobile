@@ -55,18 +55,17 @@ const RegisterCompany: React.FC = () => {
     );
     const [stateCities, setStateCities] = useState<IBrazilianCity[]>([]);
 
+    // Gets states.
     useEffect(() => {
         api.get<IBrazilianState[]>(
             'https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome',
-            {
-                baseURL: '',
-            },
         ).then(({ data }) => {
             setAllStates(data);
             setSelectedState(data[0]);
         });
     }, []);
 
+    // Gets cities.
     useEffect(() => {
         if (selectedState.id) {
             api.get<IBrazilianCity[]>(

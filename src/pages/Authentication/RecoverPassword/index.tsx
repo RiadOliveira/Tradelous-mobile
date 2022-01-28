@@ -42,6 +42,7 @@ const RecoverPassword: React.FC = () => {
 
     const [userEmail, setUserEmail] = useState('');
 
+    // Verify user's token.
     useEffect(() => {
         AsyncStorage.getItem('@Tradelous-user').then(response => {
             if (response) setUserEmail(response);

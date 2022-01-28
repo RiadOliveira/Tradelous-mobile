@@ -10,9 +10,10 @@ const Camera: React.FC<RNCameraProps> = ({ ...props }) => {
 
     const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
-    const handleCameraFlash = useCallback(() => {
-        setIsFlashEnabled(flashValue => !flashValue);
-    }, []);
+    const handleCameraFlash = useCallback(
+        () => setIsFlashEnabled(flashValue => !flashValue),
+        [],
+    );
 
     return (
         <>

@@ -49,7 +49,6 @@ interface IEmployee {
 const CompanySummary: React.FC = () => {
     const { user, setUserCompany } = useAuth();
     const { showModal } = useModal();
-
     const { updatedAt } = (useRoute().params as { updatedAt: number }) || {
         updatedAt: 0,
     };
@@ -62,13 +61,13 @@ const CompanySummary: React.FC = () => {
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     useEffect(() => {
-        api.get('/company').then(response => setCompany(response.data));
+        api.get('/company').then(({ data }) => setCompany(data));
     }, [updatedAt]);
 
     useEffect(() => {
-        api.get('/company/list-employees').then(response => {
-            setEmployees(response.data);
-        });
+        api.get('/company/list-employees').then(({ data }) =>
+            setEmployees(data),
+        );
     }, [user]);
 
     useEffect(() => {

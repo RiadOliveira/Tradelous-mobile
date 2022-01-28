@@ -42,13 +42,15 @@ const ProductsList: React.FC = () => {
     useEffect(() => {
         if (
             user.companyId &&
-            (productsStatus == 'newProduct' || companyProducts.length === 0)
+            (productsStatus === 'newProduct' || companyProducts.length === 0)
         ) {
+            //If has a new product or hasn't get the products yet.
             api.get('/products').then(({ data }) => {
                 setCompanyProducts(data);
                 setHasLoadedProducts(true);
             });
         } else if (typeof productsStatus !== 'string') {
+            //If selected product has been deleted.
             if (productsStatus.id.includes('deleted')) {
                 //To delete a product needs to pass deleted + product.id to productsStatus.
                 const deletedProductId = productsStatus.id.split(' ')[1]; //Gets the id.

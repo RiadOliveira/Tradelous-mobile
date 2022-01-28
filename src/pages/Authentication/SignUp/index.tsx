@@ -21,12 +21,12 @@ interface ISignUpData {
 }
 
 const SignUp: React.FC = () => {
+    const { signIn } = useAuth();
+
     const formRef = useRef<FormHandles>(null);
     const emailInput = useRef<TextInput>(null);
     const passwordInput = useRef<TextInput>(null);
     const confirmPasswordInput = useRef<TextInput>(null);
-
-    const { signIn } = useAuth();
 
     const handleSubmit = useCallback(
         async (data: ISignUpData) => {

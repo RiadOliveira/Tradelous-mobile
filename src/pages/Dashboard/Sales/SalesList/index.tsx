@@ -51,9 +51,7 @@ type SearchType = 'day' | 'week' | 'month';
 const Sales: React.FC = () => {
     const { user } = useAuth();
     const { showModal } = useModal();
-
     const { productsStatus, updateProductsStatus } = useProducts();
-
     const navigation = useNavigation();
 
     const [hasLoadedSales, setHasLoadedSales] = useState(false);
@@ -67,6 +65,7 @@ const Sales: React.FC = () => {
 
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
+    // Gets all sales.
     useEffect(() => {
         api.get<ISale[]>(`/sales/${searchType}/${dateOfSales}`).then(
             ({ data }) => {
@@ -76,6 +75,7 @@ const Sales: React.FC = () => {
         );
     }, [dateOfSales, hasLoadedSales, searchType]);
 
+    // Gets sales when searchType and search's date changes.
     useEffect(() => {
         if (typeof productsStatus !== 'string') {
             api.get<ISale[]>(
@@ -84,8 +84,9 @@ const Sales: React.FC = () => {
         }
     }, [dateOfSales, productsStatus, searchType]);
 
+    //When a product is modified, update the product on it's sales.
     useEffect(() => {
-        if (productsStatus !== 'noChanges' && productsStatus !== 'newProduct') {
+        if (typeof productsStatus !== 'string') {
             setSales(prevSales =>
                 prevSales.map(sale => {
                     if (sale.productId == productsStatus.id) {

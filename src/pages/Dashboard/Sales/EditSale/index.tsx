@@ -55,7 +55,6 @@ interface ISale {
 const EditSale: React.FC = () => {
     const navigation = useNavigation();
     const { sale } = useRoute().params as { sale: ISale };
-
     const { updateProductsStatus } = useProducts();
 
     const [soldQuantity, setSoldQuantity] = useState(sale.quantity);
@@ -65,7 +64,6 @@ const EditSale: React.FC = () => {
     const [paymentMethod, setpaymentMethod] = useState(sale.method);
 
     const formRef = useRef<FormHandles>(null);
-
     const apiStaticUrl = useMemo(() => `${api.defaults.baseURL}/files`, []);
 
     const handleQuantityChange = useCallback(

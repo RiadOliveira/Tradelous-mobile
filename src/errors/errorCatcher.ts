@@ -10,7 +10,6 @@ const ErrorCatcher = (
 ): void => {
     if (err instanceof yup.ValidationError) {
         const validationErrors = getValidationErrors(err);
-
         const validationKeys = Object.keys(validationErrors);
 
         formRef.current?.setErrors(validationErrors);
