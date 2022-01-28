@@ -26,9 +26,7 @@ const TextPicker: React.FC = () => {
         hideModal();
         setInputText('');
 
-        if (actionFunction) {
-            actionFunction(inputText);
-        }
+        if (actionFunction) actionFunction(inputText);
     };
 
     const handleCloseModal = () => {

@@ -12,14 +12,14 @@ import TestLogo from '@assets/logo/test-logo.png';
 import api from '@services/api';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingIndicator from '@components/LoadingIndicator';
 import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { Text } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingIndicator from '@components/LoadingIndicator';
 
 const ForgotPassword: React.FC = () => {
     const navigation = useNavigation();

@@ -71,10 +71,7 @@ const Sales: React.FC = () => {
         api.get<ISale[]>(`/sales/${searchType}/${dateOfSales}`).then(
             ({ data }) => {
                 setSales(data);
-
-                if (!hasLoadedSales) {
-                    setHasLoadedSales(true);
-                }
+                if (!hasLoadedSales) setHasLoadedSales(true);
             },
         );
     }, [dateOfSales, hasLoadedSales, searchType]);

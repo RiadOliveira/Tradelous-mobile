@@ -100,9 +100,7 @@ const RegisterProduct: React.FC = () => {
                 productData.append('brand', data.brand);
                 productData.append('quantity', data.quantity);
 
-                if (barCodeValue) {
-                    productData.append('barCode', barCodeValue);
-                }
+                if (barCodeValue) productData.append('barCode', barCodeValue);
 
                 if (selectedImage.uri) {
                     productData.append('image', {

@@ -46,11 +46,8 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     }, []);
 
     const handleTextChanging = useCallback((value: string) => {
-        if (value) {
-            setIsFilled(true);
-        } else {
-            setIsFilled(false);
-        }
+        if (value) setIsFilled(true);
+        else setIsFilled(false);
     }, []);
 
     useImperativeHandle(

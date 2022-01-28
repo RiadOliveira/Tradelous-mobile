@@ -16,12 +16,12 @@ import TestLogo from '@assets/logo/test-logo.png';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import api from '@services/api';
-import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import ErrorCatcher from '@errors/errorCatcher';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as yup from 'yup';
+import { useNavigation } from '@react-navigation/core';
 
 interface IRecoverPassword {
     recoverToken: string;
@@ -44,9 +44,8 @@ const RecoverPassword: React.FC = () => {
 
     useEffect(() => {
         AsyncStorage.getItem('@Tradelous-user').then(response => {
-            if (response) {
-                setUserEmail(response);
-            } else {
+            if (response) setUserEmail(response);
+            else {
                 navigation.goBack();
 
                 Toast.show({
@@ -87,7 +86,6 @@ const RecoverPassword: React.FC = () => {
                 });
 
                 await api.post('/user/recover-password', recoverData);
-
                 await AsyncStorage.removeItem('@Tradelous-user');
 
                 Toast.show({

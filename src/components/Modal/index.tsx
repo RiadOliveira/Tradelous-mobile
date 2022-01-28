@@ -26,11 +26,8 @@ const Modal: React.FC = () => {
     const handleResponse = (response: boolean) => {
         hideModal();
 
-        if (response && actionFunction) {
-            actionFunction();
-        } else if (!response && secondActionFunction) {
-            secondActionFunction();
-        }
+        if (response && actionFunction) actionFunction();
+        else if (!response && secondActionFunction) secondActionFunction();
     };
 
     return (

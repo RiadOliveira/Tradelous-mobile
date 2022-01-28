@@ -12,6 +12,7 @@ import TestLogo from '@assets/logo/test-logo.png';
 import api from '@services/api';
 import getValidationErrors from '@utils/getValidationErrors';
 import Toast from 'react-native-toast-message';
+import LoadingIndicator from '@components/LoadingIndicator';
 import * as yup from 'yup';
 
 import { Form } from '@unform/mobile';
@@ -19,7 +20,6 @@ import { FormHandles } from '@unform/core';
 import { TextInput, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useAuth } from '@hooks/auth';
-import LoadingIndicator from '@components/LoadingIndicator';
 
 interface IBrazilianState {
     id: string;
@@ -50,7 +50,6 @@ const RegisterCompany: React.FC = () => {
     const [allStates, setAllStates] = useState<IBrazilianState[]>([]);
 
     const [hasLoadedCities, setHasLoadedCities] = useState(false);
-
     const [selectedCity, setSelectedCity] = useState<IBrazilianCity>(
         {} as IBrazilianCity,
     );

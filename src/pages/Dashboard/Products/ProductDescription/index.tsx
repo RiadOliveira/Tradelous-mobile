@@ -76,18 +76,14 @@ const ProductDescription: React.FC = () => {
         async (data: IProduct) => {
             try {
                 data.quantity = data.quantity || 0;
-
                 data.quantity = Number(
                     data.quantity.toString().replace('-', '.'),
                 );
 
                 data.price = data.price || 0;
-
                 data.price = Number(data.price.toString().replace('-', '.'));
 
-                if (barCodeValue) {
-                    data.barCode = barCodeValue;
-                }
+                if (barCodeValue) data.barCode = barCodeValue;
 
                 const schema = yup.object().shape({
                     name: yup.string().required('Nome do produto obrigatório'),

@@ -72,9 +72,7 @@ const CompanySummary: React.FC = () => {
     }, [user]);
 
     useEffect(() => {
-        if (company.id && !!employees.length) {
-            setHasLoadedCompany(true);
-        }
+        if (company.id && !!employees.length) setHasLoadedCompany(true);
     }, [company, employees]);
 
     const formattedCNPJ = useMemo(

@@ -90,11 +90,8 @@ const ProductsList: React.FC = () => {
     );
 
     const handleChangeSearch = useCallback((event: string) => {
-        if (event) {
-            setIsSearchFilled(true);
-        } else {
-            setIsSearchFilled(false);
-        }
+        if (event) setIsSearchFilled(true);
+        else setIsSearchFilled(false);
     }, []);
 
     const handleSearchFocus = useCallback(() => {
