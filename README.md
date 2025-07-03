@@ -13,7 +13,7 @@ Contents
 =================
 <!--ts-->
    * [🛠️ Technologies](#technologies)
-   * [📱 Install & Run](#install&run)
+   * [📱 Install & Run](#install-run)
       * [Prerequisites](#prerequisites)
       * [Running the app](#running)
    * [⚙️ Features](#features)
@@ -49,7 +49,7 @@ Tools used on this project:
 - [React Native](https://reactnative.dev/)
 - [TypeScript](https://www.typescriptlang.org/) <br/><br/>
 
-<h2 id="install&run">📱 Install & Run</h2>
+<h2 id="install-run">📱 Install & Run</h2>
 
 <h3 id="prerequisites">Prerequisites</h3>
 
