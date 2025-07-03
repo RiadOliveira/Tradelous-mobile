@@ -4,7 +4,7 @@
   An app developed in order to provide an easy way to manage stocks and sales of varied companies.
 </p>
 
-![image](https://github.com/user-attachments/assets/a20682c5-55ef-4410-b4b4-da077164974e)
+![image](https://github.com/user-attachments/assets/1f718eb7-6cfa-41c4-8ae9-a06153c01c7d)
 ![image](https://img.shields.io/github/license/RiadOliveira/Tradelous-frontend-mobile)
 
 <br/>
