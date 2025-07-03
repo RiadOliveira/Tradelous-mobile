@@ -1,7 +1,7 @@
 <h1 align="center">Tradelous Mobile</h1>
 
 <p align="center">
-  Tradelous is an application developed as a personal project, primarily for honing skills in stock and sales management. It provides a practical platform designed to facilitate the control of products and sales for various businesses. 
+  Tradelous is an application developed as a personal project. It provides a practical platform designed to facilitate the control of products and sales for various businesses.
 </p>
 
 ![image](https://github.com/user-attachments/assets/fee7010f-18a8-4eba-8913-9a414f717130)
