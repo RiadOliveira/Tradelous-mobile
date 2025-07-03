@@ -1,0 +1,12 @@
+{
+  "title": "Tradelous Mobile",
+  "imageId": "fee7010f-18a8-4eba-8913-9a414f717130",
+  "highlightColor": "blue",
+  "technologies": [
+    "ReactNative",
+    "Android",
+    "TypeScript",
+    "StyledComponents"
+  ],
+  "attachmentsUrl": true
+}
