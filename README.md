@@ -18,11 +18,11 @@ Contents
       * [Installation & Setup](#setup)
    * [⚙️ Features](#features)
    * [📷 Screenshots](#screenshots)
-      * [Authentication](#auth-screens)
+      * [Authentication](#authentication)
         * [Sign Up](#sign-up)
         * [Sign In](#sign-in)
         * [Password Recovery](#password-recovery)
-      * [Dashboard](#dashboard-screens)
+      * [Dashboard](#dashboard)
         * [Company Management](#company)
           * [Employer Dashboard](#company-employer)
           * [Employee Dashboard](#company-employee)
@@ -109,7 +109,7 @@ $ npm start
 
 <h2 id="screenshots">📷 Screenshots</h2>
 
-<h3 id="auth-screens">Authentication</h3>
+<h3 id="authentication">Authentication</h3>
 
 - <h4 id="sign-up">Sign Up</h4>
 
@@ -123,7 +123,7 @@ $ npm start
 
 <img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" width="300"/>
 
-<h3 id="dashboard-screens">Dashboard</h3>
+<h3 id="dashboard">Dashboard</h3>
 
 <h4 id="company">Company Management</h4>
 
