@@ -13,30 +13,29 @@ Contents
 =================
 <!--ts-->
    * [🛠️ Technologies](#technologies)
-   * [📱 Install & Run](#install-run)
+   * [🚀 Getting Started](#getting-started)
       * [Prerequisites](#prerequisites)
-      * [Running the app](#running)
+      * [Installation & Setup](#setup)
    * [⚙️ Features](#features)
    * [📷 Screenshots](#screenshots)
       * [Authentication](#auth-screens)
-        * [SignUp](#sign-up)
-        * [SignIn](#sign-in)
-        * [Forgot Password](#forgot-password)
-        * [Recover Password](#recover-password)
+        * [Sign Up](#sign-up)
+        * [Sign In](#sign-in)
+        * [Password Recovery](#password-recovery)
       * [Dashboard](#dashboard-screens)
-        * [Company](#company)
-          * [Employer View](#company-employer)
-          * [Employee View](#company-employee)
-          * [Unemployed View](#company-unemployed)
-        * [Profile](#profile)
-        * [Products](#products)
-          * [Creation](#products-creation)
-          * [Listing](#products-listing)
-          * [Selection](#products-selection)
-        * [Sales](#sales)
-          * [Creation](#sales-creation)
-          * [Listing](#sales-listing)
-          * [Selection](#sales-selection)
+        * [Company Management](#company)
+          * [Employer Dashboard](#company-employer)
+          * [Employee Dashboard](#company-employee)
+          * [User Dashboard](#company-user)
+        * [User Profile](#profile)
+        * [Product Management](#products)
+          * [Add Product](#products-creation)
+          * [Product Catalog](#products-catalog)
+          * [Product Details](#products-details)
+        * [Sales Management](#sales)
+          * [New Sale](#sales-creation)
+          * [Sales History](#sales-history)
+          * [Sale Details](#sales-details)
    * [📝 License](#license)
    * [👨‍💻 Author](#author)
    * [🌐 Socials](#socials)
@@ -44,146 +43,131 @@ Contents
 <br/>
 
 <h2 id="technologies">🛠️ Technologies</h2>
-Tools used on this project:
+Built with:
 
-- [React Native](https://reactnative.dev/)
-- [TypeScript](https://www.typescriptlang.org/) <br/><br/>
+* [React Native](https://reactnative.dev/)
+* [TypeScript](https://www.typescriptlang.org/) <br/><br/>
 
-<h2 id="install-run">📱 Install & Run</h2>
+<h2 id="getting-started">🚀 Getting Started</h2>
 
 <h3 id="prerequisites">Prerequisites</h3>
 
-  Before you start, it will be necessary to install those tools on your machine: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) and the SDK of [Android](https://developer.android.com/studio) or [IOS](https://developer.apple.com/xcode/), depending on which enviroment you will run the application. Also, you will need the backend of this app installed and running on your machine, which is explained how to do on this repository: [Tradelous Backend](https://github.com/RiadOliveira/Tradelous-backend).
+Before running the application, ensure the following tools are installed on your system:
+* [Git](https://git-scm.com)
+* [Node.js](https://nodejs.org/en/)
+* Mobile development SDK: [Android Studio](https://developer.android.com/studio) or [Xcode](https://developer.apple.com/xcode/) depending on your target platform.
 
-<h3 id="running">Running the app</h3>
+**Important**: This application requires the backend service to be running. Please refer to the Tradelous Backend repository for installation and setup instructions.
+
+<h3 id="setup">Installation & Setup</h3>
 
 ```bash
-# Clone this repository
+# Clone the repository
 $ git clone https://github.com/RiadOliveira/Tradelous-mobile.git
 
-# Access project's folder
+# Navigate to project directory
 $ cd Tradelous-mobile
 
-# Install the dependecies
+# Install dependencies
 $ npm install
-or
-$ yarn
 
-# Fill enviroment variables
-  # In first place, remove the .example part of .env.example file, there's only one variable, which is 
-  # API (Backend) URL, if you will run the app on a device's emulator, you can let .env unchanged, using 
-  # localhost as URL, but, if you will run on your mobile device, it's necessary to change that variable 
-  # to the URL where server is running. 
+# Configure environment variables
+# Rename .env.example to .env and update the API_URL variable
+# For emulator: use localhost (default)
+# For physical device: use your machine's IP address
 
-# Generate app's build
-  # If you have an emulator, simply run one of the commands below, if haven't, connect your device to 
-  # your machine using a USB cable, and then run:
+# Build and run the application
 
-  # Android
-  $ npm run android
-  or
-  $ yarn android
+# Android
+$ npm run android
 
-  # IOS
-  $ npm run ios
-  or
-  $ yarn ios
+# iOS
+$ npm run ios
 
-# Run the app (With backend running on background)
+# Start the development server
 $ npm start
-or
-$ yarn start
-
-# Extra step (Running on mobile device and using wi-fi)
-  # You can use the app with your device connected to your machine using USB, but there's also a way to use 
-  # it through wifi, doing this: after install the app on your device, shake it to appear the dev's options, 
-  # and then go to settings, there you will need to set the debug server host and port (Put the IP of your 
-  # machine and the PORT 8081), and then, just need to restart the debug server on your machine that the 
-  # device's app will detect and update.
 ```
+
+<h4>Running on Physical Device via Wi-Fi</h4>
+
+1. Install the app on your device via USB
+2. Shake the device to open developer menu
+3. Go to Settings → Debug server host & port
+4. Enter your machine's IP address and port 8081
+5. Restart the debug server on your machine
 
 <br/>
 
 <h2 id="features">⚙️ Features</h2>
 
-- User's register, update and delete. The user can be admin or employee of a company.
-- Company's register, update and delete (After user's account has been created).
-- [Admin] Can hire (Using their IDs, which the user can access on profile's screen) and fire employees from the company.
-- Product's register, update and delete (By an employee or the admin of the company).
-  - It's possible to read a barcode from products, using device's camera, and associate this code to the product saved on the app, being possible to use it on products' search afterwards.
-- System to register product's sales (on current date), determining product's sold quantity and sale's payment method (money or card).
-- Search system to find products (By name) and sales (By date, being possible to choose the type of the search, that can be: day, week and month. Starting on the selected date, example: if the user choose January 10 and type month, will find all sales between January 10 and February 10). <br/><br/>
+- **User Management System** - Complete user lifecycle management with role-based access control for administrators and employees.
+- **Company Administration** - Full company profile management with registration and configuration capabilities.
+- **Employee Management** - Administrative tools for hiring and terminating employees using unique user identification.
+- **Product Catalog Management** - Comprehensive product CRUD operations with barcode scanning integration using device camera.
+- **Sales Transaction System** - Real-time sales recording with quantity tracking and multiple payment method support (cash/card).
+- **Advanced Search & Analytics** - Intelligent search functionality for products by name and sales by flexible date ranges (daily, weekly, monthly periods). <br/><br/>
 
 <h2 id="screenshots">📷 Screenshots</h2>
 
 <h3 id="auth-screens">Authentication</h3>
 
-- <h4 id="sign-up">SignUp</h4>
+- <h4 id="sign-up">Sign Up</h4>
 
 <img src="https://user-images.githubusercontent.com/69125013/148202383-1ad1ae91-5c87-4445-919d-c28bdeb8cf94.jpg" width="300"/>
 
-- <h4 id="sign-in">SignIn</h4>
+- <h4 id="sign-in">Sign In</h4>
 
 <img src="https://user-images.githubusercontent.com/69125013/148202397-87111dd7-b8cf-43a4-ac14-a4d9eec57538.jpg" width="300"/>
 
-- <h4 id="forgot-password">Forgot Password</h4>
+- <h4 id="password-recovery">Password Recovery</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/>
-  
-- <h4 id="recover-password">Recover Password</h4>
-
-<img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" width="300"/>
 
 <h3 id="dashboard-screens">Dashboard</h3>
 
-<h4 id="company">Company</h4>
+<h4 id="company">Company Management</h4>
 
-- <h5 id="company-employer">Employer View</h5>
+- <h5 id="company-employer">Employer Dashboard</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148203368-f3102e49-eb07-45b6-b802-3964b7ced11e.jpg" width="300"/>
 
-- <h5 id="company-employee">Employee View</h5>
+- <h5 id="company-employee">Employee Dashboard</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148203458-9eb154fc-7669-4c51-afde-eb1cf05b0800.jpg" width="300"/>
 
-- <h5 id="company-unemployed">Unemployed View</h5>
+- <h5 id="company-user">User Dashboard</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148203525-4d52c31b-7e72-42a9-a862-5584c30e516e.jpg" width="300"/>
 
-- <h4 id="profile">Profile</h4>
+- <h4 id="profile">User Profile</h4>
 
-    <img src="https://user-images.githubusercontent.com/69125013/148203626-9cc7ac70-f578-44c5-988f-60615db2ef30.jpg" width="300"/>
-    <img src="https://user-images.githubusercontent.com/69125013/148203692-44ad077c-e71f-48e7-bcd8-44a9125f0da3.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148203626-9cc7ac70-f578-44c5-988f-60615db2ef30.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148203692-44ad077c-e71f-48e7-bcd8-44a9125f0da3.jpg" width="300"/>
   
-<h4 id="products">Products</h4>
+<h4 id="products">Product Management</h4>
 
-- <h5 id="products-creation">Creation</h5>
+- <h5 id="products-creation">Add Product</h5>
 
-    <img src="https://user-images.githubusercontent.com/69125013/148204149-6f650fa1-1109-4bec-8d04-5000da68e5bc.jpg" width="300"/>
-    <img src="https://user-images.githubusercontent.com/69125013/148204333-4f845f63-11aa-4170-a357-cdc284866d8b.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204149-6f650fa1-1109-4bec-8d04-5000da68e5bc.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204333-4f845f63-11aa-4170-a357-cdc284866d8b.jpg" width="300"/>
 
-- <h5 id="products-listing">Listing</h5>
+- <h5 id="products-catalog">Product Catalog</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148204031-0ec0ce58-cdff-47d3-b60f-2e842ad463dd.jpg" width="300"/>
 
-- <h5 id="products-selection">Selection</h5>
+- <h5 id="products-details">Product Details</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148204398-5fe12df4-fbeb-4297-b62e-579e57b42899.jpg" width="300"/>
 
-<h4 id="sales">Sales</h4>
+<h4 id="sales">Sales Management</h4>
 
-- <h5 id="sales-creation">Creation</h5>
+- <h5 id="sales-creation">New Sale</h5>
 
-    <img src="https://user-images.githubusercontent.com/69125013/148204818-7f18ae66-00ce-462a-9c9e-c7987e3523ef.jpg" width="300"/>
-    <img src="https://user-images.githubusercontent.com/69125013/148204823-ac9f5c76-b814-43ce-85cd-d2691bd7a10e.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204818-7f18ae66-00ce-462a-9c9e-c7987e3523ef.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204823-ac9f5c76-b814-43ce-85cd-d2691bd7a10e.jpg" width="300"/>
 
-- <h5 id="sales-listing">Listing</h5>
+- <h5 id="sales-history">Sales History</h5>
 
-    <img src="https://user-images.githubusercontent.com/69125013/148204946-bf03bd5b-8904-4799-86a8-9e1ee747b8d5.jpg" width="300"/>
-    <img src="https://user-images.githubusercontent.com/69125013/148205084-29b0bac3-d946-4bf8-b8e3-3edfce6ae64f.jpg" width="300"/>
-    <img src="https://user-images.githubusercontent.com/69125013/148205001-71853006-9620-43c1-aa01-be9f91d65f4d.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204946-bf03bd5b-8904-4799-86a8-9e1ee747b8d5.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205084-29b0bac3-d946-4bf8-b8e3-3edfce6ae64f.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205001-71853006-9620-43c1-aa01-be9f91d65f4d.jpg" width="300"/>
 
-- <h5 id="sales-selection">Selection</h5>
+- <h5 id="sales-details">Sale Details</h5>
 
 <img src="https://user-images.githubusercontent.com/69125013/148205240-11dcf21e-4fec-4a11-b75d-bcb594c09473.jpg" width="300"/>
 
