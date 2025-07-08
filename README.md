@@ -104,8 +104,8 @@ $ npm start
 - **Company Administration** - Full company profile management with registration and configuration capabilities.
 - **Employee Management** - Administrative tools for hiring and terminating employees using unique user identification.
 - **Product Catalog Management** - Comprehensive product CRUD operations with barcode scanning integration using device camera.
-- **Sales Transaction System** - Real-time sales recording with quantity tracking and multiple payment method support (cash/card).
-- **Advanced Search & Analytics** - Intelligent search functionality for products by name and sales by flexible date ranges (daily, weekly, monthly periods). <br/><br/>
+- **Sales Transaction System** - Sales recording with quantity tracking and multiple payment method support (cash/card).
+- **Search & Analytics** - Intelligent search functionality for products by name and sales by flexible date ranges (daily, weekly, monthly periods). <br/><br/>
 
 <h2 id="screenshots">📷 Screenshots</h2>
 
