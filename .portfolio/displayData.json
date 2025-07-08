@@ -8,5 +8,22 @@
     "TypeScript",
     "StyledComponents"
   ],
-  "attachmentsUrl": true
+  "attachmentsUrl": true,
+  "features": [
+    {
+      "name": "User Management",
+      "description": "User registration and role management with employer permissions.",
+      "icon": "users"
+    },
+    {
+      "name": "Company Administration",
+      "description": "Company management with employee hiring and dismissal workflows.",
+      "icon": "building"
+    },
+    {
+      "name": "Product Catalog",
+      "description": "Product CRUD operations with barcode scanning integration using camera.",
+      "icon": "qrcode"
+    }
+  ]
 }
