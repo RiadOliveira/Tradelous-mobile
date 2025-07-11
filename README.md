@@ -17,7 +17,7 @@ Contents
   * [Prerequisites](#prerequisites)
   * [Installation & Setup](#setup)
 * [⚙️ Features](#features)
-* [📷 Screenshots](#screenshots)
+* [📷 Application Screenshots](#screenshots)
   * [Authentication](#authentication)
     * [Sign Up](#sign-up)
     * [Sign In](#sign-in)
@@ -107,7 +107,7 @@ $ npm start
 - **Sales Transaction System** - Sales recording with quantity tracking and multiple payment method support (cash/card).
 - **Search & Analytics** - Intelligent search functionality for products by name and sales by flexible date ranges (daily, weekly, monthly periods). <br/><br/>
 
-<h2 id="screenshots">📷 Screenshots</h2>
+<h2 id="screenshots">📷 Application Screenshots</h2>
 
 <h3 id="authentication">Authentication</h3>
 
