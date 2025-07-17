@@ -4,8 +4,8 @@
   Tradelous is an application developed as a personal project. It provides a practical platform designed to facilitate the control of products and sales for various businesses.
 </p>
 
-![image](https://github.com/user-attachments/assets/fee7010f-18a8-4eba-8913-9a414f717130)
-![image](https://img.shields.io/github/license/RiadOliveira/Tradelous-frontend-mobile)
+![Preview](https://github.com/user-attachments/assets/fee7010f-18a8-4eba-8913-9a414f717130)
+![License](https://img.shields.io/github/license/RiadOliveira/Tradelous-frontend-mobile)
 
 <br/>
 
@@ -113,15 +113,15 @@ $ npm start
 
 - <h4 id="sign-up">Sign Up</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148202383-1ad1ae91-5c87-4445-919d-c28bdeb8cf94.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148202383-1ad1ae91-5c87-4445-919d-c28bdeb8cf94.jpg" alt="Sign_Up" width="300"/>
 
 - <h4 id="sign-in">Sign In</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148202397-87111dd7-b8cf-43a4-ac14-a4d9eec57538.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148202397-87111dd7-b8cf-43a4-ac14-a4d9eec57538.jpg" alt="Sign_In" width="300"/>
 
 - <h4 id="password-recovery">Password Recovery</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" alt="Password_Recovery" width="300"/>
 
 <h3 id="dashboard">Dashboard</h3>
 
@@ -129,47 +129,47 @@ $ npm start
 
 - <h5 id="company-employer">Employer Dashboard</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148203368-f3102e49-eb07-45b6-b802-3964b7ced11e.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148203368-f3102e49-eb07-45b6-b802-3964b7ced11e.jpg" alt="Employer_Dashboard" width="300"/>
 
 - <h5 id="company-employee">Employee Dashboard</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148203458-9eb154fc-7669-4c51-afde-eb1cf05b0800.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148203458-9eb154fc-7669-4c51-afde-eb1cf05b0800.jpg" alt="Employee_Dashboard" width="300"/>
 
 - <h5 id="company-user">User Dashboard</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148203525-4d52c31b-7e72-42a9-a862-5584c30e516e.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148203525-4d52c31b-7e72-42a9-a862-5584c30e516e.jpg" alt="User_Dashboard" width="300"/>
 
 - <h4 id="profile">User Profile</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148203626-9cc7ac70-f578-44c5-988f-60615db2ef30.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148203692-44ad077c-e71f-48e7-bcd8-44a9125f0da3.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148203626-9cc7ac70-f578-44c5-988f-60615db2ef30.jpg" alt="User_Profile_1" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148203692-44ad077c-e71f-48e7-bcd8-44a9125f0da3.jpg" alt="User_Profile_2" width="300"/>
   
 <h4 id="products">Product Management</h4>
 
 - <h5 id="products-creation">Add Product</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148204149-6f650fa1-1109-4bec-8d04-5000da68e5bc.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204333-4f845f63-11aa-4170-a357-cdc284866d8b.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204149-6f650fa1-1109-4bec-8d04-5000da68e5bc.jpg" alt="Add_Product_1" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204333-4f845f63-11aa-4170-a357-cdc284866d8b.jpg" alt="Add_Product_2" width="300"/>
 
 - <h5 id="products-catalog">Product Catalog</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148204031-0ec0ce58-cdff-47d3-b60f-2e842ad463dd.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204031-0ec0ce58-cdff-47d3-b60f-2e842ad463dd.jpg" alt="Product_Catalog" width="300"/>
 
 - <h5 id="products-details">Product Details</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148204398-5fe12df4-fbeb-4297-b62e-579e57b42899.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204398-5fe12df4-fbeb-4297-b62e-579e57b42899.jpg" alt="Product_Details" width="300"/>
 
 <h4 id="sales">Sales Management</h4>
 
 - <h5 id="sales-creation">New Sale</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148204818-7f18ae66-00ce-462a-9c9e-c7987e3523ef.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204823-ac9f5c76-b814-43ce-85cd-d2691bd7a10e.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204818-7f18ae66-00ce-462a-9c9e-c7987e3523ef.jpg" alt="New_Sale_1" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148204823-ac9f5c76-b814-43ce-85cd-d2691bd7a10e.jpg" alt="New_Sale_2" width="300"/>
 
 - <h5 id="sales-history">Sales History</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148204946-bf03bd5b-8904-4799-86a8-9e1ee747b8d5.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205084-29b0bac3-d946-4bf8-b8e3-3edfce6ae64f.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205001-71853006-9620-43c1-aa01-be9f91d65f4d.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148204946-bf03bd5b-8904-4799-86a8-9e1ee747b8d5.jpg" alt="Sales_History_1" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205084-29b0bac3-d946-4bf8-b8e3-3edfce6ae64f.jpg" alt="Sales_History_2" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148205001-71853006-9620-43c1-aa01-be9f91d65f4d.jpg" alt="Sales_History_3" width="300"/>
 
 - <h5 id="sales-details">Sale Details</h5>
 
-<img src="https://user-images.githubusercontent.com/69125013/148205240-11dcf21e-4fec-4a11-b75d-bcb594c09473.jpg" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148205240-11dcf21e-4fec-4a11-b75d-bcb594c09473.jpg" alt="Sale_Details" width="300"/>
 
 <h2 id="license">📝 License</h2>
 This project is MIT Licensed. See <a href="https://github.com/RiadOliveira/Tradelous-mobile/blob/main/LICENSE">LICENSE</a> file for more details.
@@ -189,7 +189,8 @@ This project is MIT Licensed. See <a href="https://github.com/RiadOliveira/Trade
 ## 🌐 Socials
 
 <div id="socials">
-  <a href = "mailto:riad.oliveira@hotmail.com"><img class="badge" src="https://img.shields.io/badge/Microsoft_Outlook-0078D4?style=for-the-badge&logo=microsoft-outlook&logoColor=white" target="_blank"/></a>
-  <a href = "mailto:riad.oliveira@gmail.com"><img class="badge" src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"/></a>
-  <a href="https://www.linkedin.com/in/ríad-oliveira" target="_blank"><img class="badge" src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"/></a>
+  <a href="https://portfolio-riadoliveira.vercel.app"><img class="badge" src="https://img.shields.io/badge/Portfolio-%23000000.svg?style=for-the-badge&logo=firefox&logoColor=#FF7139" alt="Portfolio" target="_blank"></a>
+  <a href = "mailto:riad.oliveira@hotmail.com"><img class="badge" src="https://img.shields.io/badge/Microsoft_Outlook-0078D4?style=for-the-badge&logo=microsoft-outlook&logoColor=white" alt="E-mail" target="_blank"/></a>
+  <a href = "mailto:riad.oliveira@gmail.com"><img class="badge" src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail" target="_blank"/></a>
+  <a href="https://www.linkedin.com/in/ríad-oliveira" target="_blank"><img class="badge" src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Linkedin" target="_blank"/></a>
 </div>
