@@ -121,7 +121,7 @@ $ npm start
 
 - <h4 id="password-recovery">Password Recovery</h4>
 
-<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" alt="Password_Recovery" width="300"/>
+<img src="https://user-images.githubusercontent.com/69125013/148202427-9f7591b3-229f-4463-b743-d6f2b5e0c9da.jpg" alt="Password_Recovery_1" width="300"/> <img src="https://user-images.githubusercontent.com/69125013/148202518-06b569cc-c276-42c4-8c56-58c385737ad8.jpg" alt="Password_Recovery_2" width="300"/>
 
 <h3 id="dashboard">Dashboard</h3>
 
